@@ -1,0 +1,18 @@
+{
+    "identity": "sheet",// luckysheet content model
+    "datastore": "default",
+    "primaryKey": "id",
+    "attributes": {
+      "id": { "type": "string", "required": true },
+      "content": { "type": "json", "required": true },
+      "summery": { "type": "string", "required": true }
+    },
+    "associations": {
+      "document": {
+        "type": "belongsTo",
+        "model": "page",
+        "foreignKey": "page_content_id",
+        "required": true
+      }
+    },
+  }

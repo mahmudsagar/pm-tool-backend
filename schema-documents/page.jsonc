@@ -1,0 +1,66 @@
+{
+    // page model. this is the common model for all pages, it will contain mostly fixed metadata and associations to other models. page contents are saved in other models like document, sheet, whiteboard and are associated with this model through page_content_id. custom meta attributes are saved in custom_meta_attributes model and are associated with this model through custom_meta_attribute_id
+    "identity": "page",
+    "datastore": "default",
+    "primaryKey": "id",
+    "attributes": {
+        "id": {
+            "type": "string",
+            "required": true
+        },
+        "title": {
+            "type": "string",
+            "required": true
+        },
+        "page_type": {
+            "type": "string",
+            "isIn": [
+                "document",
+                "sheet",
+                "whiteboard"
+            ],
+            "required": true,
+        },
+        "custom_meta_attribute_id": {
+            "type": "string",
+            "required": true
+        },
+        "page_content_id": {
+            "type": "string",
+            "required": true,
+        },
+        "folder_id": {
+            "type": "string",
+            "required": true
+        },
+        "created_by": {
+            "type": "string",
+            "required": true
+        },
+        "last_updated_by": {
+            "type": "string",
+            "required": true
+        },
+        "created_at": {
+            "type": "ref",
+            "columnType": "datetime"
+        },
+        "updated_at": {
+            "type": "ref",
+            "columnType": "datetime"
+        }
+    },
+    "associations": {
+        "page": {
+            "type": "belongsTo",
+            "model": "folder",
+            "foreignKey": "folderId",
+            "required": true
+        },
+        "custom_meta_attributes": {
+            "type": "belongsTo",
+            "model": "custom_meta_attributes",
+            "foreignKey": "custom_meta_attribute_id"
+        }
+    },
+}

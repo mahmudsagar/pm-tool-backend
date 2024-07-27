@@ -1,0 +1,52 @@
+{
+    "identity": "folder",
+    "datastore": "default",
+    "primaryKey": "id",
+    "attributes": {
+        "id": {
+            "type": "string",
+            "required": true
+        },
+        "title": {
+            "type": "string",
+            "required": true
+        },
+        "parent_folder_id": {
+            "model": "folder",
+        },
+        "workspace_id": {
+            "type": "string"
+        },
+        "created_by": {
+            "type": "string",
+            "required": true
+        },
+        "createdAt": {
+            "type": "ref",
+            "columnType": "datetime"
+        },
+        "updatedAt": {
+            "type": "ref",
+            "columnType": "datetime"
+        }
+    },
+    "associations": {
+        "folder": {
+            "type": "hasMany",
+            "model": "folder",
+            "foreignKey": "parent_folder_id"
+        },
+        "page": {
+            "type": "hasMany",
+            "model": "page",
+            "foreignKey": "folder_id"
+        },
+        "workspace": {
+            "type": "belongsTo",
+            "model": "workspace",
+            "foreignKey": "workspace_id"
+        }
+    },
+    "autoCreatedAt": true,
+    "autoUpdatedAt": true
+}

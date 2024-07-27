@@ -1,0 +1,24 @@
+{
+    "identity": "team",
+    "datastore": "default",
+    "primaryKey": "id",
+    "attributes": {
+      "id": { "type": "string", "required": true },
+      "name": { "type": "string", "required": true },
+      "description": { "type": "string", "required": true },
+      "created_by": { "type": "string", "required": true },
+      "workspace_id": { "type": "string", "required": true },
+      "members": { "type": "json", "required": true },
+      "created_at": { "type": "ref", "columnType": "datetime" },
+      "updated_at": { "type": "ref", "columnType": "datetime" }
+    },
+    "associations": {
+        "workspace": {
+            "type": "belongsTo",
+            "model": "workspace",
+            "foreignKey": "workspace_id"
+        }
+    },
+    "autoCreatedAt": true,
+    "autoUpdatedAt": true
+}
