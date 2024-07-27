@@ -1,0 +1,44 @@
+{
+    "identity": "comment",
+    "datastore": "default",
+    "primaryKey": "id",
+    "attributes": {
+        "id": {
+            "type": "string",
+            "required": true
+        },
+        "associatedId": {
+            "type": "string",
+            "required": true
+        },
+        "comment_body": {
+            "collection": "comment_body",
+            "via": "comment",
+            "required": true
+        },
+        "parent_comment_id": {
+            "model": "comment"
+        },
+        "createdBy": {
+            "type": "string",
+            "required": true
+        },
+        "createdAt": {
+            "type": "ref",
+            "columnType": "datetime"
+        },
+        "updatedAt": {
+            "type": "ref",
+            "columnType": "datetime"
+        }
+    },
+    "associations": {
+        "comment": {
+            "type": "hasMany",
+            "model": "comment",
+            "foreignKey": "parent_comment_id"
+        }
+    },
+    "autoCreatedAt": true,
+    "autoUpdatedAt": true
+}

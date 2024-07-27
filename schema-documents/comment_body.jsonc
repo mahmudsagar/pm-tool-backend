@@ -1,0 +1,29 @@
+{
+    "identity": "comment_body",
+    "datastore": "default",
+    "primaryKey": "id",
+    "attributes": {
+        "body": {
+            "type": "string",
+            "required": true
+        },
+        "createdAt": {
+            "type": "ref",
+            "columnType": "datetime"
+        },
+        "updatedAt": {
+            "type": "ref",
+            "columnType": "datetime"
+        }
+    },
+    "associations": {
+        "comment": {
+            "type": "belongsTo",
+            "model": "comment",
+            "foreignKey": "id",
+            "required": true
+        }
+    },
+    "autoCreatedAt": true,
+    "autoUpdatedAt": true
+}

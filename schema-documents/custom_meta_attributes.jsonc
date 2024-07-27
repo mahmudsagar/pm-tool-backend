@@ -1,0 +1,34 @@
+{
+    "identity": "flexibleModel",
+    "datastore": "default",
+    "primaryKey": "id",
+    "attributes": {
+        "id": {
+            "type": "string",
+            "required": true
+        },
+        "data": {// Waterline ORM does not schemaless dynamic attributes, so we need to store them in a JSON column
+            "type": "json",
+            "columnType": "json",
+            "required": true
+        },
+        "created_at": {
+            "type": "ref",
+            "columnType": "datetime"
+        },
+        "updated_at": {
+            "type": "ref",
+            "columnType": "datetime"
+        }
+    },
+    "associations": {
+        "custom_meta_attributes": {
+            "type": "belongsTo",
+            "model": "page",
+            "foreignKey": "custom_meta_attribute_id",
+            "required": true
+        }
+    },
+    "autoCreatedAt": true,
+    "autoUpdatedAt": true
+}

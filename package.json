@@ -1,0 +1,27 @@
+{
+  "name": "api-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/betternotion/api-server.git"
+  },
+  "author": "emranio,mahmudsagar,mdmuhtasimfuadfahim",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/betternotion/api-server/issues"
+  },
+  "homepage": "https://github.com/betternotion/api-server#readme",
+  "dependencies": {
+    "hyper-express": "^6.16.4",
+    "sails-mongo": "^2.1.1",
+    "waterline": "^0.15.2"
+  }
+}
