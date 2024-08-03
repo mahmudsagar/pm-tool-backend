@@ -2,19 +2,20 @@ import HyperExpress from 'hyper-express';
 import fs from 'fs';
 import path from 'path';
 import { pathToFileURL } from 'url';
-import { log } from 'console';
-
+import dotenv from 'dotenv';
 const webserver = new HyperExpress.Server();
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
+// Load environment variables from .env file
+dotenv.config();
 
 async function loadRoutes(directory, baseRoute = '') {
     const filesAndFolders = fs.readdirSync(directory, { withFileTypes: true });
 
     for (const entry of filesAndFolders) {
         // Skip the 'db' folder
-        if (entry.name === 'db' && entry.isDirectory()) {
+        if (entry.name === 'config' && entry.isDirectory()) {
             continue;
         }
 
