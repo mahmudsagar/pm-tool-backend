@@ -4,11 +4,15 @@ import path from 'path';
 import { pathToFileURL } from 'url';
 import dotenv from 'dotenv';
 const webserver = new HyperExpress.Server();
+import { waterline, dbConfig } from './db/connection.js';
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 // Load environment variables from .env file
 dotenv.config();
+
+
+const PORT = process.env.PORT || 3001;
 
 async function loadRoutes(directory, baseRoute = '') {
     const filesAndFolders = fs.readdirSync(directory, { withFileTypes: true });
@@ -120,7 +124,29 @@ async function loadRoutes(directory, baseRoute = '') {
     }
 }
 
-// Load routes from the 'modules' folder and start the server
-loadRoutes(path.join(__dirname, 'modules')).then(() => {
-    webserver.listen(3000, () => console.log('Server is running on port 3000'));
+waterline.initialize(dbConfig, (err, ontology) => {
+    if (err) {
+        console.error('Database connection failed', err);
+        process.exit(1);
+    }
+
+    console.log('Connected with MongoDB');
+
+    // Make models globally accessible
+    global.Workspace = ontology.collections.workspace;
+    global.Sheet = ontology.collections.sheet;
+    global.Page = ontology.collections.page;
+    global.Whiteboard = ontology.collections.whiteboard;
+    global.Document = ontology.collections.document;
+    global.Folder = ontology.collections.folder;
+    global.Team = ontology.collections.team;
+    global.Comment = ontology.collections.comment;
+    global.CommentBody = ontology.collections.comment_body;
+    global.CustomMetaAttributes = ontology.collections.custom_meta_attributes;
+
+    // Load routes from the 'modules' folder and start the server
+    loadRoutes(path.join(__dirname, 'modules')).then(() => {
+        webserver.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+    });
+
 });
