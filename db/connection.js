@@ -1,10 +1,18 @@
-// waterline orm mongodb connection
-import mongAdapter from 'sails-mongo';
+import dotenv from 'dotenv';
+import Waterline from 'waterline';
+import sailsDiskAdapter from 'sails-disk';
+import mongoAdapter from 'sails-mongo';
+// import User from '../models/user.model';
+// .env connected
+dotenv.config();
 
-const connection = {
+const waterline = new Waterline();
+// waterline.registerModel(User);
+
+const dbConfig = {
     adapters: {
-        'default': mongAdapter,
-        mongo: mongAdapter
+        'disk': sailsDiskAdapter,
+        'mongo': mongoAdapter
     },
     datastores: {
         default: {
@@ -14,4 +22,4 @@ const connection = {
     }
 };
 
-export default connection;
+export { waterline, dbConfig };
