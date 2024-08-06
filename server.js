@@ -5,6 +5,7 @@ import { pathToFileURL } from 'url';
 import dotenv from 'dotenv';
 const webserver = new HyperExpress.Server();
 import { waterline, dbConfig } from './db/connection.js';
+import initializeWaterline from './models/index.js';
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
@@ -16,7 +17,10 @@ const PORT = process.env.PORT || 3001;
 
 async function loadRoutes(directory, baseRoute = '') {
     const filesAndFolders = fs.readdirSync(directory, { withFileTypes: true });
-
+    // Skip processing if the folder is empty
+    if (filesAndFolders.length === 0) {
+        return;
+    }
     for (const entry of filesAndFolders) {
         // Skip the 'db' folder
         if (entry.name === 'config' && entry.isDirectory()) {
@@ -123,30 +127,27 @@ async function loadRoutes(directory, baseRoute = '') {
         }
     }
 }
+async function startServer() {
 
-waterline.initialize(dbConfig, (err, ontology) => {
-    if (err) {
-        console.error('Database connection failed', err);
-        process.exit(1);
+    try {
+        console.log('Starting the server...', PORT);
+        await webserver.listen(parseInt(PORT), () => {
+            console.log(`Server is listening on port ${PORT}`);
+        })
+        // console.log('Server is listening on port 3000');
+    } catch (error) {
+        console.error('Failed to start the server:', error);
+        // Handle specific error codes if necessary
+        if (error.code === 'ERR_UNHANDLED_REJECTION') {
+            console.error('Possible reasons: Invalid host or busy port.');
+        }
+        process.exit(1); // Exit the process with a failure code
     }
+}
+initializeWaterline()
 
-    console.log('Connected with MongoDB');
 
-    // Make models globally accessible
-    global.Workspace = ontology.collections.workspace;
-    global.Sheet = ontology.collections.sheet;
-    global.Page = ontology.collections.page;
-    global.Whiteboard = ontology.collections.whiteboard;
-    global.Document = ontology.collections.document;
-    global.Folder = ontology.collections.folder;
-    global.Team = ontology.collections.team;
-    global.Comment = ontology.collections.comment;
-    global.CommentBody = ontology.collections.comment_body;
-    global.CustomMetaAttributes = ontology.collections.custom_meta_attributes;
-
-    // Load routes from the 'modules' folder and start the server
-    loadRoutes(path.join(__dirname, 'modules')).then(() => {
-        webserver.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
-    });
-
+// Load routes from the 'modules' folder and start the server
+loadRoutes(path.join(__dirname, 'modules')).then(() => {
+    startServer();
 });
