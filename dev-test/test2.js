@@ -1,4 +1,4 @@
-import initializeWaterline from './models/index.js';
+import initializeWaterline from '../models/index.js';
 
 initializeWaterline()
     .then((ontology) => {

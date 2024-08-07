@@ -1,6 +1,6 @@
 import Waterline from 'waterline';
 import { v4 as uuidv4 } from 'uuid';
-import { dbConfig, waterline } from './db/connection.js';
+import { dbConfig, waterline } from '../db/connection.js';
 
 const Page = Waterline.Collection.extend({
     identity: 'page',
