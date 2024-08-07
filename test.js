@@ -5,10 +5,10 @@ import { dbConfig, waterline } from './db/connection.js';
 const Page = Waterline.Collection.extend({
     identity: 'page',
     datastore: 'default',
-    primaryKey: 'id',
+    primaryKey: '_id',
 
     attributes: {
-        id: {
+        _id: {
             type: 'string',
             columnName: '_id',
         },
@@ -79,7 +79,7 @@ export default Page;
 console.log("Creating a new page...");
 waterline.registerModel(Page);
 waterline.initialize(dbConfig, (err, ontology) => {
- const page =  ontology.collections.page
+    const page = ontology.collections.page
     if (err) {
         console.error('Failed to initialize ORM:', err);
         return;

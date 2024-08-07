@@ -50,9 +50,7 @@ const Page = Waterline.Collection.extend({
     },
 
     beforeCreate: function (values, next) {
-        // values.id = uuidv4();
-        console.log("before create",values);
-        
+        console.log("before create", values);
         const allowedPageTypes = ['document', 'sheet', 'whiteboard'];
         if (!allowedPageTypes.includes(values.page_type)) {
             return next(new Error('Invalid page_type value.'));
