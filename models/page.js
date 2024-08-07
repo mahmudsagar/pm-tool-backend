@@ -49,24 +49,24 @@ const Page = Waterline.Collection.extend({
         }
     },
 
-    beforeCreate: function (values, next) {
-        console.log("before create", values);
-        const allowedPageTypes = ['document', 'sheet', 'whiteboard'];
-        if (!allowedPageTypes.includes(values.page_type)) {
-            return next(new Error('Invalid page_type value.'));
-        }
-        return next();
-    },
+    // beforeCreate: function (values, next) {
+    //     console.log("before create", values);
+    //     const allowedPageTypes = ['document', 'sheet', 'whiteboard'];
+    //     if (!allowedPageTypes.includes(values.page_type)) {
+    //         return next(new Error('Invalid page_type value.'));
+    //     }
+    //     return next();
+    // },
 
-    beforeUpdate: function (values, next) {
-        if (values.page_type) {
-            const allowedPageTypes = ['document', 'sheet', 'whiteboard'];
-            if (!allowedPageTypes.includes(values.page_type)) {
-                return next(new Error('Invalid page_type value.'));
-            }
-        }
-        return next();
-    }
+    // beforeUpdate: function (values, next) {
+    //     if (values.page_type) {
+    //         const allowedPageTypes = ['document', 'sheet', 'whiteboard'];
+    //         if (!allowedPageTypes.includes(values.page_type)) {
+    //             return next(new Error('Invalid page_type value.'));
+    //         }
+    //     }
+    //     return next();
+    // }
 });
 
 export default Page;
