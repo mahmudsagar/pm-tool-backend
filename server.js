@@ -131,6 +131,7 @@ async function startServer() {
 
     try {
         console.log('Starting the server...', PORT);
+        await initializeWaterline();
         await webserver.listen(parseInt(PORT), () => {
             console.log(`Server is listening on port ${PORT}`);
         })
@@ -144,7 +145,6 @@ async function startServer() {
         process.exit(1); // Exit the process with a failure code
     }
 }
-initializeWaterline()
 
 
 // Load routes from the 'modules' folder and start the server

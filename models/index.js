@@ -2,14 +2,10 @@ import { waterline, dbConfig } from '../db/connection.js';
 import Attachment from './attachment.js';
 import User from './user.js';
 import Workspace from './workspace.js';
-import Sheet from './sheet.js';
-import Page from './page.js';
 import PageMeta from './page_meta.js';
-import Whiteboard from './whitesboard.js';
 import Document from './document.js';
 import Folder from './folder.js';
 import Team from './team.js';
-import Comment from './comment.js';
 import CommentBody from './comment_body.js';
 import CustomMeta from './custom_meta.js';
 
@@ -17,14 +13,10 @@ import CustomMeta from './custom_meta.js';
 waterline.registerModel(Attachment);
 waterline.registerModel(User);
 waterline.registerModel(Workspace);
-waterline.registerModel(Sheet);
-waterline.registerModel(Page);
 waterline.registerModel(PageMeta);
-waterline.registerModel(Whiteboard);
 waterline.registerModel(Document);
 waterline.registerModel(Folder);
 waterline.registerModel(Team);
-waterline.registerModel(Comment);
 waterline.registerModel(CommentBody);
 waterline.registerModel(CustomMeta);
 
@@ -36,19 +28,15 @@ const initializeWaterline = async () => {
                 console.error('Failed to initialize ORM:', err);
                 return reject(err);
             }
-            console.log('ORM initialized:');
+            console.log('ORM initialized');
             // Make models globally accessible
             global.Attachment = ontology.collections.attachment;
             global.User = ontology.collections.user;
             global.Workspace = ontology.collections.workspace;
-            global.Sheet = ontology.collections.sheet;
-            global.Page = ontology.collections.page;
             global.PageMeta = ontology.collections.page_meta;
-            global.Whiteboard = ontology.collections.whiteboard;
             global.Document = ontology.collections.document;
             global.Folder = ontology.collections.folder;
             global.Team = ontology.collections.team;
-            global.Comment = ontology.collections.comment;
             global.CommentBody = ontology.collections.comment_body;
             global.CustomMeta = ontology.collections.custom_meta;
             resolve(ontology);

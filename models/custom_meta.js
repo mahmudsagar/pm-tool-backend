@@ -6,7 +6,7 @@ const CustomMeta = Waterline.Collection.extend({
     primaryKey: '_id',
 
     attributes: {
-        _id: { type: 'string', required: true },
+        _id: { type: 'string', columnName: '_id', autoMigrations: { autoIncrement: false } },
         meta_data: { type: 'json', required: true },
         user_id: { type: 'string', required: true },
         workspace_id: { type: 'string', required: true }

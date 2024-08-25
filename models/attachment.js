@@ -6,7 +6,7 @@ const Attachment = Waterline.Collection.extend({
     primaryKey: '_id',
 
     attributes: {
-        _id: { type: 'string', required: true },
+        _id: { type: 'string', columnName: '_id', autoMigrations: { autoIncrement: false } },
         file_name: { type: 'string', required: true },
         file_url: { type: 'string', required: true },
         file_type: { type: 'string', required: true },

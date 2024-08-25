@@ -6,7 +6,7 @@ const PageMeta = Waterline.Collection.extend({
     primaryKey: '_id',
 
     attributes: {
-        _id: { type: 'string', required: true },
+        _id: { type: 'string', columnName: '_id', autoMigrations: { autoIncrement: false } },
         page_types: { type: 'string', required: true },
         title: { type: 'string', required: true },
         page_content_id: { type: 'string', required: true },

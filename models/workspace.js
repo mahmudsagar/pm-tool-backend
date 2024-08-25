@@ -6,7 +6,7 @@ const Workspace = Waterline.Collection.extend({
     primaryKey: '_id',
 
     attributes: {
-        _id: { type: 'string', required: true },
+        _id: { type: 'string', columnName: '_id', autoMigrations: { autoIncrement: false } },
         name: { type: 'string', required: true },
         description: { type: 'string' },
         user_id: { type: 'string', required: true }

@@ -6,7 +6,7 @@ const User = Waterline.Collection.extend({
     primaryKey: '_id',
 
     attributes: {
-        _id: { type: 'string', required: true },
+        _id: { type: 'string', columnName: '_id', autoMigrations: { autoIncrement: false } },
         email: { type: 'string', required: true },
         first_name: { type: 'string', required: true },
         last_name: { type: 'string', required: true },
