@@ -29,7 +29,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/v1/user?id=667d3985f95039199460c31a",
+							"raw": "{{baseUrl}}/v1/user?id=66cda5dac6886719e3345c19",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -40,7 +40,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "667d3985f95039199460c31a"
+									"value": "66cda5dac6886719e3345c19"
 								}
 							]
 						},
@@ -53,10 +53,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/v1/user",
+									"raw": "http://localhost:3000/v1/user",
+									"protocol": "http",
 									"host": [
-										"{{baseUrl}}"
+										"localhost"
 									],
+									"port": "3000",
 									"path": [
 										"v1",
 										"user"
@@ -84,12 +86,12 @@
 							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"_id\": \"667d3985f95039199460c31a\",\n            \"email\": \"mdmuhtasim.fahim@gmail.com\",\n            \"first_name\": \"Md. Muhtasim\",\n            \"last_name\": \"Fuad Fahim\",\n            \"full_name\": \"Md. Muhtasim Fuad Fahim\"\n        }\n    ]\n}"
 						},
 						{
-							"name": "Get authenticated user",
+							"name": "Get User",
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/v1/user?id=667d3985f95039199460c31a",
+									"raw": "{{baseUrl}}/v1/user?id=66cda5dac6886719e3345c19",
 									"host": [
 										"{{baseUrl}}"
 									],
@@ -100,7 +102,7 @@
 									"query": [
 										{
 											"key": "id",
-											"value": "667d3985f95039199460c31a"
+											"value": "66cda5dac6886719e3345c19"
 										}
 									]
 								}
@@ -115,7 +117,7 @@
 								},
 								{
 									"key": "Date",
-									"value": "Tue, 27 Aug 2024 09:37:13 GMT"
+									"value": "Tue, 27 Aug 2024 10:14:53 GMT"
 								},
 								{
 									"key": "Content-Length",
@@ -123,7 +125,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"667d3985f95039199460c31a\",\n        \"email\": \"mdmuhtasim.fahim@gmail.com\",\n        \"first_name\": \"Md. Muhtasim\",\n        \"last_name\": \"Fuad Fahim\",\n        \"full_name\": \"Md. Muhtasim Fuad Fahim\"\n    }\n}"
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"66cda5dac6886719e3345c19\",\n        \"email\": \"mdmuhtasim.fahim@gmail.com\",\n        \"first_name\": \"Md. Muhtasim\",\n        \"last_name\": \"Fuad Fahim\",\n        \"full_name\": \"Md. Muhtasim Fuad Fahim\"\n    }\n}"
 						}
 					]
 				}
