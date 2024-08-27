@@ -11,10 +11,10 @@ export default async (request, response) => {
 
         // Save the validated data to MongoDB
         let result = await global.Folder.update({ _id: validatedData._id }, validatedData).fetch();
+        if (result.length > 0) result = result[0];
         response.json({ status: "success", data: result });
     } catch (err) {
         if (err instanceof z.ZodError) {
-            console.log("🚀 ~ err:", err)
             // Handle Zod validation errors
             const formattedErrors = formatZodErrors(err.errors);
             response.status(400).json({ status: 'failed', error: formattedErrors });

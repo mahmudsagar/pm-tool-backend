@@ -13,7 +13,7 @@ const PageMeta = Waterline.Collection.extend({
         user_id: { type: 'string', required: true },
         last_updated_by: { type: 'string' },
         folder_id: { type: 'string', required: true },
-        custom_meta: { type: 'json', required: true },
+        custom_meta: { type: 'json' },
         shared_members: { type: 'json', defaultsTo: [] },
         shared_teams: { type: 'json', defaultsTo: [] }
     },
