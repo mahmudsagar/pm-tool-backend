@@ -22,16 +22,21 @@ async function loadRoutes(directory, baseRoute = '') {
         return;
     }
     for (const entry of filesAndFolders) {
-        // Skip the 'db' folder
+        // Skip the 'config' folder
         if (entry.name === 'config' && entry.isDirectory()) {
             continue;
         }
 
         const fullPath = path.join(directory, entry.name);
         if (entry.isDirectory()) {
+
             // Check if the directory name is a route parameter
             let updatedBaseRoute = baseRoute;
-            if (entry.name.startsWith('[') && entry.name.endsWith(']')) {
+            if (entry.name.startsWith('[') && entry.name.endsWith('?]')) {
+                // Convert [:something?] to :something? as an optional route parameter
+                const paramName = entry.name.replace(/^\[\:/, ':').replace(/\?\]$/, '?');
+                updatedBaseRoute = `${baseRoute}/${paramName}`;
+            } else if (entry.name.startsWith('[') && entry.name.endsWith(']')) {
                 // Convert [:something] to :something as a route parameter
                 const paramName = entry.name.replace(/^\[\:/, ':').replace(/\]$/, '');
                 updatedBaseRoute = `${baseRoute}/${paramName}`;
@@ -44,7 +49,6 @@ async function loadRoutes(directory, baseRoute = '') {
             // Determine the route and method based on the file name
             let [routeName, method] = entry.name.split('.');
             // Default to 'get' method for 'index.js' files
-            // console.log(`method: ${entry.name}`);
             if (routeName === 'index') {
                 method = 'get'; // Correct method for 'index.js'
             } else {
@@ -76,7 +80,7 @@ async function loadRoutes(directory, baseRoute = '') {
                     routePath = baseRoute;
                 }
 
-                const handler = (await import(fullPath)).default;
+                const handler = (await import(pathToFileURL(fullPath).href)).default;
 
                 // Load middleware if exists
                 const middlewareFiles = ['index.middleware', `${method}.middleware`].map(m => `${directory}/${m}.js`);

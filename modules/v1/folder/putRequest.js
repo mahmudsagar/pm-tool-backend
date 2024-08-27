@@ -4,10 +4,10 @@ import { formatZodErrors } from '../utils/error.js';
 
 export default async (request, response) => {
     try {
-        const body = await request.json();
+        const { id: _id, ...rest } = await request.json();
 
         // Validate the request body using Zod
-        const validatedData = putFolderSchema.parse(body);
+        const validatedData = putFolderSchema.parse({ _id, ...rest });
 
         // Save the validated data to MongoDB
         let result = await global.Folder.update({ _id: validatedData._id }, validatedData).fetch();

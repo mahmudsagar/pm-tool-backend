@@ -4,12 +4,13 @@ import { formatZodErrors } from '../utils/error.js';
 
 export default async (request, response) => {
     try {
-        // Parse and validate the request parameters
-        const params = request.query;
-        const validatedParams = getFolderSchema.parse(params);
+        const { id } = request.query;
 
         let result;
-        if (validatedParams._id) {
+        if (id) {
+            // Validate the _id if present in query
+            const validatedParams = getFolderSchema.parse({ _id: id });
+
             // Fetch data by _id
             result = await global.Folder.findOne({ _id: validatedParams._id });
             if (!result) {
