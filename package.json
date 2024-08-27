@@ -25,6 +25,7 @@
     "sails-disk": "^2.1.2",
     "sails-mongo": "^2.1.1",
     "uuid": "^10.0.0",
-    "waterline": "^0.15.2"
+    "waterline": "^0.15.2",
+    "zod": "^3.23.8"
   }
 }
