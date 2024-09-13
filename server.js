@@ -12,7 +12,6 @@ const __dirname = path.dirname(new URL(import.meta.url).pathname);
 // Load environment variables from .env file
 dotenv.config();
 
-
 const PORT = process.env.PORT || 3001;
 
 async function loadRoutes(directory, baseRoute = '') {
@@ -131,14 +130,14 @@ async function loadRoutes(directory, baseRoute = '') {
         }
     }
 }
-async function startServer() {
 
+async function startServer() {
     try {
         console.log('Starting the server...', PORT);
         await initializeWaterline();
         await webserver.listen(parseInt(PORT), () => {
             console.log(`Server is listening on port ${PORT}`);
-        })
+        });
         // console.log('Server is listening on port 3000');
     } catch (error) {
         console.error('Failed to start the server:', error);
@@ -150,6 +149,11 @@ async function startServer() {
     }
 }
 
+// Serve the index.html file for the base URL '/'
+webserver.get('/', (req, res) => {
+    const indexPath = path.join(__dirname, 'matrix', 'index.html');
+    res.type('text/html').sendFile(indexPath);
+});
 
 // Load routes from the 'modules' folder and start the server
 loadRoutes(path.join(__dirname, 'modules')).then(() => {
