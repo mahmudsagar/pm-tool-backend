@@ -1,7 +1,8 @@
 import { waterline, dbConfig } from '../db/connection.js';
 import Attachment from './attachment.js';
 import User from './user.js';
-import Workspace from './workspace.js';
+import Space from './space.js';
+import Group from './group.js';
 import PageMeta from './page_meta.js';
 import Document from './document.js';
 import Folder from './folder.js';
@@ -13,7 +14,8 @@ import CommentMeta from './comment_meta.js';
 // Register models
 waterline.registerModel(Attachment);
 waterline.registerModel(User);
-waterline.registerModel(Workspace);
+waterline.registerModel(Space);
+waterline.registerModel(Group);
 waterline.registerModel(PageMeta);
 waterline.registerModel(Document);
 waterline.registerModel(Folder);
@@ -34,7 +36,8 @@ const initializeWaterline = async () => {
             // Make models globally accessible
             global.Attachment = ontology.collections.attachment;
             global.User = ontology.collections.user;
-            global.Workspace = ontology.collections.workspace;
+            global.Space = ontology.collections.space;
+            global.Group = ontology.collections.group;
             global.PageMeta = ontology.collections.page_meta;
             global.Document = ontology.collections.document;
             global.Folder = ontology.collections.folder;

@@ -8,6 +8,7 @@ export default async (request, response) => {
 
         // Validate the document part of the request body
         const documentData = postDocumentSchema.parse({
+            user_id: body.user_id,
             content: body.content,
             summary: body.summery
         });
@@ -17,7 +18,8 @@ export default async (request, response) => {
 
         // Validate the page_meta part of the request body
         const pageMetaData = postPageMetaSchema.parse({
-            page_types: body.page_type,
+            page_types: body.page_types,
+            page_content_id: documentResult._id,
             title: body.title,
             user_id: body.user_id,
             last_updated_by: body.user_id,
@@ -25,7 +27,9 @@ export default async (request, response) => {
             shared_teams: body.shared_teams,
             shared_members: body.shared_members,
             custom_meta: body.custom_meta,
-            workspace_id: body.workspace_id
+            space_id: body.space_id,
+            group_id: body.group_id,
+            attachments: body.attachments
         });
 
         // Add the document _id to the page_meta data

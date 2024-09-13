@@ -8,7 +8,8 @@ const Team = Waterline.Collection.extend({
     attributes: {
         _id: { type: 'string', columnName: '_id', autoMigrations: { autoIncrement: false } },
         name: { type: 'string', required: true },
-        users: { type: 'json', defaultsTo: [] },
+        user_id: { type: 'string', required: true },
+        shared_members: { type: 'json', defaultsTo: [] },
         description: { type: 'string' }
     }
 });

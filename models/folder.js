@@ -10,9 +10,11 @@ const Folder = Waterline.Collection.extend({
         name: { type: 'string', required: true },
         description: { type: 'string' },
         parent_id: { type: 'string' },
-        workspace_id: { type: 'string', required: true },
-        teams: { type: 'json', defaultsTo: [] },
-        users: { type: 'json', defaultsTo: [] }
+        shared_members: { type: 'json', defaultsTo: [] },
+        shared_teams: { type: 'json', defaultsTo: [] },
+        user_id: { type: 'string', required: true },
+        space_id: { type: 'string', required: true },
+        group_id: { type: 'string' }
     }
 });
 

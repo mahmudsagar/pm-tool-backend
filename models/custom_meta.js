@@ -9,7 +9,7 @@ const CustomMeta = Waterline.Collection.extend({
         _id: { type: 'string', columnName: '_id', autoMigrations: { autoIncrement: false } },
         meta_data: { type: 'json', required: true },
         user_id: { type: 'string', required: true },
-        workspace_id: { type: 'string', required: true }
+        space_id: { type: 'string', required: true }
     }
 });
 

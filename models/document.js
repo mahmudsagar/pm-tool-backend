@@ -7,8 +7,9 @@ const Document = Waterline.Collection.extend({
 
     attributes: {
         _id: { type: 'string', columnName: '_id', autoMigrations: { autoIncrement: false } },
-        content: { type: 'json', required: true },
-        summary: { type: 'string', required: true }
+        user_id: { type: 'string', required: true },
+        content: { type: 'json' },
+        summary: { type: 'string' }
     }
 });
 
