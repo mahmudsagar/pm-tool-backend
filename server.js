@@ -14,6 +14,25 @@ dotenv.config();
 
 const PORT = process.env.PORT || 3001;
 
+// CORS middleware
+const corsMiddleware = (req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+};
+
+// Use CORS middleware
+webserver.use(corsMiddleware);
+
+// Handle preflight OPTIONS requests
+webserver.options('/*', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.sendStatus(200);
+});
+
 async function loadRoutes(directory, baseRoute = '') {
     const filesAndFolders = fs.readdirSync(directory, { withFileTypes: true });
     // Skip processing if the folder is empty
