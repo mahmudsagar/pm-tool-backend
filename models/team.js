@@ -10,7 +10,9 @@ const Team = Waterline.Collection.extend({
         name: { type: 'string', required: true },
         user_id: { type: 'string', required: true },
         shared_members: { type: 'json', defaultsTo: [] },
-        description: { type: 'string' }
+        description: { type: 'string' },
+        createdAt: { type: 'ref', autoCreatedAt: true },
+        updatedAt: { type: 'ref', autoUpdatedAt: true },
     }
 });
 

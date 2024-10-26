@@ -3,6 +3,7 @@ import { deleteFolderSchema } from './config/validation.js';
 import { formatZodErrors } from '../utils/error.js';
 
 export default async (request, response) => {
+    console.log("Delete request started");
     try {
         const { id: _id, user_id } = request.query;
 
