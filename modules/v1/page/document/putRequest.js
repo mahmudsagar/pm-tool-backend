@@ -30,10 +30,10 @@ export default async (request, response) => {
         }
 
         // Validate and update the page_meta if its fields are present in the rest
-        if (rest.page_types || rest.title || rest.user_id || rest.last_updated_by || rest.folder_id || rest.shared_teams || rest.shared_members || rest.custom_meta || rest.workspace_id) {
+        if (rest.page_type || rest.title || rest.user_id || rest.last_updated_by || rest.folder_id || rest.shared_teams || rest.shared_members || rest.custom_meta || rest.workspace_id) {
             const pageMetaData = putPageMetaSchema.parse({
                 last_updated_by: rest.last_updated_by,
-                page_types: rest.page_types,
+                page_type: rest.page_type,
                 page_content_id: documentResult._id,
                 title: rest.title,
                 user_id: rest.user_id,

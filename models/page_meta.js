@@ -7,7 +7,7 @@ const PageMeta = Waterline.Collection.extend({
 
     attributes: {
         _id: { type: 'string', columnName: '_id', autoMigrations: { autoIncrement: false } },
-        page_types: { type: 'string', required: true },
+        page_type: { type: 'string', required: true },
         title: { type: 'string', required: true },
         page_content_id: { type: 'string', required: true },
         user_id: { type: 'string', required: true },
@@ -18,12 +18,14 @@ const PageMeta = Waterline.Collection.extend({
         shared_teams: { type: 'json', defaultsTo: [] },
         space_id: { type: 'string', required: true },
         group_id: { type: 'string' },
-        attachments: { type: 'string' }
+        attachments: { type: 'string' },
+        createdAt: { type: 'ref', autoCreatedAt: true },
+        updatedAt: { type: 'ref', autoUpdatedAt: true },
     },
 
     beforeValidate: function (values, cb) {
         const validPageTypes = ['document', 'sheet', 'whiteboard'];
-        if (!validPageTypes.includes(values.page_types)) {
+        if (!validPageTypes.includes(values.page_type)) {
             return cb(new Error('Invalid page type'));
         }
         return cb();
@@ -31,7 +33,7 @@ const PageMeta = Waterline.Collection.extend({
 
     afterValidate: function (values, cb) {
         const validPageTypes = ['document', 'sheet', 'whiteboard'];
-        if (!validPageTypes.includes(values.page_types)) {
+        if (!validPageTypes.includes(values.page_type)) {
             return cb(new Error('Invalid page type'));
         }
         return cb();

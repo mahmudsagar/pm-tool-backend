@@ -27,7 +27,7 @@ export const postDocumentSchema = z.object({
 });
 
 export const postPageMetaSchema = z.object({
-    page_types: z.string().nonempty("Page type is required"),
+    page_type: z.string().nonempty("Page type is required"),
     title: z.string().nonempty("Title is required"),
     page_content_id: z.string().nonempty("Page content ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
@@ -77,7 +77,7 @@ export const putPageMetaSchema = z.object({
     page_content_id: z.string().nonempty("Page content ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     }),
-    page_types: z.string().optional(),
+    page_type: z.string().optional(),
     title: z.string().optional(),
     last_updated_by: z.string().optional(),
     folder_id: z.string().refine(isValidObjectId, {

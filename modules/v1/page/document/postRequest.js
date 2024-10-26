@@ -18,7 +18,7 @@ export default async (request, response) => {
 
         // Validate the page_meta part of the request body
         const pageMetaData = postPageMetaSchema.parse({
-            page_types: body.page_types,
+            page_type: body.page_type,
             page_content_id: documentResult._id,
             title: body.title,
             user_id: body.user_id,

@@ -3,6 +3,7 @@ import { postFolderSchema } from './config/validation.js';
 import { formatZodErrors } from '../utils/error.js';
 
 export default async (request, response) => {
+    console.log("Create request started");
     try {
         const body = await request.json();
 
