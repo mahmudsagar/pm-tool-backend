@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/betternotion/api-server#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "hyper-express": "^6.16.4",
     "sails-disk": "^2.1.2",

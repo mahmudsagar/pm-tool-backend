@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 const webserver = new HyperExpress.Server();
 import { waterline, dbConfig } from './db/connection.js';
 import initializeWaterline from './models/index.js';
+import cors from 'cors';
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
@@ -14,16 +15,16 @@ dotenv.config();
 
 const PORT = process.env.PORT || 3001;
 
-// CORS middleware
-const corsMiddleware = (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-};
+// // CORS middleware
+// const corsMiddleware = (req, res, next) => {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     next();
+// };
 
 // Use CORS middleware
-webserver.use(corsMiddleware);
+webserver.use(cors());
 
 // Handle preflight OPTIONS requests
 webserver.options('/*', (req, res) => {
