@@ -23,7 +23,38 @@ export const postDocumentSchema = z.object({
             message: "Content must be a valid JSON string",
         })
     ]),
-    summary: z.string().optional()
+    summary: z.string().optional(),
+    folder_id: z.string().optional(),
+    space_id: z.string().optional(),
+    group_id: z.string().optional()
+}).refine(data => {
+    const { folder_id, space_id, group_id } = data;
+    const keys = [folder_id, space_id, group_id];
+    const presentKeys = keys.filter(key => key !== undefined);
+    if (presentKeys.length === 0) {
+        return false; // One of folder_id, space_id, or group_id must be present
+    }
+    if (presentKeys.length > 1) {
+        return false; // Only one of folder_id, space_id, or group_id must be present
+    }
+    return true;
+}, {
+    message: "One of folder_id, space_id, or group_id must be present, and only one can be present",
+    path: ["folder_id", "space_id", "group_id"]
+}).refine(data => {
+    if (data.folder_id && !isValidObjectId(data.folder_id)) {
+        return false;
+    }
+    if (data.space_id && !isValidObjectId(data.space_id)) {
+        return false;
+    }
+    if (data.group_id && !isValidObjectId(data.group_id)) {
+        return false;
+    }
+    return true;
+}, {
+    message: "Invalid MongoDB ObjectId",
+    path: ["folder_id", "space_id", "group_id"]
 });
 
 export const postPageMetaSchema = z.object({
@@ -32,13 +63,7 @@ export const postPageMetaSchema = z.object({
     page_content_id: z.string().nonempty("Page content ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     }),
-    user_id: z.string().nonempty("User ID is required").refine(isValidObjectId, {
-        message: "Invalid MongoDB ObjectId",
-    }),
     last_updated_by: z.string().optional(),
-    folder_id: z.string().nonempty("Folder ID is required").refine(isValidObjectId, {
-        message: "Invalid MongoDB ObjectId",
-    }),
     custom_meta: z.union([
         z.object({}).passthrough(),
         z.string().refine(isValidJson, {
@@ -51,12 +76,6 @@ export const postPageMetaSchema = z.object({
     shared_members: z.array(z.string().refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     })).optional(),
-    space_id: z.string().nonempty("Space ID is required").refine(isValidObjectId, {
-        message: "Invalid MongoDB ObjectId",
-    }),
-    group_id: z.string().optional().refine(isValidObjectId, {
-        message: "Invalid MongoDB ObjectId",
-    }),
     attachments: z.string().optional()
 });
 
@@ -70,7 +89,35 @@ export const putDocumentSchema = z.object({
             message: "Content must be a valid JSON string",
         })
     ]).optional(),
-    summary: z.string().optional()
+    summary: z.string().optional(),
+    folder_id: z.string().optional(),
+    space_id: z.string().optional(),
+    group_id: z.string().optional()
+}).refine(data => {
+    const { folder_id, space_id, group_id } = data;
+    const keys = [folder_id, space_id, group_id];
+    const presentKeys = keys.filter(key => key !== undefined);
+    if (presentKeys.length > 1) {
+        return false; // Only one of folder_id, space_id, or group_id must be present
+    }
+    return true;
+}, {
+    message: "One of folder_id, space_id, or group_id must be present, and only one can be present",
+    path: ["folder_id", "space_id", "group_id"]
+}).refine(data => {
+    if (data.folder_id && !isValidObjectId(data.folder_id)) {
+        return false;
+    }
+    if (data.space_id && !isValidObjectId(data.space_id)) {
+        return false;
+    }
+    if (data.group_id && !isValidObjectId(data.group_id)) {
+        return false;
+    }
+    return true;
+}, {
+    message: "Invalid MongoDB ObjectId",
+    path: ["folder_id", "space_id", "group_id"]
 });
 
 export const putPageMetaSchema = z.object({
@@ -80,9 +127,6 @@ export const putPageMetaSchema = z.object({
     page_type: z.string().optional(),
     title: z.string().optional(),
     last_updated_by: z.string().optional(),
-    folder_id: z.string().refine(isValidObjectId, {
-        message: "Invalid MongoDB ObjectId",
-    }).optional(),
     custom_meta: z.union([
         z.object({}).passthrough(),
         z.string().refine(isValidJson, {
@@ -95,12 +139,6 @@ export const putPageMetaSchema = z.object({
     shared_members: z.array(z.string().refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     })).optional(),
-    space_id: z.string().refine(isValidObjectId, {
-        message: "Invalid MongoDB ObjectId",
-    }).optional(),
-    group_id: z.string().refine(isValidObjectId, {
-        message: "Invalid MongoDB ObjectId",
-    }).optional(),
     attachments: z.string().optional()
 });
 

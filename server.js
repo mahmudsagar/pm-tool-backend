@@ -51,17 +51,17 @@ async function loadRoutes(directory, baseRoute = '') {
 
             // Check if the directory name is a route parameter
             let updatedBaseRoute = baseRoute;
-            if (entry.name.startsWith('[') && entry.name.endsWith('?]')) {
-                // Convert [:something?] to :something? as an optional route parameter
-                const paramName = entry.name.replace(/^\[\:/, ':').replace(/\?\]$/, '?');
-                updatedBaseRoute = `${baseRoute}/${paramName}`;
-            } else if (entry.name.startsWith('[') && entry.name.endsWith(']')) {
-                // Convert [:something] to :something as a route parameter
-                const paramName = entry.name.replace(/^\[\:/, ':').replace(/\]$/, '');
-                updatedBaseRoute = `${baseRoute}/${paramName}`;
-            } else {
-                updatedBaseRoute = `${baseRoute}/${entry.name}`;
-            }
+            // if (entry.name.startsWith('[') && entry.name.endsWith('?]')) {
+            //     // Convert [:something?] to :something? as an optional route parameter
+            //     const paramName = entry.name.replace(/^\[\:/, ':').replace(/\?\]$/, '?');
+            //     updatedBaseRoute = `${baseRoute}/${paramName}`;
+            // } else if (entry.name.startsWith('[') && entry.name.endsWith(']')) {
+            //     // Convert [:something] to :something as a route parameter
+            //     const paramName = entry.name.replace(/^\[\:/, ':').replace(/\]$/, '');
+            //     updatedBaseRoute = `${baseRoute}/${paramName}`;
+            // } else {
+            updatedBaseRoute = `${baseRoute}/${entry.name}`;
+            // }
             // Recursively load routes for nested directories
             await loadRoutes(fullPath, updatedBaseRoute);
         } else {

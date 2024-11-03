@@ -22,6 +22,9 @@ export const postGroupSchema = z.object({
 });
 
 export const putGroupSchema = z.object({
+    _id: z.string().nonempty("ID is required").refine(isValidObjectId, {
+        message: "Invalid MongoDB ObjectId",
+    }),
     name: z.string().optional(),
     description: z.string().optional(),
     is_private: z.boolean().optional(),
