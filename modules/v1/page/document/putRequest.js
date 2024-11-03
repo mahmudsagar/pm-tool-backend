@@ -13,7 +13,10 @@ export default async (request, response) => {
             const documentData = putDocumentSchema.parse({
                 _id,
                 content: rest.content,
-                summary: rest.summary
+                summary: rest.summary,
+                folder_id: rest.folder_id,
+                space_id: rest.space_id,
+                group_id: rest.group_id,
             });
 
             documentResult = await global.Document.update(
@@ -36,13 +39,9 @@ export default async (request, response) => {
                 page_type: rest.page_type,
                 page_content_id: documentResult._id,
                 title: rest.title,
-                user_id: rest.user_id,
-                folder_id: rest.folder_id,
                 shared_teams: rest.shared_teams,
                 shared_members: rest.shared_members,
                 custom_meta: rest.custom_meta,
-                space_id: rest.space_id,
-                group_id: rest.group_id,
                 attachments: rest.attachments
             });
 

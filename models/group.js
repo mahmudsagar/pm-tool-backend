@@ -14,6 +14,7 @@ const Group = Waterline.Collection.extend({
         shared_members: { type: 'json', defaultsTo: [] },
         user_id: { type: 'string', required: true },
         space_id: { type: 'string', required: true },
+        entity_type: { type: 'string', defaultsTo: 'group' },
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },
     }

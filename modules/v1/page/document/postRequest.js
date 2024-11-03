@@ -5,12 +5,16 @@ import { formatZodErrors } from '../../utils/error.js';
 export default async (request, response) => {
     try {
         const body = await request.json();
+        console.log("🚀 ~ body:", body)
 
         // Validate the document part of the request body
         const documentData = postDocumentSchema.parse({
             user_id: body.user_id,
             content: body.content,
-            summary: body.summery
+            summary: body.summery,
+            folder_id: body.folder_id,
+            space_id: body.space_id,
+            group_id: body.group_id,
         });
 
         // Save the validated document data to MongoDB
@@ -21,14 +25,10 @@ export default async (request, response) => {
             page_type: body.page_type,
             page_content_id: documentResult._id,
             title: body.title,
-            user_id: body.user_id,
             last_updated_by: body.user_id,
-            folder_id: body.folder_id,
             shared_teams: body.shared_teams,
             shared_members: body.shared_members,
             custom_meta: body.custom_meta,
-            space_id: body.space_id,
-            group_id: body.group_id,
             attachments: body.attachments
         });
 

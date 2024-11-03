@@ -13,8 +13,9 @@ const Folder = Waterline.Collection.extend({
         shared_members: { type: 'json', defaultsTo: [] },
         shared_teams: { type: 'json', defaultsTo: [] },
         user_id: { type: 'string', required: true },
-        space_id: { type: 'string', required: true },
+        space_id: { type: 'string' },
         group_id: { type: 'string' },
+        entity_type: { type: 'string', defaultsTo: 'folder' },
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },
     }
