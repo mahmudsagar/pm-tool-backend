@@ -140,7 +140,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"My Child Folder\",\n    \"description\": \"This is a description of the folder.\",\n    \"parent_id\": \"671c72916ffa6c711e87c9d6\",\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"space_id\": \"671c720b6ffa6c711e87c9d3\",\n    \"group_id\": \"671c726f6ffa6c711e87c9d5\"\n}",
+							"raw": "{\n    \"name\": \"Folder Under Group\",\n    \"description\": \"This is a description of the folder.\",\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"group_id\": \"67271de6834f3bd8da699307\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -160,13 +160,13 @@
 					},
 					"response": [
 						{
-							"name": "parent folder",
+							"name": "folder under space",
 							"originalRequest": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"My Folder\",\n    \"description\": \"This is a description of the folder.\",\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"space_id\": \"66e4064f658c25f499aa9d63\",\n    \"group_id\": \"66e415969462f5ae1f9095c3\"\n}",
+									"raw": "{\n    \"name\": \"My First Folder\",\n    \"description\": \"This is a description of the folder.\",\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"space_id\": \"67271da0834f3bd8da699305\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -189,29 +189,33 @@
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
 									"key": "content-type",
 									"value": "application/json; charset=utf-8"
 								},
 								{
 									"key": "Date",
-									"value": "Fri, 13 Sep 2024 10:39:30 GMT"
+									"value": "Sun, 03 Nov 2024 07:00:34 GMT"
 								},
 								{
 									"key": "Content-Length",
-									"value": "406"
+									"value": "489"
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"66e4166256b7210ed8eae041\",\n        \"name\": \"My Folder\",\n        \"description\": \"This is a description of the folder.\",\n        \"parent_id\": \"\",\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"space_id\": \"66e4064f658c25f499aa9d63\",\n        \"group_id\": \"66e415969462f5ae1f9095c3\"\n    }\n}"
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"67271f925021f5b0e2fb2e93\",\n        \"name\": \"My First Folder\",\n        \"description\": \"This is a description of the folder.\",\n        \"parent_id\": \"\",\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"space_id\": \"67271da0834f3bd8da699305\",\n        \"group_id\": \"\",\n        \"entity_type\": \"folder\",\n        \"createdAt\": \"2024-11-03T07:00:34.302Z\",\n        \"updatedAt\": \"2024-11-03T07:00:34.302Z\"\n    }\n}"
 						},
 						{
-							"name": "child folder",
+							"name": "folder under group",
 							"originalRequest": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"My Child Folder\",\n    \"description\": \"This is a description of the folder.\",\n\t\t\"parent_id\": \"66e4166256b7210ed8eae041\",\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"space_id\": \"66e4064f658c25f499aa9d63\",\n    \"group_id\": \"66e415969462f5ae1f9095c3\"\n}",
+									"raw": "{\n    \"name\": \"Folder Under Group\",\n    \"description\": \"This is a description of the folder.\",\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"group_id\": \"67271dcb834f3bd8da699306\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -234,20 +238,73 @@
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
 									"key": "content-type",
 									"value": "application/json; charset=utf-8"
 								},
 								{
 									"key": "Date",
-									"value": "Fri, 13 Sep 2024 10:40:11 GMT"
+									"value": "Sun, 03 Nov 2024 09:28:12 GMT"
 								},
 								{
 									"key": "Content-Length",
-									"value": "436"
+									"value": "492"
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"66e4168c56b7210ed8eae042\",\n        \"name\": \"My Child Folder\",\n        \"description\": \"This is a description of the folder.\",\n        \"parent_id\": \"66e4166256b7210ed8eae041\",\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"space_id\": \"66e4064f658c25f499aa9d63\",\n        \"group_id\": \"66e415969462f5ae1f9095c3\"\n    }\n}"
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"6727422d201cbaec290637bb\",\n        \"name\": \"Folder Under Group\",\n        \"description\": \"This is a description of the folder.\",\n        \"parent_id\": \"\",\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"space_id\": \"\",\n        \"group_id\": \"67271dcb834f3bd8da699306\",\n        \"entity_type\": \"folder\",\n        \"createdAt\": \"2024-11-03T09:28:13.038Z\",\n        \"updatedAt\": \"2024-11-03T09:28:13.038Z\"\n    }\n}"
+						},
+						{
+							"name": "folder under folder",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Folder Under Folder\",\n    \"description\": \"This is a description of the folder.\",\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"parent_id\": \"6727422d201cbaec290637bb\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/folder",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"folder"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 03 Nov 2024 09:33:10 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "493"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"672743569c5e4d1460fd288d\",\n        \"name\": \"Folder Under Folder\",\n        \"description\": \"This is a description of the folder.\",\n        \"parent_id\": \"6727422d201cbaec290637bb\",\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"space_id\": \"\",\n        \"group_id\": \"\",\n        \"entity_type\": \"folder\",\n        \"createdAt\": \"2024-11-03T09:33:10.657Z\",\n        \"updatedAt\": \"2024-11-03T09:33:10.657Z\"\n    }\n}"
 						}
 					]
 				},
@@ -258,7 +315,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\": \"66cd7bbbf89b558a6d6e1bc5\",\n    \"description\": \"this is the description\",\n    \"users\": [\n        \"66cd4d6b2c67fdaedcd97326\",\n        \"66cd4d6b2c67fdaedcd97326\"\n    ]\n}",
+							"raw": "{\n    \"id\": \"67274c9a7d3717c87083fedf\",\n    \"name\": \"Folder Under Group 2\",\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -278,13 +335,13 @@
 					},
 					"response": [
 						{
-							"name": "New Request",
+							"name": "Update Folder",
 							"originalRequest": {
 								"method": "PUT",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"id\": \"66cd7bbbf89b558a6d6e1bc5\",\n    \"description\": \"this is the description\",\n    \"users\": [\n        \"66cd4d6b2c67fdaedcd97326\",\n        \"66cd4d6b2c67fdaedcd97326\"\n    ]\n}",
+									"raw": "{\n    \"id\": \"67274c9a7d3717c87083fedf\",\n    \"name\": \"Folder Under Group 2\",\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ]\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -307,20 +364,24 @@
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
 									"key": "content-type",
 									"value": "application/json; charset=utf-8"
 								},
 								{
 									"key": "Date",
-									"value": "Tue, 27 Aug 2024 09:18:26 GMT"
+									"value": "Sun, 03 Nov 2024 10:15:30 GMT"
 								},
 								{
 									"key": "Content-Length",
-									"value": "306"
+									"value": "494"
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"66cd7bbbf89b558a6d6e1bc5\",\n        \"name\": \"MY FOLDER\",\n        \"description\": \"this is the description\",\n        \"parent_id\": \"\",\n        \"workspace_id\": \"66cd4d6b2c67fdaedcd97326\",\n        \"teams\": [\n            \"66cd4d6b2c67fdaedcd97326\",\n            \"66cd4d6b2c67fdaedcd97326\"\n        ],\n        \"users\": [\n            \"66cd4d6b2c67fdaedcd97326\",\n            \"66cd4d6b2c67fdaedcd97326\"\n        ]\n    }\n}"
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"67274c9a7d3717c87083fedf\",\n        \"name\": \"Folder Under Group 2\",\n        \"description\": \"This is a description of the folder.\",\n        \"parent_id\": \"\",\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"space_id\": \"\",\n        \"group_id\": \"67271de6834f3bd8da699307\",\n        \"entity_type\": \"folder\",\n        \"createdAt\": \"2024-11-03T10:12:42.522Z\",\n        \"updatedAt\": \"2024-11-03T10:15:30.798Z\"\n    }\n}"
 						}
 					]
 				},
@@ -348,12 +409,12 @@
 					},
 					"response": [
 						{
-							"name": "get folder by id",
+							"name": "folder by id",
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/v1/folder?id=66e4166256b7210ed8eae041",
+									"raw": "{{baseUrl}}/v1/folder?id=6727422d201cbaec290637bb",
 									"host": [
 										"{{baseUrl}}"
 									],
@@ -364,7 +425,7 @@
 									"query": [
 										{
 											"key": "id",
-											"value": "66e4166256b7210ed8eae041"
+											"value": "6727422d201cbaec290637bb"
 										}
 									]
 								}
@@ -374,23 +435,27 @@
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
 									"key": "content-type",
 									"value": "application/json; charset=utf-8"
 								},
 								{
 									"key": "Date",
-									"value": "Fri, 13 Sep 2024 10:40:43 GMT"
+									"value": "Sun, 03 Nov 2024 10:08:16 GMT"
 								},
 								{
 									"key": "Content-Length",
-									"value": "406"
+									"value": "1785"
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"66e4166256b7210ed8eae041\",\n        \"name\": \"My Folder\",\n        \"description\": \"This is a description of the folder.\",\n        \"parent_id\": \"\",\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"space_id\": \"66e4064f658c25f499aa9d63\",\n        \"group_id\": \"66e415969462f5ae1f9095c3\"\n    }\n}"
+							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"_id\": \"6727422d201cbaec290637bb\",\n            \"name\": \"Folder Under Group\",\n            \"description\": \"This is a description of the folder.\",\n            \"parent_id\": \"\",\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"space_id\": \"\",\n            \"group_id\": \"67271dcb834f3bd8da699306\",\n            \"entity_type\": \"folder\",\n            \"createdAt\": \"2024-11-03T09:28:13.038Z\",\n            \"updatedAt\": \"2024-11-03T09:28:13.038Z\",\n            \"childs\": [\n                {\n                    \"_id\": \"672743569c5e4d1460fd288d\",\n                    \"name\": \"Folder Under Folder\",\n                    \"description\": \"This is a description of the folder.\",\n                    \"parent_id\": \"6727422d201cbaec290637bb\",\n                    \"shared_members\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"shared_teams\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"space_id\": \"\",\n                    \"group_id\": \"\",\n                    \"entity_type\": \"folder\",\n                    \"createdAt\": \"2024-11-03T09:33:10.657Z\",\n                    \"updatedAt\": \"2024-11-03T09:33:10.657Z\"\n                },\n                {\n                    \"_id\": \"672744cf9c5e4d1460fd2890\",\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"content\": {\n                        \"text\": \"This is the document content\"\n                    },\n                    \"summary\": \"\",\n                    \"folder_id\": \"6727422d201cbaec290637bb\",\n                    \"space_id\": \"\",\n                    \"group_id\": \"\",\n                    \"entity_type\": \"page\",\n                    \"createdAt\": \"2024-11-03T09:39:27.995Z\",\n                    \"updatedAt\": \"2024-11-03T09:39:27.995Z\",\n                    \"pageMeta\": [\n                        {\n                            \"_id\": \"672744d09c5e4d1460fd2891\",\n                            \"page_type\": \"document\",\n                            \"title\": \"Page Under Group\",\n                            \"page_content_id\": \"672744cf9c5e4d1460fd2890\",\n                            \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n                            \"custom_meta\": {\n                                \"author\": \"John Doe\",\n                                \"keywords\": [\n                                    \"sample\",\n                                    \"page\",\n                                    \"meta\"\n                                ]\n                            },\n                            \"shared_members\": [\n                                \"66cda5dac6886719e3345c19\",\n                                \"66e404cf089aef7c495015f4\"\n                            ],\n                            \"shared_teams\": [\n                                \"66cda5dac6886719e3345c19\",\n                                \"66e404cf089aef7c495015f4\"\n                            ],\n                            \"attachments\": \"attachment_url\",\n                            \"createdAt\": \"2024-11-03T09:39:28.181Z\",\n                            \"updatedAt\": \"2024-11-03T09:39:28.181Z\"\n                        }\n                    ]\n                }\n            ]\n        }\n    ]\n}"
 						},
 						{
-							"name": "get folder by user_id",
+							"name": "folder by user_id",
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
@@ -416,20 +481,24 @@
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
 									"key": "content-type",
 									"value": "application/json; charset=utf-8"
 								},
 								{
 									"key": "Date",
-									"value": "Fri, 13 Sep 2024 10:41:11 GMT"
+									"value": "Sun, 03 Nov 2024 10:08:52 GMT"
 								},
 								{
 									"key": "Content-Length",
-									"value": "817"
+									"value": "2737"
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"_id\": \"66e4166256b7210ed8eae041\",\n            \"name\": \"My Folder\",\n            \"description\": \"This is a description of the folder.\",\n            \"parent_id\": \"\",\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"space_id\": \"66e4064f658c25f499aa9d63\",\n            \"group_id\": \"66e415969462f5ae1f9095c3\"\n        },\n        {\n            \"_id\": \"66e4168c56b7210ed8eae042\",\n            \"name\": \"My Child Folder\",\n            \"description\": \"This is a description of the folder.\",\n            \"parent_id\": \"66e4166256b7210ed8eae041\",\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"space_id\": \"66e4064f658c25f499aa9d63\",\n            \"group_id\": \"66e415969462f5ae1f9095c3\"\n        }\n    ]\n}"
+							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"_id\": \"67271f925021f5b0e2fb2e93\",\n            \"name\": \"My First Folder\",\n            \"description\": \"This is a description of the folder.\",\n            \"parent_id\": \"\",\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"space_id\": \"67271da0834f3bd8da699305\",\n            \"group_id\": \"\",\n            \"entity_type\": \"folder\",\n            \"createdAt\": \"2024-11-03T07:00:34.302Z\",\n            \"updatedAt\": \"2024-11-03T07:00:34.302Z\",\n            \"childs\": []\n        },\n        {\n            \"_id\": \"6727422d201cbaec290637bb\",\n            \"name\": \"Folder Under Group\",\n            \"description\": \"This is a description of the folder.\",\n            \"parent_id\": \"\",\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"space_id\": \"\",\n            \"group_id\": \"67271dcb834f3bd8da699306\",\n            \"entity_type\": \"folder\",\n            \"createdAt\": \"2024-11-03T09:28:13.038Z\",\n            \"updatedAt\": \"2024-11-03T09:28:13.038Z\",\n            \"childs\": [\n                {\n                    \"_id\": \"672743569c5e4d1460fd288d\",\n                    \"name\": \"Folder Under Folder\",\n                    \"description\": \"This is a description of the folder.\",\n                    \"parent_id\": \"6727422d201cbaec290637bb\",\n                    \"shared_members\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"shared_teams\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"space_id\": \"\",\n                    \"group_id\": \"\",\n                    \"entity_type\": \"folder\",\n                    \"createdAt\": \"2024-11-03T09:33:10.657Z\",\n                    \"updatedAt\": \"2024-11-03T09:33:10.657Z\"\n                },\n                {\n                    \"_id\": \"672744cf9c5e4d1460fd2890\",\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"content\": {\n                        \"text\": \"This is the document content\"\n                    },\n                    \"summary\": \"\",\n                    \"folder_id\": \"6727422d201cbaec290637bb\",\n                    \"space_id\": \"\",\n                    \"group_id\": \"\",\n                    \"entity_type\": \"page\",\n                    \"createdAt\": \"2024-11-03T09:39:27.995Z\",\n                    \"updatedAt\": \"2024-11-03T09:39:27.995Z\",\n                    \"pageMeta\": [\n                        {\n                            \"_id\": \"672744d09c5e4d1460fd2891\",\n                            \"page_type\": \"document\",\n                            \"title\": \"Page Under Group\",\n                            \"page_content_id\": \"672744cf9c5e4d1460fd2890\",\n                            \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n                            \"custom_meta\": {\n                                \"author\": \"John Doe\",\n                                \"keywords\": [\n                                    \"sample\",\n                                    \"page\",\n                                    \"meta\"\n                                ]\n                            },\n                            \"shared_members\": [\n                                \"66cda5dac6886719e3345c19\",\n                                \"66e404cf089aef7c495015f4\"\n                            ],\n                            \"shared_teams\": [\n                                \"66cda5dac6886719e3345c19\",\n                                \"66e404cf089aef7c495015f4\"\n                            ],\n                            \"attachments\": \"attachment_url\",\n                            \"createdAt\": \"2024-11-03T09:39:28.181Z\",\n                            \"updatedAt\": \"2024-11-03T09:39:28.181Z\"\n                        }\n                    ]\n                }\n            ]\n        },\n        {\n            \"_id\": \"672743569c5e4d1460fd288d\",\n            \"name\": \"Folder Under Folder\",\n            \"description\": \"This is a description of the folder.\",\n            \"parent_id\": \"6727422d201cbaec290637bb\",\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"space_id\": \"\",\n            \"group_id\": \"\",\n            \"entity_type\": \"folder\",\n            \"createdAt\": \"2024-11-03T09:33:10.657Z\",\n            \"updatedAt\": \"2024-11-03T09:33:10.657Z\",\n            \"childs\": []\n        }\n    ]\n}"
 						}
 					]
 				},
@@ -605,7 +674,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"name\": \"My Team\",\n    \"description\": \"My team description\",\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ]\n}",
+							"raw": "{\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"name\": \"My Team 2\",\n    \"description\": \"My team 2 description\",\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -613,12 +682,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://better-notion-api-server.onrender.com/v1/team",
-							"protocol": "https",
+							"raw": "{{baseUrl}}/v1/team",
 							"host": [
-								"better-notion-api-server",
-								"onrender",
-								"com"
+								"{{baseUrl}}"
 							],
 							"path": [
 								"v1",
@@ -628,7 +694,7 @@
 					},
 					"response": [
 						{
-							"name": "create team",
+							"name": "Create Team",
 							"originalRequest": {
 								"method": "POST",
 								"header": [],
@@ -657,20 +723,24 @@
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
 									"key": "content-type",
 									"value": "application/json; charset=utf-8"
 								},
 								{
 									"key": "Date",
-									"value": "Fri, 13 Sep 2024 10:57:22 GMT"
+									"value": "Sun, 03 Nov 2024 10:10:02 GMT"
 								},
 								{
 									"key": "Content-Length",
-									"value": "225"
+									"value": "324"
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"66e41a92542b6a7144d85505\",\n        \"name\": \"My Team\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"description\": \"My team description\"\n    }\n}"
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"67274bfb7d3717c87083fedd\",\n        \"name\": \"My Team\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"description\": \"My team description\",\n        \"entity_type\": \"team\",\n        \"createdAt\": \"2024-11-03T10:10:03.509Z\",\n        \"updatedAt\": \"2024-11-03T10:10:03.509Z\"\n    }\n}"
 						}
 					]
 				},
@@ -753,7 +823,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/v1/team?user_id=66cda5dac6886719e3345c19",
+							"raw": "{{baseUrl}}/v1/team?id=67274bfb7d3717c87083fedd",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -763,59 +833,15 @@
 							],
 							"query": [
 								{
-									"key": "user_id",
-									"value": "66cda5dac6886719e3345c19"
+									"key": "id",
+									"value": "67274bfb7d3717c87083fedd"
 								}
 							]
 						}
 					},
 					"response": [
 						{
-							"name": "get team by id",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "http://localhost:3000/v1/team?id=66e41ac8542b6a7144d85506",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"v1",
-										"team"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": "66e41ac8542b6a7144d85506"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "content-type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 13 Sep 2024 10:58:24 GMT"
-								},
-								{
-									"key": "Content-Length",
-									"value": "225"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"66e41ac8542b6a7144d85506\",\n        \"name\": \"My Team\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"description\": \"My team description\"\n    }\n}"
-						},
-						{
-							"name": "get team by user_id",
+							"name": "team by user_id",
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
@@ -841,20 +867,70 @@
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
 									"key": "content-type",
 									"value": "application/json; charset=utf-8"
 								},
 								{
 									"key": "Date",
-									"value": "Fri, 13 Sep 2024 10:58:47 GMT"
+									"value": "Sun, 03 Nov 2024 10:10:58 GMT"
 								},
 								{
 									"key": "Content-Length",
-									"value": "436"
+									"value": "326"
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"_id\": \"66e41a92542b6a7144d85505\",\n            \"name\": \"Updating team name\",\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"description\": \"My team description\"\n        },\n        {\n            \"_id\": \"66e41ac8542b6a7144d85506\",\n            \"name\": \"My Team\",\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"description\": \"My team description\"\n        }\n    ]\n}"
+							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"_id\": \"67274bfb7d3717c87083fedd\",\n            \"name\": \"My Team\",\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"description\": \"My team description\",\n            \"entity_type\": \"team\",\n            \"createdAt\": \"2024-11-03T10:10:03.509Z\",\n            \"updatedAt\": \"2024-11-03T10:10:03.509Z\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "team by id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/v1/team?id=67274bfb7d3717c87083fedd",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"team"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "67274bfb7d3717c87083fedd"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 03 Nov 2024 10:11:22 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "324"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"67274bfb7d3717c87083fedd\",\n        \"name\": \"My Team\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"description\": \"My team description\",\n        \"entity_type\": \"team\",\n        \"createdAt\": \"2024-11-03T10:10:03.509Z\",\n        \"updatedAt\": \"2024-11-03T10:10:03.509Z\"\n    }\n}"
 						}
 					]
 				},
@@ -937,7 +1013,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"content\": {\n        \"text\": \"This is the document content\"\n    },\n    \"summary\": \"This is the document summary\",\n    \"page_type\": \"document\",\n    \"title\": \"Sample Document\",\n    \"folder_id\": \"671c72b96ffa6c711e87c9d8\",\n    \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n    \"custom_meta\": {\n        \"author\": \"John Doe\",\n        \"keywords\": [\"sample\", \"page\", \"meta\"]\n    },\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"space_id\": \"671c720b6ffa6c711e87c9d3\",\n    \"group_id\": \"671c726f6ffa6c711e87c9d5\",\n    \"attachments\": \"attachment_url\"\n}",
+							"raw": "{\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"content\": {\n        \"text\": \"This is the document content\"\n    },\n    \"summary\": \"This is the document summary\",\n    \"page_type\": \"document\",\n    \"title\": \"Page Under Group\",\n    \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n    \"custom_meta\": {\n        \"author\": \"John Doe\",\n        \"keywords\": [\"sample\", \"page\", \"meta\"]\n    },\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"folder_id\": \"6727422d201cbaec290637bb\",\n    \"attachments\": \"attachment_url\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -958,13 +1034,13 @@
 					},
 					"response": [
 						{
-							"name": "Create Document",
+							"name": "page under space",
 							"originalRequest": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"content\": {\n            \"text\": \"This is the document content\"\n        },\n        \"summary\": \"This is the document summary\",\n        \"page_type\": \"sheet\",\n        \"title\": \"Sample Page Title\",\n        \"folder_id\": \"66e404cf089aef7c495015f4\",\n        \"custom_meta\": {\n            \"author\": \"John Doe\",\n            \"keywords\": [\"sample\", \"page\", \"meta\"]\n        },\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"space_id\": \"66e4064f658c25f499aa9d63\",\n        \"group_id\": \"66e4064f658c25f499aa9d63\",\n        \"attachments\": \"attachment_url\"\n}",
+									"raw": "{\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"content\": {\n        \"text\": \"This is the document content\"\n    },\n    \"summary\": \"This is the document summary\",\n    \"page_type\": \"document\",\n    \"title\": \"Document Under Space\",\n    \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n    \"custom_meta\": {\n        \"author\": \"John Doe\",\n        \"keywords\": [\"sample\", \"page\", \"meta\"]\n    },\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"space_id\": \"67271da0834f3bd8da699305\",\n    \"attachments\": \"attachment_url\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -992,37 +1068,29 @@
 									"value": "*"
 								},
 								{
-									"key": "access-control-allow-methods",
-									"value": "GET, POST, PUT, DELETE, OPTIONS"
-								},
-								{
-									"key": "access-control-allow-headers",
-									"value": "Origin, X-Requested-With, Content-Type, Accept"
-								},
-								{
 									"key": "content-type",
 									"value": "application/json; charset=utf-8"
 								},
 								{
 									"key": "Date",
-									"value": "Sat, 26 Oct 2024 04:28:21 GMT"
+									"value": "Sun, 03 Nov 2024 07:17:44 GMT"
 								},
 								{
 									"key": "Content-Length",
-									"value": "745"
+									"value": "843"
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"671c6fe5ea8d163b8dc2586e\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"content\": {\n            \"text\": \"This is the document content\"\n        },\n        \"summary\": \"\",\n        \"pageMeta\": {\n            \"_id\": \"671c6fe6ea8d163b8dc2586f\",\n            \"page_type\": \"sheet\",\n            \"title\": \"Sample Page Title\",\n            \"page_content_id\": \"671c6fe5ea8d163b8dc2586e\",\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n            \"folder_id\": \"66e404cf089aef7c495015f4\",\n            \"custom_meta\": {\n                \"author\": \"John Doe\",\n                \"keywords\": [\n                    \"sample\",\n                    \"page\",\n                    \"meta\"\n                ]\n            },\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"space_id\": \"66e4064f658c25f499aa9d63\",\n            \"group_id\": \"66e4064f658c25f499aa9d63\",\n            \"attachments\": \"attachment_url\"\n        }\n    }\n}"
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"672723995d651a60d9254810\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"content\": {\n            \"text\": \"This is the document content\"\n        },\n        \"summary\": \"\",\n        \"folder_id\": \"\",\n        \"space_id\": \"67271da0834f3bd8da699305\",\n        \"group_id\": \"\",\n        \"entity_type\": \"page\",\n        \"createdAt\": \"2024-11-03T07:17:44.994Z\",\n        \"updatedAt\": \"2024-11-03T07:17:44.994Z\",\n        \"pageMeta\": {\n            \"_id\": \"672723995d651a60d9254811\",\n            \"page_type\": \"document\",\n            \"title\": \"Document Under Space\",\n            \"page_content_id\": \"672723995d651a60d9254810\",\n            \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n            \"custom_meta\": {\n                \"author\": \"John Doe\",\n                \"keywords\": [\n                    \"sample\",\n                    \"page\",\n                    \"meta\"\n                ]\n            },\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"attachments\": \"attachment_url\",\n            \"createdAt\": \"2024-11-03T07:17:45.163Z\",\n            \"updatedAt\": \"2024-11-03T07:17:45.163Z\"\n        }\n    }\n}"
 						},
 						{
-							"name": "Create Document",
+							"name": "page under group",
 							"originalRequest": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"content\": {\n        \"text\": \"This is the document content\"\n    },\n    \"summary\": \"This is the document summary\",\n    \"page_type\": \"document\",\n    \"title\": \"Sample Document\",\n    \"folder_id\": \"671c72b96ffa6c711e87c9d8\",\n    \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n    \"custom_meta\": {\n        \"author\": \"John Doe\",\n        \"keywords\": [\"sample\", \"page\", \"meta\"]\n    },\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"space_id\": \"671c720b6ffa6c711e87c9d3\",\n    \"group_id\": \"671c726f6ffa6c711e87c9d5\",\n    \"attachments\": \"attachment_url\"\n}",
+									"raw": "{\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"content\": {\n        \"text\": \"This is the document content\"\n    },\n    \"summary\": \"This is the document summary\",\n    \"page_type\": \"document\",\n    \"title\": \"Page Under Group\",\n    \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n    \"custom_meta\": {\n        \"author\": \"John Doe\",\n        \"keywords\": [\"sample\", \"page\", \"meta\"]\n    },\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"group_id\": \"67271de6834f3bd8da699307\",\n    \"attachments\": \"attachment_url\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1050,12 +1118,54 @@
 									"value": "*"
 								},
 								{
-									"key": "access-control-allow-methods",
-									"value": "GET, POST, PUT, DELETE, OPTIONS"
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
 								},
 								{
-									"key": "access-control-allow-headers",
-									"value": "Origin, X-Requested-With, Content-Type, Accept"
+									"key": "Date",
+									"value": "Sun, 03 Nov 2024 09:34:46 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "839"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"672743b69c5e4d1460fd288e\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"content\": {\n            \"text\": \"This is the document content\"\n        },\n        \"summary\": \"\",\n        \"folder_id\": \"\",\n        \"space_id\": \"\",\n        \"group_id\": \"67271de6834f3bd8da699307\",\n        \"entity_type\": \"page\",\n        \"createdAt\": \"2024-11-03T09:34:46.297Z\",\n        \"updatedAt\": \"2024-11-03T09:34:46.297Z\",\n        \"pageMeta\": {\n            \"_id\": \"672743b69c5e4d1460fd288f\",\n            \"page_type\": \"document\",\n            \"title\": \"Page Under Group\",\n            \"page_content_id\": \"672743b69c5e4d1460fd288e\",\n            \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n            \"custom_meta\": {\n                \"author\": \"John Doe\",\n                \"keywords\": [\n                    \"sample\",\n                    \"page\",\n                    \"meta\"\n                ]\n            },\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"attachments\": \"attachment_url\",\n            \"createdAt\": \"2024-11-03T09:34:46.469Z\",\n            \"updatedAt\": \"2024-11-03T09:34:46.469Z\"\n        }\n    }\n}"
+						},
+						{
+							"name": "document under folder",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"content\": {\n        \"text\": \"This is the document content\"\n    },\n    \"summary\": \"This is the document summary\",\n    \"page_type\": \"document\",\n    \"title\": \"Page Under Group\",\n    \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n    \"custom_meta\": {\n        \"author\": \"John Doe\",\n        \"keywords\": [\"sample\", \"page\", \"meta\"]\n    },\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"folder_id\": \"6727422d201cbaec290637bb\",\n    \"attachments\": \"attachment_url\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/page/document",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"page",
+										"document"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
 								},
 								{
 									"key": "content-type",
@@ -1063,15 +1173,15 @@
 								},
 								{
 									"key": "Date",
-									"value": "Sat, 26 Oct 2024 04:45:32 GMT"
+									"value": "Sun, 03 Nov 2024 09:39:27 GMT"
 								},
 								{
 									"key": "Content-Length",
-									"value": "902"
+									"value": "839"
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"671c73eb6ffa6c711e87c9db\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"content\": {\n            \"text\": \"This is the document content\"\n        },\n        \"summary\": \"\",\n        \"createdAt\": \"2024-10-26T04:45:31.982Z\",\n        \"updatedAt\": \"2024-10-26T04:45:31.982Z\",\n        \"pageMeta\": {\n            \"_id\": \"671c73ec6ffa6c711e87c9dc\",\n            \"page_type\": \"document\",\n            \"title\": \"Sample Document\",\n            \"page_content_id\": \"671c73eb6ffa6c711e87c9db\",\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n            \"folder_id\": \"671c72b96ffa6c711e87c9d8\",\n            \"custom_meta\": {\n                \"author\": \"John Doe\",\n                \"keywords\": [\n                    \"sample\",\n                    \"page\",\n                    \"meta\"\n                ]\n            },\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"space_id\": \"671c720b6ffa6c711e87c9d3\",\n            \"group_id\": \"671c726f6ffa6c711e87c9d5\",\n            \"attachments\": \"attachment_url\",\n            \"createdAt\": \"2024-10-26T04:45:32.174Z\",\n            \"updatedAt\": \"2024-10-26T04:45:32.174Z\"\n        }\n    }\n}"
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"672744cf9c5e4d1460fd2890\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"content\": {\n            \"text\": \"This is the document content\"\n        },\n        \"summary\": \"\",\n        \"folder_id\": \"6727422d201cbaec290637bb\",\n        \"space_id\": \"\",\n        \"group_id\": \"\",\n        \"entity_type\": \"page\",\n        \"createdAt\": \"2024-11-03T09:39:27.995Z\",\n        \"updatedAt\": \"2024-11-03T09:39:27.995Z\",\n        \"pageMeta\": {\n            \"_id\": \"672744d09c5e4d1460fd2891\",\n            \"page_type\": \"document\",\n            \"title\": \"Page Under Group\",\n            \"page_content_id\": \"672744cf9c5e4d1460fd2890\",\n            \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n            \"custom_meta\": {\n                \"author\": \"John Doe\",\n                \"keywords\": [\n                    \"sample\",\n                    \"page\",\n                    \"meta\"\n                ]\n            },\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"attachments\": \"attachment_url\",\n            \"createdAt\": \"2024-11-03T09:39:28.181Z\",\n            \"updatedAt\": \"2024-11-03T09:39:28.181Z\"\n        }\n    }\n}"
 						}
 					]
 				},
@@ -1081,7 +1191,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/v1/page/document?user_id=66cda5dac6886719e3345c19",
+							"raw": "{{baseUrl}}/v1/page/document?id=672723995d651a60d9254810",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -1092,56 +1202,13 @@
 							],
 							"query": [
 								{
-									"key": "user_id",
-									"value": "66cda5dac6886719e3345c19"
+									"key": "id",
+									"value": "672723995d651a60d9254810"
 								}
 							]
 						}
 					},
 					"response": [
-						{
-							"name": "get document by id",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/v1/page/document?id=66e41d7b695980250541693a",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"v1",
-										"page",
-										"document"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": "66e41d7b695980250541693a"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "content-type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 13 Sep 2024 11:20:39 GMT"
-								},
-								{
-									"key": "Content-Length",
-									"value": "749"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"66e41d7b695980250541693a\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"content\": {\n            \"text\": \"This is the document content\"\n        },\n        \"summary\": \"\",\n        \"pageMeta\": {\n            \"_id\": \"66e41d7b695980250541693b\",\n            \"page_types\": \"document\",\n            \"title\": \"Sample Page Title\",\n            \"page_content_id\": \"66e41d7b695980250541693a\",\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n            \"folder_id\": \"66e404cf089aef7c495015f4\",\n            \"custom_meta\": {\n                \"author\": \"John Doe\",\n                \"keywords\": [\n                    \"sample\",\n                    \"page\",\n                    \"meta\"\n                ]\n            },\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"space_id\": \"66e4064f658c25f499aa9d63\",\n            \"group_id\": \"66e4064f658c25f499aa9d63\",\n            \"attachments\": \"attachment_url\"\n        }\n    }\n}"
-						},
 						{
 							"name": "get document by user_id",
 							"originalRequest": {
@@ -1184,6 +1251,53 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"_id\": \"66e41d7b695980250541693a\",\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"content\": {\n                \"text\": \"This is the document content\"\n            },\n            \"summary\": \"\",\n            \"pageMeta\": {\n                \"_id\": \"66e41d7b695980250541693b\",\n                \"page_types\": \"document\",\n                \"title\": \"Sample Page Title\",\n                \"page_content_id\": \"66e41d7b695980250541693a\",\n                \"user_id\": \"66cda5dac6886719e3345c19\",\n                \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n                \"folder_id\": \"66e404cf089aef7c495015f4\",\n                \"custom_meta\": {\n                    \"author\": \"John Doe\",\n                    \"keywords\": [\n                        \"sample\",\n                        \"page\",\n                        \"meta\"\n                    ]\n                },\n                \"shared_members\": [\n                    \"66cda5dac6886719e3345c19\",\n                    \"66e404cf089aef7c495015f4\"\n                ],\n                \"shared_teams\": [\n                    \"66cda5dac6886719e3345c19\",\n                    \"66e404cf089aef7c495015f4\"\n                ],\n                \"space_id\": \"66e4064f658c25f499aa9d63\",\n                \"group_id\": \"66e4064f658c25f499aa9d63\",\n                \"attachments\": \"attachment_url\"\n            }\n        },\n        {\n            \"_id\": \"66e41d97695980250541693c\",\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"content\": {\n                \"text\": \"This is the document content\"\n            },\n            \"summary\": \"\",\n            \"pageMeta\": {\n                \"_id\": \"66e41d97695980250541693d\",\n                \"page_types\": \"document\",\n                \"title\": \"Sample Page Title\",\n                \"page_content_id\": \"66e41d97695980250541693c\",\n                \"user_id\": \"66cda5dac6886719e3345c19\",\n                \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n                \"folder_id\": \"66e404cf089aef7c495015f4\",\n                \"custom_meta\": {\n                    \"author\": \"John Doe\",\n                    \"keywords\": [\n                        \"sample\",\n                        \"page\",\n                        \"meta\"\n                    ]\n                },\n                \"shared_members\": [\n                    \"66cda5dac6886719e3345c19\",\n                    \"66e404cf089aef7c495015f4\"\n                ],\n                \"shared_teams\": [\n                    \"66cda5dac6886719e3345c19\",\n                    \"66e404cf089aef7c495015f4\"\n                ],\n                \"space_id\": \"66e4064f658c25f499aa9d63\",\n                \"group_id\": \"66e4064f658c25f499aa9d63\",\n                \"attachments\": \"attachment_url\"\n            }\n        }\n    ]\n}"
+						},
+						{
+							"name": "document by id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/v1/page/document?id=672723995d651a60d9254810",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"page",
+										"document"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "672723995d651a60d9254810"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 03 Nov 2024 10:33:31 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "880"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"672723995d651a60d9254810\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"content\": {\n            \"text\": \"Updated document content\"\n        },\n        \"summary\": \"Updated document summary\",\n        \"folder_id\": \"\",\n        \"space_id\": \"67271da0834f3bd8da699305\",\n        \"group_id\": \"\",\n        \"entity_type\": \"page\",\n        \"createdAt\": \"2024-11-03T07:17:44.994Z\",\n        \"updatedAt\": \"2024-11-03T07:24:39.410Z\",\n        \"pageMeta\": {\n            \"_id\": \"672723995d651a60d9254811\",\n            \"page_type\": \"document\",\n            \"title\": \"Document Under Space Updated\",\n            \"page_content_id\": \"672723995d651a60d9254810\",\n            \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n            \"custom_meta\": {\n                \"author\": \"Jane Doe\",\n                \"keywords\": [\n                    \"updated\",\n                    \"page\",\n                    \"meta\"\n                ]\n            },\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"attachments\": \"updated_attachment_url\",\n            \"createdAt\": \"2024-11-03T07:17:45.163Z\",\n            \"updatedAt\": \"2024-11-03T07:24:39.669Z\"\n        }\n    }\n}"
 						}
 					]
 				},
@@ -1194,7 +1308,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\n        \"id\": \"66e41d7b695980250541693a\",\n        \"content\": {\n            \"text\": \"Updated document content\"\n        },\n        \"summary\": \"Updated document summary\",\n        \"page_types\": \"document\",\n        \"title\": \"Updated Page Title\",\n        \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n        \"folder_id\": \"66e404cf089aef7c495015f4\",\n        \"custom_meta\": {\n            \"author\": \"Jane Doe\",\n            \"keywords\": [\"updated\", \"page\", \"meta\"]\n        },\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"space_id\": \"66e4064f658c25f499aa9d63\",\n        \"group_id\": \"66e4064f658c25f499aa9d63\",\n        \"attachments\": \"updated_attachment_url\"\n}",
+							"raw": "{\n        \"id\": \"672723995d651a60d9254810\",\n        \"content\": {\n            \"text\": \"Updated document content\"\n        },\n        \"summary\": \"Updated document summary\",\n        \"page_types\": \"document\",\n        \"title\": \"Document Under Space Updated\",\n        \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n        \"custom_meta\": {\n            \"author\": \"Jane Doe\",\n            \"keywords\": [\"updated\", \"page\", \"meta\"]\n        },\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"space_id\": \"67271da0834f3bd8da699305\",\n        \"attachments\": \"updated_attachment_url\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1215,13 +1329,13 @@
 					},
 					"response": [
 						{
-							"name": "Update Document",
+							"name": "update document under space",
 							"originalRequest": {
 								"method": "PUT",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n\n        \"id\": \"66e41d7b695980250541693a\",\n        \"content\": {\n            \"text\": \"Updated document content\"\n        },\n        \"summary\": \"Updated document summary\",\n        \"page_types\": \"document\",\n        \"title\": \"Updated Page Title\",\n        \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n        \"folder_id\": \"66e404cf089aef7c495015f4\",\n        \"custom_meta\": {\n            \"author\": \"Jane Doe\",\n            \"keywords\": [\"updated\", \"page\", \"meta\"]\n        },\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"space_id\": \"66e4064f658c25f499aa9d63\",\n        \"group_id\": \"66e4064f658c25f499aa9d63\",\n        \"attachments\": \"updated_attachment_url\"\n}",
+									"raw": "{\n        \"id\": \"672723995d651a60d9254810\",\n        \"content\": {\n            \"text\": \"Updated document content\"\n        },\n        \"summary\": \"Updated document summary\",\n        \"page_types\": \"document\",\n        \"title\": \"Document Under Space Updated\",\n        \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n        \"custom_meta\": {\n            \"author\": \"Jane Doe\",\n            \"keywords\": [\"updated\", \"page\", \"meta\"]\n        },\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"space_id\": \"67271da0834f3bd8da699305\",\n        \"attachments\": \"updated_attachment_url\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1245,20 +1359,24 @@
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
 									"key": "content-type",
 									"value": "application/json; charset=utf-8"
 								},
 								{
 									"key": "Date",
-									"value": "Fri, 13 Sep 2024 11:32:14 GMT"
+									"value": "Sun, 03 Nov 2024 07:24:15 GMT"
 								},
 								{
 									"key": "Content-Length",
-									"value": "779"
+									"value": "880"
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"66e41d7b695980250541693a\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"content\": {\n            \"text\": \"Updated document content\"\n        },\n        \"summary\": \"Updated document summary\",\n        \"pageMeta\": {\n            \"_id\": \"66e41d7b695980250541693b\",\n            \"page_types\": \"document\",\n            \"title\": \"Updated Page Title\",\n            \"page_content_id\": \"66e41d7b695980250541693a\",\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n            \"folder_id\": \"66e404cf089aef7c495015f4\",\n            \"custom_meta\": {\n                \"author\": \"Jane Doe\",\n                \"keywords\": [\n                    \"updated\",\n                    \"page\",\n                    \"meta\"\n                ]\n            },\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"space_id\": \"66e4064f658c25f499aa9d63\",\n            \"group_id\": \"66e4064f658c25f499aa9d63\",\n            \"attachments\": \"updated_attachment_url\"\n        }\n    }\n}"
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"672723995d651a60d9254810\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"content\": {\n            \"text\": \"Updated document content\"\n        },\n        \"summary\": \"Updated document summary\",\n        \"folder_id\": \"\",\n        \"space_id\": \"67271da0834f3bd8da699305\",\n        \"group_id\": \"\",\n        \"entity_type\": \"page\",\n        \"createdAt\": \"2024-11-03T07:17:44.994Z\",\n        \"updatedAt\": \"2024-11-03T07:24:15.470Z\",\n        \"pageMeta\": {\n            \"_id\": \"672723995d651a60d9254811\",\n            \"page_type\": \"document\",\n            \"title\": \"Document Under Space Updated\",\n            \"page_content_id\": \"672723995d651a60d9254810\",\n            \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n            \"custom_meta\": {\n                \"author\": \"Jane Doe\",\n                \"keywords\": [\n                    \"updated\",\n                    \"page\",\n                    \"meta\"\n                ]\n            },\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"attachments\": \"updated_attachment_url\",\n            \"createdAt\": \"2024-11-03T07:17:45.163Z\",\n            \"updatedAt\": \"2024-11-03T07:24:15.727Z\"\n        }\n    }\n}"
 						}
 					]
 				},
@@ -1386,7 +1504,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"My Workspace\",\n    \"description\": \"This is the description\",\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"is_private\": false,\n    \"shared_teams\": [\"66cda5dac6886719e3345c19\",\"66e404cf089aef7c495015f4\"],\n    \"shared_members\":[\"66cda5dac6886719e3345c19\",\"66e404cf089aef7c495015f4\"],\n    \"is_default\": false\n}",
+							"raw": "{\n    \"name\": \"Public Workspace\",\n    \"description\": \"This is the public workspace\",\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"is_private\": false,\n    \"shared_teams\": [\"66cda5dac6886719e3345c19\",\"66e404cf089aef7c495015f4\"],\n    \"shared_members\":[\"66cda5dac6886719e3345c19\",\"66e404cf089aef7c495015f4\"],\n    \"is_default\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1420,12 +1538,10 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:3000/v1/space",
-									"protocol": "http",
+									"raw": "{{baseUrl}}/v1/space",
 									"host": [
-										"localhost"
+										"{{baseUrl}}"
 									],
-									"port": "3000",
 									"path": [
 										"v1",
 										"space"
@@ -1725,7 +1841,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/v1/space?user_id=66cda5dac6886719e3345c19",
+							"raw": "{{baseUrl}}/v1/space?id=67271da0834f3bd8da699305",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -1735,66 +1851,15 @@
 							],
 							"query": [
 								{
-									"key": "user_id",
-									"value": "66cda5dac6886719e3345c19"
+									"key": "id",
+									"value": "67271da0834f3bd8da699305"
 								}
 							]
 						}
 					},
 					"response": [
 						{
-							"name": "get space by id",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/v1/space?id=66e4064f658c25f499aa9d63",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"v1",
-										"space"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": "66e4064f658c25f499aa9d63"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "content-type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 13 Sep 2024 09:50:52 GMT"
-								},
-								{
-									"key": "Content-Length",
-									"value": "342"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"66e4064f658c25f499aa9d63\",\n        \"name\": \"My Workspace\",\n        \"description\": \"This is the description\",\n        \"is_private\": false,\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"is_default\": true\n    }\n}"
-						},
-						{
-							"name": "get spaces by user_id",
+							"name": "space by user_id",
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
@@ -1829,20 +1894,79 @@
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
 									"key": "content-type",
 									"value": "application/json; charset=utf-8"
 								},
 								{
 									"key": "Date",
-									"value": "Fri, 13 Sep 2024 09:54:20 GMT"
+									"value": "Sun, 03 Nov 2024 09:41:57 GMT"
 								},
 								{
 									"key": "Content-Length",
-									"value": "1304"
+									"value": "4768"
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"_id\": \"66e40644658c25f499aa9d62\",\n            \"name\": \"My Workspace\",\n            \"description\": \"This is the description\",\n            \"is_private\": true,\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"is_default\": true\n        },\n        {\n            \"_id\": \"66e4064f658c25f499aa9d63\",\n            \"name\": \"My Workspace\",\n            \"description\": \"This is the description\",\n            \"is_private\": false,\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"is_default\": true\n        },\n        {\n            \"_id\": \"66e4076029abf1d60b403d67\",\n            \"name\": \"My Workspace\",\n            \"description\": \"This is the description\",\n            \"is_private\": false,\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"is_default\": false\n        },\n        {\n            \"_id\": \"66e4077e29abf1d60b403d68\",\n            \"name\": \"Changing the workspace name\",\n            \"description\": \"This is the description\",\n            \"is_private\": true,\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"is_default\": false\n        }\n    ]\n}"
+							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"_id\": \"67271d90834f3bd8da699304\",\n            \"name\": \"Private Workspace\",\n            \"description\": \"This is the private workspace\",\n            \"is_private\": true,\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"is_default\": true,\n            \"entity_type\": \"space\",\n            \"createdAt\": \"2024-11-03T06:52:00.287Z\",\n            \"updatedAt\": \"2024-11-03T06:52:00.287Z\",\n            \"childs\": [\n                {\n                    \"_id\": \"67271dcb834f3bd8da699306\",\n                    \"name\": \"My Forth Group\",\n                    \"description\": \"My group description\",\n                    \"is_private\": true,\n                    \"shared_teams\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"shared_members\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"space_id\": \"67271d90834f3bd8da699304\",\n                    \"entity_type\": \"group\",\n                    \"createdAt\": \"2024-11-03T06:52:59.692Z\",\n                    \"updatedAt\": \"2024-11-03T06:52:59.692Z\"\n                },\n                {\n                    \"_id\": \"67271de6834f3bd8da699307\",\n                    \"name\": \"My First Group\",\n                    \"description\": \"My group description\",\n                    \"is_private\": true,\n                    \"shared_teams\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"shared_members\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"space_id\": \"67271d90834f3bd8da699304\",\n                    \"entity_type\": \"group\",\n                    \"createdAt\": \"2024-11-03T06:53:26.760Z\",\n                    \"updatedAt\": \"2024-11-03T06:53:26.760Z\"\n                }\n            ]\n        },\n        {\n            \"_id\": \"67271da0834f3bd8da699305\",\n            \"name\": \"Public Workspace\",\n            \"description\": \"This is the public workspace\",\n            \"is_private\": false,\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"is_default\": true,\n            \"entity_type\": \"space\",\n            \"createdAt\": \"2024-11-03T06:52:16.911Z\",\n            \"updatedAt\": \"2024-11-03T06:52:16.911Z\",\n            \"childs\": [\n                {\n                    \"_id\": \"67271dee834f3bd8da699308\",\n                    \"name\": \"My Second Group\",\n                    \"description\": \"My group description\",\n                    \"is_private\": true,\n                    \"shared_teams\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"shared_members\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"space_id\": \"67271da0834f3bd8da699305\",\n                    \"entity_type\": \"group\",\n                    \"createdAt\": \"2024-11-03T06:53:34.547Z\",\n                    \"updatedAt\": \"2024-11-03T06:53:34.547Z\"\n                },\n                {\n                    \"_id\": \"67271df3834f3bd8da699309\",\n                    \"name\": \"My Third Group\",\n                    \"description\": \"My group description\",\n                    \"is_private\": true,\n                    \"shared_teams\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"shared_members\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"space_id\": \"67271da0834f3bd8da699305\",\n                    \"entity_type\": \"group\",\n                    \"createdAt\": \"2024-11-03T06:53:39.773Z\",\n                    \"updatedAt\": \"2024-11-03T06:53:39.773Z\"\n                },\n                {\n                    \"_id\": \"67271f925021f5b0e2fb2e93\",\n                    \"name\": \"My First Folder\",\n                    \"description\": \"This is a description of the folder.\",\n                    \"parent_id\": \"\",\n                    \"shared_members\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"shared_teams\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"space_id\": \"67271da0834f3bd8da699305\",\n                    \"group_id\": \"\",\n                    \"entity_type\": \"folder\",\n                    \"createdAt\": \"2024-11-03T07:00:34.302Z\",\n                    \"updatedAt\": \"2024-11-03T07:00:34.302Z\"\n                },\n                {\n                    \"_id\": \"672723375d651a60d925480e\",\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"content\": {\n                        \"text\": \"This is the document content\"\n                    },\n                    \"summary\": \"\",\n                    \"folder_id\": \"\",\n                    \"space_id\": \"67271da0834f3bd8da699305\",\n                    \"group_id\": \"\",\n                    \"entity_type\": \"page\",\n                    \"createdAt\": \"2024-11-03T07:16:07.650Z\",\n                    \"updatedAt\": \"2024-11-03T07:16:07.650Z\",\n                    \"pageMeta\": [\n                        {\n                            \"_id\": \"672723375d651a60d925480f\",\n                            \"page_type\": \"document\",\n                            \"title\": \"Document Under Space\",\n                            \"page_content_id\": \"672723375d651a60d925480e\",\n                            \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n                            \"custom_meta\": {\n                                \"author\": \"John Doe\",\n                                \"keywords\": [\n                                    \"sample\",\n                                    \"page\",\n                                    \"meta\"\n                                ]\n                            },\n                            \"shared_members\": [\n                                \"66cda5dac6886719e3345c19\",\n                                \"66e404cf089aef7c495015f4\"\n                            ],\n                            \"shared_teams\": [\n                                \"66cda5dac6886719e3345c19\",\n                                \"66e404cf089aef7c495015f4\"\n                            ],\n                            \"attachments\": \"attachment_url\",\n                            \"createdAt\": \"2024-11-03T07:16:07.860Z\",\n                            \"updatedAt\": \"2024-11-03T07:16:07.860Z\"\n                        }\n                    ]\n                },\n                {\n                    \"_id\": \"672723995d651a60d9254810\",\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"content\": {\n                        \"text\": \"Updated document content\"\n                    },\n                    \"summary\": \"Updated document summary\",\n                    \"folder_id\": \"\",\n                    \"space_id\": \"67271da0834f3bd8da699305\",\n                    \"group_id\": \"\",\n                    \"entity_type\": \"page\",\n                    \"createdAt\": \"2024-11-03T07:17:44.994Z\",\n                    \"updatedAt\": \"2024-11-03T07:24:39.410Z\",\n                    \"pageMeta\": [\n                        {\n                            \"_id\": \"672723995d651a60d9254811\",\n                            \"page_type\": \"document\",\n                            \"title\": \"Document Under Space Updated\",\n                            \"page_content_id\": \"672723995d651a60d9254810\",\n                            \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n                            \"custom_meta\": {\n                                \"author\": \"Jane Doe\",\n                                \"keywords\": [\n                                    \"updated\",\n                                    \"page\",\n                                    \"meta\"\n                                ]\n                            },\n                            \"shared_members\": [\n                                \"66cda5dac6886719e3345c19\",\n                                \"66e404cf089aef7c495015f4\"\n                            ],\n                            \"shared_teams\": [\n                                \"66cda5dac6886719e3345c19\",\n                                \"66e404cf089aef7c495015f4\"\n                            ],\n                            \"attachments\": \"updated_attachment_url\",\n                            \"createdAt\": \"2024-11-03T07:17:45.163Z\",\n                            \"updatedAt\": \"2024-11-03T07:24:39.669Z\"\n                        }\n                    ]\n                }\n            ]\n        }\n    ]\n}"
+						},
+						{
+							"name": "space by id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/space?id=67271da0834f3bd8da699305",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"space"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "67271da0834f3bd8da699305"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 03 Nov 2024 09:43:02 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "3466"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"_id\": \"67271da0834f3bd8da699305\",\n            \"name\": \"Public Workspace\",\n            \"description\": \"This is the public workspace\",\n            \"is_private\": false,\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"is_default\": true,\n            \"entity_type\": \"space\",\n            \"createdAt\": \"2024-11-03T06:52:16.911Z\",\n            \"updatedAt\": \"2024-11-03T06:52:16.911Z\",\n            \"childs\": [\n                {\n                    \"_id\": \"67271dee834f3bd8da699308\",\n                    \"name\": \"My Second Group\",\n                    \"description\": \"My group description\",\n                    \"is_private\": true,\n                    \"shared_teams\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"shared_members\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"space_id\": \"67271da0834f3bd8da699305\",\n                    \"entity_type\": \"group\",\n                    \"createdAt\": \"2024-11-03T06:53:34.547Z\",\n                    \"updatedAt\": \"2024-11-03T06:53:34.547Z\"\n                },\n                {\n                    \"_id\": \"67271df3834f3bd8da699309\",\n                    \"name\": \"My Third Group\",\n                    \"description\": \"My group description\",\n                    \"is_private\": true,\n                    \"shared_teams\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"shared_members\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"space_id\": \"67271da0834f3bd8da699305\",\n                    \"entity_type\": \"group\",\n                    \"createdAt\": \"2024-11-03T06:53:39.773Z\",\n                    \"updatedAt\": \"2024-11-03T06:53:39.773Z\"\n                },\n                {\n                    \"_id\": \"67271f925021f5b0e2fb2e93\",\n                    \"name\": \"My First Folder\",\n                    \"description\": \"This is a description of the folder.\",\n                    \"parent_id\": \"\",\n                    \"shared_members\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"shared_teams\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"space_id\": \"67271da0834f3bd8da699305\",\n                    \"group_id\": \"\",\n                    \"entity_type\": \"folder\",\n                    \"createdAt\": \"2024-11-03T07:00:34.302Z\",\n                    \"updatedAt\": \"2024-11-03T07:00:34.302Z\"\n                },\n                {\n                    \"_id\": \"672723375d651a60d925480e\",\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"content\": {\n                        \"text\": \"This is the document content\"\n                    },\n                    \"summary\": \"\",\n                    \"folder_id\": \"\",\n                    \"space_id\": \"67271da0834f3bd8da699305\",\n                    \"group_id\": \"\",\n                    \"entity_type\": \"page\",\n                    \"createdAt\": \"2024-11-03T07:16:07.650Z\",\n                    \"updatedAt\": \"2024-11-03T07:16:07.650Z\",\n                    \"pageMeta\": [\n                        {\n                            \"_id\": \"672723375d651a60d925480f\",\n                            \"page_type\": \"document\",\n                            \"title\": \"Document Under Space\",\n                            \"page_content_id\": \"672723375d651a60d925480e\",\n                            \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n                            \"custom_meta\": {\n                                \"author\": \"John Doe\",\n                                \"keywords\": [\n                                    \"sample\",\n                                    \"page\",\n                                    \"meta\"\n                                ]\n                            },\n                            \"shared_members\": [\n                                \"66cda5dac6886719e3345c19\",\n                                \"66e404cf089aef7c495015f4\"\n                            ],\n                            \"shared_teams\": [\n                                \"66cda5dac6886719e3345c19\",\n                                \"66e404cf089aef7c495015f4\"\n                            ],\n                            \"attachments\": \"attachment_url\",\n                            \"createdAt\": \"2024-11-03T07:16:07.860Z\",\n                            \"updatedAt\": \"2024-11-03T07:16:07.860Z\"\n                        }\n                    ]\n                },\n                {\n                    \"_id\": \"672723995d651a60d9254810\",\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"content\": {\n                        \"text\": \"Updated document content\"\n                    },\n                    \"summary\": \"Updated document summary\",\n                    \"folder_id\": \"\",\n                    \"space_id\": \"67271da0834f3bd8da699305\",\n                    \"group_id\": \"\",\n                    \"entity_type\": \"page\",\n                    \"createdAt\": \"2024-11-03T07:17:44.994Z\",\n                    \"updatedAt\": \"2024-11-03T07:24:39.410Z\",\n                    \"pageMeta\": [\n                        {\n                            \"_id\": \"672723995d651a60d9254811\",\n                            \"page_type\": \"document\",\n                            \"title\": \"Document Under Space Updated\",\n                            \"page_content_id\": \"672723995d651a60d9254810\",\n                            \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n                            \"custom_meta\": {\n                                \"author\": \"Jane Doe\",\n                                \"keywords\": [\n                                    \"updated\",\n                                    \"page\",\n                                    \"meta\"\n                                ]\n                            },\n                            \"shared_members\": [\n                                \"66cda5dac6886719e3345c19\",\n                                \"66e404cf089aef7c495015f4\"\n                            ],\n                            \"shared_teams\": [\n                                \"66cda5dac6886719e3345c19\",\n                                \"66e404cf089aef7c495015f4\"\n                            ],\n                            \"attachments\": \"updated_attachment_url\",\n                            \"createdAt\": \"2024-11-03T07:17:45.163Z\",\n                            \"updatedAt\": \"2024-11-03T07:24:39.669Z\"\n                        }\n                    ]\n                }\n            ]\n        }\n    ]\n}"
 						}
 					]
 				},
@@ -2009,7 +2133,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"My Group 2\",\n    \"description\": \"My group description\",\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"is_private\": false,\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"space_id\": \"671c720b6ffa6c711e87c9d3\"\n}",
+							"raw": "{\n    \"name\": \"My Third Group\",\n    \"description\": \"My group description\",\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"is_private\": true,\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"space_id\": \"67271da0834f3bd8da699305\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2043,12 +2167,10 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:3000/v1/group",
-									"protocol": "http",
+									"raw": "{{baseUrl}}/v1/group",
 									"host": [
-										"localhost"
+										"{{baseUrl}}"
 									],
-									"port": "3000",
 									"path": [
 										"v1",
 										"group"
@@ -2129,7 +2251,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\":\"66e41238e8f48d208609209c\",\n    \"name\": \"Updating My Group\"\n}",
+							"raw": "{\n    \"id\":\"67271df3834f3bd8da699309\",\n    \"name\": \"Third Group Name Updated\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2163,10 +2285,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseUrl}}/v1/group",
+									"raw": "http://localhost:3000/v1/group",
+									"protocol": "http",
 									"host": [
-										"{{baseUrl}}"
+										"localhost"
 									],
+									"port": "3000",
 									"path": [
 										"v1",
 										"group"
@@ -2201,7 +2325,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/v1/group?user_id=66cda5dac6886719e3345c19",
+							"raw": "{{baseUrl}}/v1/group?id=67271de6834f3bd8da699307",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -2211,57 +2335,15 @@
 							],
 							"query": [
 								{
-									"key": "user_id",
-									"value": "66cda5dac6886719e3345c19"
+									"key": "id",
+									"value": "67271de6834f3bd8da699307"
 								}
 							]
 						}
 					},
 					"response": [
 						{
-							"name": "get group by id",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/v1/group?id=66e41238e8f48d208609209c",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"v1",
-										"group"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": "66e41238e8f48d208609209c"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "content-type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 13 Sep 2024 10:26:58 GMT"
-								},
-								{
-									"key": "Content-Length",
-									"value": "357"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"66e41238e8f48d208609209c\",\n        \"name\": \"Updating My Group\",\n        \"description\": \"No description\",\n        \"is_private\": true,\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"space_id\": \"66e4064f658c25f499aa9d63\"\n    }\n}"
-						},
-						{
-							"name": "get group by user_id",
+							"name": "group by user_id",
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
@@ -2287,28 +2369,32 @@
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
 									"key": "content-type",
 									"value": "application/json; charset=utf-8"
 								},
 								{
 									"key": "Date",
-									"value": "Fri, 13 Sep 2024 10:27:20 GMT"
+									"value": "Sun, 03 Nov 2024 09:51:28 GMT"
 								},
 								{
 									"key": "Content-Length",
-									"value": "690"
+									"value": "3087"
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"_id\": \"66e41238e8f48d208609209c\",\n            \"name\": \"Updating My Group\",\n            \"description\": \"No description\",\n            \"is_private\": true,\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"space_id\": \"66e4064f658c25f499aa9d63\"\n        },\n        {\n            \"_id\": \"66e4124ee8f48d208609209d\",\n            \"name\": \"Updating My Group\",\n            \"description\": \"No description\",\n            \"is_private\": false,\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"space_id\": \"66e4064f658c25f499aa9d63\"\n        }\n    ]\n}"
+							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"_id\": \"67271dcb834f3bd8da699306\",\n            \"name\": \"My Forth Group\",\n            \"description\": \"My group description\",\n            \"is_private\": true,\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"space_id\": \"67271d90834f3bd8da699304\",\n            \"entity_type\": \"group\",\n            \"createdAt\": \"2024-11-03T06:52:59.692Z\",\n            \"updatedAt\": \"2024-11-03T06:52:59.692Z\",\n            \"childs\": [\n                {\n                    \"_id\": \"6727422d201cbaec290637bb\",\n                    \"name\": \"Folder Under Group\",\n                    \"description\": \"This is a description of the folder.\",\n                    \"parent_id\": \"\",\n                    \"shared_members\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"shared_teams\": [\n                        \"66cda5dac6886719e3345c19\",\n                        \"66e404cf089aef7c495015f4\"\n                    ],\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"space_id\": \"\",\n                    \"group_id\": \"67271dcb834f3bd8da699306\",\n                    \"entity_type\": \"folder\",\n                    \"createdAt\": \"2024-11-03T09:28:13.038Z\",\n                    \"updatedAt\": \"2024-11-03T09:28:13.038Z\"\n                }\n            ]\n        },\n        {\n            \"_id\": \"67271de6834f3bd8da699307\",\n            \"name\": \"My First Group\",\n            \"description\": \"My group description\",\n            \"is_private\": true,\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"space_id\": \"67271d90834f3bd8da699304\",\n            \"entity_type\": \"group\",\n            \"createdAt\": \"2024-11-03T06:53:26.760Z\",\n            \"updatedAt\": \"2024-11-03T06:53:26.760Z\",\n            \"childs\": [\n                {\n                    \"_id\": \"672743b69c5e4d1460fd288e\",\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"content\": {\n                        \"text\": \"This is the document content\"\n                    },\n                    \"summary\": \"\",\n                    \"folder_id\": \"\",\n                    \"space_id\": \"\",\n                    \"group_id\": \"67271de6834f3bd8da699307\",\n                    \"entity_type\": \"page\",\n                    \"createdAt\": \"2024-11-03T09:34:46.297Z\",\n                    \"updatedAt\": \"2024-11-03T09:34:46.297Z\",\n                    \"pageMeta\": [\n                        {\n                            \"_id\": \"672743b69c5e4d1460fd288f\",\n                            \"page_type\": \"document\",\n                            \"title\": \"Page Under Group\",\n                            \"page_content_id\": \"672743b69c5e4d1460fd288e\",\n                            \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n                            \"custom_meta\": {\n                                \"author\": \"John Doe\",\n                                \"keywords\": [\n                                    \"sample\",\n                                    \"page\",\n                                    \"meta\"\n                                ]\n                            },\n                            \"shared_members\": [\n                                \"66cda5dac6886719e3345c19\",\n                                \"66e404cf089aef7c495015f4\"\n                            ],\n                            \"shared_teams\": [\n                                \"66cda5dac6886719e3345c19\",\n                                \"66e404cf089aef7c495015f4\"\n                            ],\n                            \"attachments\": \"attachment_url\",\n                            \"createdAt\": \"2024-11-03T09:34:46.469Z\",\n                            \"updatedAt\": \"2024-11-03T09:34:46.469Z\"\n                        }\n                    ]\n                }\n            ]\n        },\n        {\n            \"_id\": \"67271dee834f3bd8da699308\",\n            \"name\": \"My Second Group\",\n            \"description\": \"My group description\",\n            \"is_private\": true,\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"space_id\": \"67271da0834f3bd8da699305\",\n            \"entity_type\": \"group\",\n            \"createdAt\": \"2024-11-03T06:53:34.547Z\",\n            \"updatedAt\": \"2024-11-03T06:53:34.547Z\",\n            \"childs\": []\n        },\n        {\n            \"_id\": \"67271df3834f3bd8da699309\",\n            \"name\": \"My Third Group\",\n            \"description\": \"My group description\",\n            \"is_private\": true,\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"space_id\": \"67271da0834f3bd8da699305\",\n            \"entity_type\": \"group\",\n            \"createdAt\": \"2024-11-03T06:53:39.773Z\",\n            \"updatedAt\": \"2024-11-03T06:53:39.773Z\",\n            \"childs\": []\n        }\n    ]\n}"
 						},
 						{
-							"name": "get group by id and user_id",
+							"name": "group by id",
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/v1/group?user_id=66cda5dac6886719e3345c19&id=66e4124ee8f48d208609209d",
+									"raw": "{{baseUrl}}/v1/group?id=67271de6834f3bd8da699307",
 									"host": [
 										"{{baseUrl}}"
 									],
@@ -2318,12 +2404,8 @@
 									],
 									"query": [
 										{
-											"key": "user_id",
-											"value": "66cda5dac6886719e3345c19"
-										},
-										{
 											"key": "id",
-											"value": "66e4124ee8f48d208609209d"
+											"value": "67271de6834f3bd8da699307"
 										}
 									]
 								}
@@ -2333,20 +2415,24 @@
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
 									"key": "content-type",
 									"value": "application/json; charset=utf-8"
 								},
 								{
 									"key": "Date",
-									"value": "Fri, 13 Sep 2024 10:27:42 GMT"
+									"value": "Sun, 03 Nov 2024 09:57:47 GMT"
 								},
 								{
 									"key": "Content-Length",
-									"value": "358"
+									"value": "1287"
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"66e4124ee8f48d208609209d\",\n        \"name\": \"Updating My Group\",\n        \"description\": \"No description\",\n        \"is_private\": false,\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"space_id\": \"66e4064f658c25f499aa9d63\"\n    }\n}"
+							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"_id\": \"67271de6834f3bd8da699307\",\n            \"name\": \"My First Group\",\n            \"description\": \"My group description\",\n            \"is_private\": true,\n            \"shared_teams\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"shared_members\": [\n                \"66cda5dac6886719e3345c19\",\n                \"66e404cf089aef7c495015f4\"\n            ],\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"space_id\": \"67271d90834f3bd8da699304\",\n            \"entity_type\": \"group\",\n            \"createdAt\": \"2024-11-03T06:53:26.760Z\",\n            \"updatedAt\": \"2024-11-03T06:53:26.760Z\",\n            \"childs\": [\n                {\n                    \"_id\": \"672743b69c5e4d1460fd288e\",\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"content\": {\n                        \"text\": \"This is the document content\"\n                    },\n                    \"summary\": \"\",\n                    \"folder_id\": \"\",\n                    \"space_id\": \"\",\n                    \"group_id\": \"67271de6834f3bd8da699307\",\n                    \"entity_type\": \"page\",\n                    \"createdAt\": \"2024-11-03T09:34:46.297Z\",\n                    \"updatedAt\": \"2024-11-03T09:34:46.297Z\",\n                    \"pageMeta\": [\n                        {\n                            \"_id\": \"672743b69c5e4d1460fd288f\",\n                            \"page_type\": \"document\",\n                            \"title\": \"Page Under Group\",\n                            \"page_content_id\": \"672743b69c5e4d1460fd288e\",\n                            \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n                            \"custom_meta\": {\n                                \"author\": \"John Doe\",\n                                \"keywords\": [\n                                    \"sample\",\n                                    \"page\",\n                                    \"meta\"\n                                ]\n                            },\n                            \"shared_members\": [\n                                \"66cda5dac6886719e3345c19\",\n                                \"66e404cf089aef7c495015f4\"\n                            ],\n                            \"shared_teams\": [\n                                \"66cda5dac6886719e3345c19\",\n                                \"66e404cf089aef7c495015f4\"\n                            ],\n                            \"attachments\": \"attachment_url\",\n                            \"createdAt\": \"2024-11-03T09:34:46.469Z\",\n                            \"updatedAt\": \"2024-11-03T09:34:46.469Z\"\n                        }\n                    ]\n                }\n            ]\n        }\n    ]\n}"
 						}
 					]
 				},
