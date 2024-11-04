@@ -21,7 +21,7 @@ export const postFolderSchema = z.object({
 }).refine(data => {
     const { parent_id, space_id, group_id } = data;
     const keys = [parent_id, space_id, group_id];
-    const presentKeys = keys.filter(key => key !== undefined);
+    const presentKeys = keys.filter(key => key !== undefined && key !== '');
     if (presentKeys.length === 0) {
         return false; // One of parent_id, space_id, or group_id must be present
     }
@@ -66,7 +66,7 @@ export const putFolderSchema = z.object({
 }).refine(data => {
     const { parent_id, space_id, group_id } = data;
     const keys = [parent_id, space_id, group_id];
-    const presentKeys = keys.filter(key => key !== undefined);
+    const presentKeys = keys.filter(key => key !== undefined && key !== '');
     if (presentKeys.length > 1) {
         return false; // Only one of parent_id, space_id, or group_id must be present
     }

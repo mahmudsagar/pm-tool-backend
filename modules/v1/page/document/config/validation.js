@@ -30,7 +30,7 @@ export const postDocumentSchema = z.object({
 }).refine(data => {
     const { folder_id, space_id, group_id } = data;
     const keys = [folder_id, space_id, group_id];
-    const presentKeys = keys.filter(key => key !== undefined);
+    const presentKeys = keys.filter(key => key !== undefined && key !== '');
     if (presentKeys.length === 0) {
         return false; // One of folder_id, space_id, or group_id must be present
     }
@@ -96,7 +96,7 @@ export const putDocumentSchema = z.object({
 }).refine(data => {
     const { folder_id, space_id, group_id } = data;
     const keys = [folder_id, space_id, group_id];
-    const presentKeys = keys.filter(key => key !== undefined);
+    const presentKeys = keys.filter(key => key !== undefined && key !== '');
     if (presentKeys.length > 1) {
         return false; // Only one of folder_id, space_id, or group_id must be present
     }

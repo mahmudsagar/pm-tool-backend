@@ -56,6 +56,14 @@ export default async (request, response) => {
 
             // take the array into an object
             if (pageMetaResult.length > 0) pageMetaResult = pageMetaResult[0];
+        } else {
+            pageMetaResult = await global.PageMeta.findOne({ page_content_id: documentResult._id });
+            if (!pageMetaResult) {
+                return response.status(404).json({ status: 'failed', error: 'PageMeta not found' });
+            }
+
+            // take the array into an object
+            if (pageMetaResult) pageMetaResult = pageMetaResult;
         }
 
         response.json({ status: "success", data: { ...documentResult, pageMeta: pageMetaResult } });
