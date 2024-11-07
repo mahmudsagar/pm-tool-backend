@@ -3,7 +3,6 @@ import { putFolderSchema } from './config/validation.js';
 import { formatZodErrors } from '../utils/error.js';
 
 export default async (request, response) => {
-    console.log("Update request started");
     try {
         const { id: _id, ...rest } = await request.json();
 

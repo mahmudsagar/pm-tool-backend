@@ -414,12 +414,10 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:3000/v1/folder?id=6727422d201cbaec290637bb",
-									"protocol": "http",
+									"raw": "{{baseUrl}}/v1/folder?id=6727422d201cbaec290637bb",
 									"host": [
-										"localhost"
+										"{{baseUrl}}"
 									],
-									"port": "3000",
 									"path": [
 										"v1",
 										"folder"
@@ -1217,10 +1215,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/v1/page/document?user_id=66cda5dac6886719e3345c19",
+									"raw": "http://localhost:3000/v1/page/document?user_id=66cda5dac6886719e3345c19",
+									"protocol": "http",
 									"host": [
-										"{{baseUrl}}"
+										"localhost"
 									],
+									"port": "3000",
 									"path": [
 										"v1",
 										"page",
@@ -1412,10 +1412,12 @@
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/v1/page/document?user_id=66cda5dac6886719e3345c19",
+									"raw": "http://localhost:3000/v1/page/document?user_id=66cda5dac6886719e3345c19",
+									"protocol": "http",
 									"host": [
-										"{{baseUrl}}"
+										"localhost"
 									],
+									"port": "3000",
 									"path": [
 										"v1",
 										"page",
@@ -2500,6 +2502,407 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"message\": \"Group deleted successfully\"\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Media",
+			"item": [
+				{
+					"name": "Upload Media",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "media_type",
+									"value": "cover_photo",
+									"description": "// mandatory",
+									"type": "text"
+								},
+								{
+									"key": "caption",
+									"value": "My cover photo",
+									"description": "// mandatory",
+									"type": "text"
+								},
+								{
+									"key": "reference_id",
+									"value": "672723995d651a60d9254810",
+									"type": "text"
+								},
+								{
+									"key": "meta_data",
+									"value": "{\"a\": \"b\"}",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "File Description",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"description": "// mandatory",
+									"type": "file",
+									"src": "postman-cloud:///1ef346ca-ed0b-4340-8206-189728e4b6c9"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/upload/media",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"upload",
+								"media"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Upload Media",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "media_type",
+											"value": "cover_photo",
+											"description": "// mandatory",
+											"type": "text"
+										},
+										{
+											"key": "caption",
+											"value": "My cover photo",
+											"description": "// mandatory",
+											"type": "text"
+										},
+										{
+											"key": "reference_id",
+											"value": "672723995d651a60d9254810",
+											"type": "text"
+										},
+										{
+											"key": "meta_data",
+											"value": "{\"a\": \"b\"}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "description",
+											"value": "File Description",
+											"type": "text"
+										},
+										{
+											"key": "file",
+											"description": "// mandatory",
+											"type": "file",
+											"src": "postman-cloud:///1ef346ca-ed0b-4340-8206-189728e4b6c9"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/upload/media",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"upload",
+										"media"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 07 Nov 2024 06:57:37 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "347"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"672c64e1fb5d1e90e2c52568\",\n        \"reference_id\": \"672723995d651a60d9254810\",\n        \"media_type\": \"cover_photo\",\n        \"url\": \"https://cdn.lamith.com/1730962653908_image-400x400.jpg\",\n        \"caption\": \"My cover photo\",\n        \"description\": \"File Description\",\n        \"meta_data\": {},\n        \"createdAt\": \"2024-11-07T06:57:37.370Z\",\n        \"updatedAt\": \"2024-11-07T06:57:37.370Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Media",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/upload/media?id=672c7ccf5da831ef65fc5538",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"upload",
+								"media"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "672c7ccf5da831ef65fc5538"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete Media",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/v1/upload/media?id=672c7ccf5da831ef65fc5538",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"upload",
+										"media"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "672c7ccf5da831ef65fc5538"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 07 Nov 2024 08:40:05 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "70"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"message\": \"Media deleted successfully\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Media",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/upload/media?id=672c7c62deb85c9321f3ae94",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"upload",
+								"media"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "672c7c62deb85c9321f3ae94"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/v1/upload/media?id=672c7c62deb85c9321f3ae94",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"upload",
+										"media"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "672c7c62deb85c9321f3ae94"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 07 Nov 2024 08:49:05 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "347"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"672c7c62deb85c9321f3ae94\",\n        \"reference_id\": \"672723995d651a60d9254810\",\n        \"media_type\": \"cover_photo\",\n        \"url\": \"https://cdn.lamith.com/1730968671429_image-400x400.jpg\",\n        \"caption\": \"My cover photo\",\n        \"description\": \"File Description\",\n        \"meta_data\": {},\n        \"createdAt\": \"2024-11-07T08:37:54.297Z\",\n        \"updatedAt\": \"2024-11-07T08:37:54.297Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Media",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "postman-cloud:///1eedaf6f-66be-4460-aa67-1a00e1a23009"
+								},
+								{
+									"key": "reference_id",
+									"value": "672723995d651a60d9254810",
+									"type": "text"
+								},
+								{
+									"key": "media_type",
+									"value": "cover_photo",
+									"type": "text"
+								},
+								{
+									"key": "id",
+									"value": "672c7c62deb85c9321f3ae94",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/upload/media",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"upload",
+								"media"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Update Media",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "postman-cloud:///1eedaf6f-66be-4460-aa67-1a00e1a23009"
+										},
+										{
+											"key": "reference_id",
+											"value": "672723995d651a60d9254810",
+											"type": "text"
+										},
+										{
+											"key": "media_type",
+											"value": "cover_photo",
+											"type": "text"
+										},
+										{
+											"key": "id",
+											"value": "672c7c62deb85c9321f3ae94",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/upload/media",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"upload",
+										"media"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 07 Nov 2024 09:07:59 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "348"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"672c7c62deb85c9321f3ae94\",\n        \"reference_id\": \"672723995d651a60d9254810\",\n        \"media_type\": \"cover_photo\",\n        \"url\": \"https://cdn.lamith.com/1730970476995_4k-programming.jpg\",\n        \"caption\": \"My cover photo\",\n        \"description\": \"File Description\",\n        \"meta_data\": {},\n        \"createdAt\": \"2024-11-07T08:37:54.297Z\",\n        \"updatedAt\": \"2024-11-07T09:07:59.217Z\"\n    }\n}"
 						}
 					]
 				}
