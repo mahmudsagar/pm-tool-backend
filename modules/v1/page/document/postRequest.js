@@ -5,7 +5,6 @@ import { formatZodErrors } from '../../utils/error.js';
 export default async (request, response) => {
     try {
         const body = await request.json();
-        console.log("🚀 ~ body:", body)
 
         // Validate the document part of the request body
         const documentData = postDocumentSchema.parse({
