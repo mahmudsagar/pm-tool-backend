@@ -14,7 +14,7 @@ const PageMeta = Waterline.Collection.extend({
         custom_meta: { type: 'json', defaultsTo: {} },
         shared_members: { type: 'json', defaultsTo: [] },
         shared_teams: { type: 'json', defaultsTo: [] },
-        attachments: { type: 'string' },
+        attachments: { type: 'json', defaultsTo: [] },
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },
     },

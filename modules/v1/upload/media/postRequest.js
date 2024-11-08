@@ -70,6 +70,43 @@ export default async (request, response) => {
         };
 
         let result = await global.Media.create(mediaData).fetch();
+
+        // Handle reference_for logic
+        const { reference_for, reference_id } = body;
+
+        if (reference_for === 'page') {
+            const document = await global.Document.findOne({ _id: reference_id });
+            if (!document) {
+                throw new Error('Page not found');
+            }
+
+            const pageMeta = await global.PageMeta.findOne({ page_content_id: reference_id });
+            console.log("🚀 ~ pageMeta:", pageMeta)
+            if (!pageMeta) {
+                throw new Error('Something went wrong when finding page');
+            }
+
+            pageMeta.attachments = pageMeta.attachments || [];
+            pageMeta.attachments.push(result._id);
+            await global.PageMeta.updateOne({ page_content_id: reference_id }).set({ attachments: pageMeta.attachments });
+        } else if (reference_for === 'comment') {
+            const comment = await global.Comment.findOne({ _id: reference_id });
+            if (!comment) {
+                throw new Error('Comment not found');
+            }
+
+            const commentMeta = await global.CommentMeta.findOne({ associate_id: reference_id });
+            if (!commentMeta) {
+                throw new Error('CommentMeta not found');
+            }
+
+            commentMeta.attachments = commentMeta.attachments || [];
+            commentMeta.attachments.push(result._id);
+            await global.CommentMeta.updateOne({ associate_id: reference_id }).set({ attachments: commentMeta.attachments });
+        } else {
+            throw new Error('Invalid reference_for value. Allowed values are page and comment.');
+        }
+
         response.json({ status: 'success', data: result });
     } catch (err) {
         if (err instanceof z.ZodError) {

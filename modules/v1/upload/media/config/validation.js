@@ -7,6 +7,9 @@ export const postMediaSchema = z.object({
     reference_id: z.string().nonempty("Reference ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     }),
+    reference_for: z.enum(['page', 'comment'], {
+        errorMap: () => ({ message: 'Invalid reference_for value. Allowed values are page and comment.' })
+    }),
     media_type: z.enum(['cover_photo', 'icon'], {
         errorMap: () => ({ message: 'Invalid media type. Allowed types are cover_photo and icon.' })
     }),
@@ -22,6 +25,9 @@ export const putMediaSchema = z.object({
     reference_id: z.string().optional().refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     }),
+    reference_for: z.enum(['page', 'comment'], {
+        errorMap: () => ({ message: 'Invalid reference_for value. Allowed values are page and comment.' })
+    }).optional(),
     media_type: z.enum(['cover_photo', 'icon'], {
         errorMap: () => ({ message: 'Invalid media type. Allowed types are cover_photo and icon.' })
     }).optional(),
@@ -40,4 +46,7 @@ export const deleteMediaSchema = z.object({
     _id: z.string().nonempty("ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     }),
+    reference_for: z.enum(['page', 'comment'], {
+        errorMap: () => ({ message: 'Invalid reference_for value. Allowed values are page and comment.' })
+    }).optional()
 });
