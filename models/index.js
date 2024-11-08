@@ -7,7 +7,7 @@ import PageMeta from './page_meta.js';
 import Document from './document.js';
 import Folder from './folder.js';
 import Team from './team.js';
-import CommentBody from './comment_body.js';
+import Comment from './comment.js';
 import CustomMeta from './custom_meta.js';
 import CommentMeta from './comment_meta.js';
 import Media from './media.js';
@@ -21,8 +21,8 @@ waterline.registerModel(PageMeta);
 waterline.registerModel(Document);
 waterline.registerModel(Folder);
 waterline.registerModel(Team);
+waterline.registerModel(Comment);
 waterline.registerModel(CommentMeta);
-waterline.registerModel(CommentBody);
 waterline.registerModel(CustomMeta);
 waterline.registerModel(Media);
 
@@ -44,8 +44,8 @@ const initializeWaterline = async () => {
             global.Document = ontology.collections.document;
             global.Folder = ontology.collections.folder;
             global.Team = ontology.collections.team;
+            global.Comment = ontology.collections.comment;
             global.CommentMeta = ontology.collections.comment_meta;
-            global.CommentBody = ontology.collections.comment_body;
             global.CustomMeta = ontology.collections.custom_meta;
             global.Media = ontology.collections.media;
             resolve(ontology);

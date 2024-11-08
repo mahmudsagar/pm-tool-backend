@@ -1,16 +1,16 @@
 import Waterline from 'waterline';
 
-const CommentBody = Waterline.Collection.extend({
-    identity: 'comment_body',
+const Comment = Waterline.Collection.extend({
+    identity: 'comment',
     datastore: 'default',
     primaryKey: '_id',
 
     attributes: {
         _id: { type: 'string', columnName: '_id', autoMigrations: { autoIncrement: false } },
-        content: { type: 'json', required: true },
+        content: { type: 'json' },
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },
     }
 });
 
-export default CommentBody;
+export default Comment;

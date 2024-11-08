@@ -78,7 +78,7 @@ export const postPageMetaSchema = z.object({
     shared_members: z.array(z.string().refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     })).optional(),
-    attachments: z.string().optional()
+    attachments: z.array().optional()
 });
 
 export const putDocumentSchema = z.object({
@@ -143,7 +143,7 @@ export const putPageMetaSchema = z.object({
     shared_members: z.array(z.string().refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     })).optional(),
-    attachments: z.string().optional()
+    attachments: z.array().optional()
 });
 
 export const getDocumentSchema = z.object({

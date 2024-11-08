@@ -9,9 +9,9 @@ const CommentMeta = Waterline.Collection.extend({
         _id: { type: 'string', columnName: '_id', autoMigrations: { autoIncrement: false } },
         associate_id: { type: 'string', required: true },
         user_id: { type: 'string', required: true },
-        parent_id: { type: 'string', required: true },
+        parent_id: { type: 'string' },
         comment_body: { type: 'string', required: true },
-        attachments: { type: 'string' },
+        attachments: { type: 'json', defaultsTo: [] },
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },
     }
