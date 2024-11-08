@@ -18,17 +18,17 @@ const Media = Waterline.Collection.extend({
     },
 
     beforeValidate: function (values, cb) {
-        const validMediaTypes = ['cover_photo', 'icon', 'pdf', 'png', 'jpg'];
+        const validMediaTypes = ['cover_photo', 'icon'];
         if (!validMediaTypes.includes(values.media_type)) {
-            return cb(new Error('Invalid media type'));
+            return cb(new Error('Invalid media type. Allowed types are cover_photo and icon.'));
         }
         return cb();
     },
 
     afterValidate: function (values, cb) {
-        const validMediaTypes = ['cover_photo', 'icon', 'pdf', 'png', 'jpg'];
+        const validMediaTypes = ['cover_photo', 'icon'];
         if (!validMediaTypes.includes(values.media_type)) {
-            return cb(new Error('Invalid media type'));
+            return cb(new Error('Invalid media type. Allowed types are cover_photo and icon.'));
         }
         return cb();
     }

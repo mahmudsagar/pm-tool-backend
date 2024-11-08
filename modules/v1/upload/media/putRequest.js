@@ -6,7 +6,21 @@ import { formatZodErrors } from '../../utils/error.js';
 
 // Configure multer for file uploads
 const storage = multer.memoryStorage();
-const upload = multer({ storage }).single('file');
+const upload = multer({
+    storage,
+    limits: { fileSize: 1 * 1024 * 1024 }, // 1 MB limit
+    fileFilter: (req, file, cb) => {
+        const filetypes = /jpeg|jpg|png/;
+        const mimetype = filetypes.test(file.mimetype);
+        const extname = filetypes.test(file.originalname.toLowerCase());
+
+        if (mimetype && extname) {
+            return cb(null, true);
+        } else {
+            cb(new Error('File type not supported. Only jpg, jpeg, and png are allowed.'));
+        }
+    }
+}).single('file');
 
 // Configure S3 client for R2
 const s3Client = new S3Client({
@@ -24,12 +38,16 @@ export default async (request, response) => {
         const body = await new Promise((resolve, reject) => {
             upload(request, response, (err) => {
                 if (err) {
-                    reject(err);
+                    if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
+                        return reject(new Error('File size exceeds the limit of 1MB.'));
+                    }
+                    return reject(err);
                 } else {
                     resolve(request.body);
                 }
             });
         });
+
         const { id: _id, ...rest } = body;
         const validatedData = putMediaSchema.parse({ _id, ...rest });
 
