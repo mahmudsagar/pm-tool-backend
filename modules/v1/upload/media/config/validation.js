@@ -7,10 +7,12 @@ export const postMediaSchema = z.object({
     reference_id: z.string().nonempty("Reference ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     }),
-    media_type: z.string().nonempty("Media type is required"),
+    media_type: z.enum(['cover_photo', 'icon'], {
+        errorMap: () => ({ message: 'Invalid media type. Allowed types are cover_photo and icon.' })
+    }),
     caption: z.string().optional(),
     description: z.string().optional(),
-    meta_data: z.object({}).optional(),
+    meta_data: z.object({}).optional()
 });
 
 export const putMediaSchema = z.object({
@@ -20,7 +22,9 @@ export const putMediaSchema = z.object({
     reference_id: z.string().optional().refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     }),
-    media_type: z.string().optional(),
+    media_type: z.enum(['cover_photo', 'icon'], {
+        errorMap: () => ({ message: 'Invalid media type. Allowed types are cover_photo and icon.' })
+    }).optional(),
     caption: z.string().optional(),
     description: z.string().optional(),
     meta_data: z.object({}).optional(),

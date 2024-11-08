@@ -58,7 +58,9 @@ export const postDocumentSchema = z.object({
 });
 
 export const postPageMetaSchema = z.object({
-    page_type: z.string().nonempty("Page type is required"),
+    page_type: z.enum(['document', 'sheet', 'whiteboard'], {
+        errorMap: () => ({ message: 'Invalid page type. Allowed types are document, sheet, and whiteboard.' })
+    }),
     title: z.string().nonempty("Title is required"),
     page_content_id: z.string().nonempty("Page content ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
@@ -124,7 +126,9 @@ export const putPageMetaSchema = z.object({
     page_content_id: z.string().nonempty("Page content ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     }),
-    page_type: z.string().optional(),
+    page_type: z.enum(['document', 'sheet', 'whiteboard'], {
+        errorMap: () => ({ message: 'Invalid page type. Allowed types are document, sheet, and whiteboard.' })
+    }).optional(),
     title: z.string().optional(),
     last_updated_by: z.string().optional(),
     custom_meta: z.union([
