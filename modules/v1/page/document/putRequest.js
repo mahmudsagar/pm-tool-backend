@@ -42,7 +42,7 @@ export default async (request, response) => {
                 shared_teams: rest.shared_teams,
                 shared_members: rest.shared_members,
                 custom_meta: rest.custom_meta,
-                attachments: rest.attachments
+                // attachments: rest.attachments
             });
 
             pageMetaResult = await global.PageMeta.update(

@@ -7,6 +7,9 @@ const Comment = Waterline.Collection.extend({
 
     attributes: {
         _id: { type: 'string', columnName: '_id', autoMigrations: { autoIncrement: false } },
+        user_id: { type: 'string', required: true },
+        page_id: { type: 'string' },
+        parent_id: { type: 'string' },
         content: { type: 'json' },
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },

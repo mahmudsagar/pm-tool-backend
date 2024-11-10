@@ -10,8 +10,8 @@ export const postMediaSchema = z.object({
     reference_for: z.enum(['page', 'comment'], {
         errorMap: () => ({ message: 'Invalid reference_for value. Allowed values are page and comment.' })
     }),
-    media_type: z.enum(['cover_photo', 'icon'], {
-        errorMap: () => ({ message: 'Invalid media type. Allowed types are cover_photo and icon.' })
+    media_type: z.enum(['cover_photo', 'icon', 'comment_attachment'], {
+        errorMap: () => ({ message: 'Invalid media type. Allowed types are cover_photo, comment_attachment and icon.' })
     }),
     caption: z.string().optional(),
     description: z.string().optional(),
@@ -28,8 +28,8 @@ export const putMediaSchema = z.object({
     reference_for: z.enum(['page', 'comment'], {
         errorMap: () => ({ message: 'Invalid reference_for value. Allowed values are page and comment.' })
     }).optional(),
-    media_type: z.enum(['cover_photo', 'icon'], {
-        errorMap: () => ({ message: 'Invalid media type. Allowed types are cover_photo and icon.' })
+    media_type: z.enum(['cover_photo', 'icon', 'comment_attachment'], {
+        errorMap: () => ({ message: 'Invalid media type. Allowed types are cover_photo, comment_attachment and icon.' })
     }).optional(),
     caption: z.string().optional(),
     description: z.string().optional(),

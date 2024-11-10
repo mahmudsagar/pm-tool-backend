@@ -11,6 +11,7 @@ export default async (request, response) => {
 
 		let documentResult;
 		let pageMetaResult;
+		let commentsWithMeta = [];
 
 		if (validateQuery._id && validateQuery.user_id) {
 			// Fetch data by both _id and user_id
@@ -21,6 +22,15 @@ export default async (request, response) => {
 
 			// Fetch page meta by page_content_id
 			pageMetaResult = await global.PageMeta.findOne({ page_content_id: validateQuery._id });
+
+			// Fetch comments by page_id
+			const comments = await global.Comment.find({ page_id: validateQuery._id });
+			commentsWithMeta = await Promise.all(
+				comments.map(async (comment) => {
+					const commentMeta = await global.CommentMeta.findOne({ associate_id: comment._id });
+					return { ...comment, commentMeta };
+				})
+			);
 		} else if (validateQuery._id) {
 			// Fetch data by _id
 			documentResult = await global.Document.findOne({ _id: validateQuery._id });
@@ -30,6 +40,15 @@ export default async (request, response) => {
 
 			// Fetch page meta by page_content_id
 			pageMetaResult = await global.PageMeta.findOne({ page_content_id: validateQuery._id });
+
+			// Fetch comments by page_id
+			const comments = await global.Comment.find({ page_id: validateQuery._id });
+			commentsWithMeta = await Promise.all(
+				comments.map(async (comment) => {
+					const commentMeta = await global.CommentMeta.findOne({ associate_id: comment._id });
+					return { ...comment, commentMeta };
+				})
+			);
 		} else if (validateQuery.user_id) {
 			// Fetch data by user_id
 			documentResult = await global.Document.find({ user_id: validateQuery.user_id });
@@ -41,27 +60,24 @@ export default async (request, response) => {
 			pageMetaResult = await Promise.all(
 				documentResult.map(async (doc) => {
 					const pageMeta = await global.PageMeta.findOne({ page_content_id: doc._id });
-					return { ...doc, pageMeta };
-				})
-			);
 
-			return response.json({ status: "success", data: pageMetaResult });
-		} else {
-			// Fetch all documents
-			documentResult = await global.Document.find();
+					// Fetch comments by page_id
+					const comments = await global.Comment.find({ page_id: doc._id });
+					const commentsWithMeta = await Promise.all(
+						comments.map(async (comment) => {
+							const commentMeta = await global.CommentMeta.findOne({ associate_id: comment._id });
+							return { ...comment, commentMeta };
+						})
+					);
 
-			// Fetch page meta for each document by page_content_id
-			pageMetaResult = await Promise.all(
-				documentResult.map(async (doc) => {
-					const pageMeta = await global.PageMeta.findOne({ page_content_id: doc._id });
-					return { ...doc, pageMeta };
+					return { ...doc, pageMeta, comments: commentsWithMeta };
 				})
 			);
 
 			return response.json({ status: "success", data: pageMetaResult });
 		}
 
-		response.json({ status: "success", data: { ...documentResult, pageMeta: pageMetaResult } });
+		response.json({ status: "success", data: { ...documentResult, pageMeta: pageMetaResult, comments: commentsWithMeta } });
 	} catch (err) {
 		if (err instanceof z.ZodError) {
 			// Handle Zod validation errors
