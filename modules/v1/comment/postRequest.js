@@ -14,6 +14,17 @@ export default async (request, response) => {
             content: body.content,
         });
 
+        // check if the parent_id is present
+        if (commentData.parent_id) {
+            const parentComment = await global.Comment.findOne({ _id: commentData.parent_id });
+            if (!parentComment) {
+                throw new Error("Parent comment not found");
+            }
+
+            // updating the parent comment
+            await global.Comment.updateOne({ _id: commentData.parent_id }).set({ has_childs: true }).fetch();
+        }
+
         // Save the validated comment data to MongoDB
         const commentResult = await global.Comment.create(commentData).fetch();
 
