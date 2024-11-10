@@ -81,7 +81,6 @@ export default async (request, response) => {
             }
 
             const pageMeta = await global.PageMeta.findOne({ page_content_id: reference_id });
-            console.log("🚀 ~ pageMeta:", pageMeta)
             if (!pageMeta) {
                 throw new Error('Something went wrong when finding page');
             }

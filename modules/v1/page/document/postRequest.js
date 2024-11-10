@@ -28,7 +28,7 @@ export default async (request, response) => {
             shared_teams: body.shared_teams,
             shared_members: body.shared_members,
             custom_meta: body.custom_meta,
-            attachments: body.attachments
+            // attachments: body.attachments
         });
 
         // Add the document _id to the page_meta data

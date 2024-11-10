@@ -18,7 +18,7 @@ const Media = Waterline.Collection.extend({
     },
 
     beforeValidate: function (values, cb) {
-        const validMediaTypes = ['cover_photo', 'icon'];
+        const validMediaTypes = ['cover_photo', 'icon', 'comment_attachment'];
         if (!validMediaTypes.includes(values.media_type)) {
             return cb(new Error('Invalid media type. Allowed types are cover_photo and icon.'));
         }
@@ -26,7 +26,7 @@ const Media = Waterline.Collection.extend({
     },
 
     afterValidate: function (values, cb) {
-        const validMediaTypes = ['cover_photo', 'icon'];
+        const validMediaTypes = ['cover_photo', 'icon', 'comment_attachment'];
         if (!validMediaTypes.includes(values.media_type)) {
             return cb(new Error('Invalid media type. Allowed types are cover_photo and icon.'));
         }
