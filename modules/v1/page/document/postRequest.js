@@ -1,43 +1,42 @@
 import { z } from 'zod';
-import { postDocumentSchema, postPageMetaSchema } from './config/validation.js';
+import { postPageMetaSchema, postPageContentSchema } from './config/validation.js';
 import { formatZodErrors } from '../../utils/error.js';
 
 export default async (request, response) => {
     try {
         const body = await request.json();
 
-        // Validate the document part of the request body
-        const documentData = postDocumentSchema.parse({
+        // Validate the page_content part of the request body
+        const pageContentData = postPageContentSchema.parse({
             user_id: body.user_id,
             content: body.content,
-            summary: body.summery,
-            folder_id: body.folder_id,
-            space_id: body.space_id,
-            group_id: body.group_id,
+            summary: body.summary,
         });
 
-        // Save the validated document data to MongoDB
-        const documentResult = await global.Document.create(documentData).fetch();
+        // Save the validated page_content data to MongoDB
+        const pageContentResult = await global.PageContent.create(pageContentData).fetch();
 
         // Validate the page_meta part of the request body
         const pageMetaData = postPageMetaSchema.parse({
-            page_type: body.page_type,
-            page_content_id: documentResult._id,
             title: body.title,
-            last_updated_by: body.user_id,
-            shared_teams: body.shared_teams,
-            shared_members: body.shared_members,
+            user_id: body.user_id,
+            folder_id: body.folder_id,
+            space_id: body.space_id,
+            group_id: body.group_id,
+            page_content_id: pageContentResult._id,
             custom_meta: body.custom_meta,
-            // attachments: body.attachments
+            shared_members: body.shared_members,
+            shared_teams: body.shared_teams,
+            attachments: body.attachments,
+            page_type: body.page_type,
+            last_updated_by: body.user_id,
+            entity_type: body.entity_type,
         });
-
-        // Add the document _id to the page_meta data
-        pageMetaData.page_content_id = documentResult._id;
 
         // Save the validated page_meta data to MongoDB
         const pageMetaResult = await global.PageMeta.create(pageMetaData).fetch();
 
-        response.json({ status: "success", data: { ...documentResult, pageMeta: pageMetaResult } });
+        response.json({ status: "success", data: { ...pageMetaResult, pageContent: pageContentResult } });
     } catch (err) {
         if (err instanceof z.ZodError) {
             // Handle Zod validation errors

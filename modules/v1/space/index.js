@@ -26,24 +26,14 @@ export default async (request, response) => {
             return response.status(404).json({ status: 'failed', error });
         }
 
-        // Fetch related data from Group, Folder, and Document collections for each space _id
+        // Fetch related data from Group, Folder, and Page Meta collections for each space _id
         for (const space of result) {
             const groups = await global.Group.find({ space_id: space._id }).sort('createdAt ASC');
             const folders = await global.Folder.find({ space_id: space._id }).sort('createdAt ASC');
-            const documents = await global.Document.find({ space_id: space._id }).sort('createdAt ASC');
+            const pageMeta = await global.PageMeta.find({ space_id: space._id }).sort('createdAt ASC');
 
             // Initialize an empty array for combined data
-            let combinedData = [...groups, ...folders];
-
-            // Check if documents is not an empty array
-            if (documents.length > 0) {
-                // Find the page_meta under the document
-                for (const document of documents) {
-                    const pageMeta = await global.PageMeta.find({ page_content_id: document._id });
-                    document.pageMeta = pageMeta;
-                }
-                combinedData = [...combinedData, ...documents];
-            }
+            let combinedData = [...groups, ...folders, ...pageMeta];
 
             // Sort all data by createdAt
             combinedData.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));

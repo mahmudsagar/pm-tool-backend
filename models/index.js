@@ -4,12 +4,12 @@ import User from './user.js';
 import Space from './space.js';
 import Group from './group.js';
 import PageMeta from './page_meta.js';
-import Document from './document.js';
+import PageContent from './page_content.js';
 import Folder from './folder.js';
 import Team from './team.js';
-import Comment from './comment.js';
 import CustomMeta from './custom_meta.js';
 import CommentMeta from './comment_meta.js';
+import CommentContent from './comment_content.js';
 import Media from './media.js';
 
 // Register models
@@ -18,11 +18,11 @@ waterline.registerModel(User);
 waterline.registerModel(Space);
 waterline.registerModel(Group);
 waterline.registerModel(PageMeta);
-waterline.registerModel(Document);
+waterline.registerModel(PageContent);
 waterline.registerModel(Folder);
 waterline.registerModel(Team);
-waterline.registerModel(Comment);
 waterline.registerModel(CommentMeta);
+waterline.registerModel(CommentContent);
 waterline.registerModel(CustomMeta);
 waterline.registerModel(Media);
 
@@ -41,11 +41,11 @@ const initializeWaterline = async () => {
             global.Space = ontology.collections.space;
             global.Group = ontology.collections.group;
             global.PageMeta = ontology.collections.page_meta;
-            global.Document = ontology.collections.document;
+            global.PageContent = ontology.collections.page_content;
             global.Folder = ontology.collections.folder;
             global.Team = ontology.collections.team;
-            global.Comment = ontology.collections.comment;
             global.CommentMeta = ontology.collections.comment_meta;
+            global.CommentContent = ontology.collections.comment_content;
             global.CustomMeta = ontology.collections.custom_meta;
             global.Media = ontology.collections.media;
             resolve(ontology);

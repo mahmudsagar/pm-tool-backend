@@ -13,18 +13,34 @@ const isValidJson = (str) => {
     }
 };
 
-export const postCommentSchema = z.object({
+export const postCommentContentSchema = z.object({
     user_id: z.string().nonempty("User ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
-    }),
-    page_id: z.string().optional(),
-    parent_id: z.string().optional(),
+    }).optional(),
     content: z.union([
         z.object({}).passthrough(),
         z.string().nonempty("Content is required").refine(isValidJson, {
             message: "Content must be a valid JSON string",
         })
     ]).optional(),
+});
+
+export const postCommentMetaSchema = z.object({
+    user_id: z.string().nonempty("User ID is required").refine(isValidObjectId, {
+        message: "Invalid MongoDB ObjectId",
+    }),
+    page_id: z.string().optional(),
+    parent_id: z.string().optional(),
+    associate_id: z.string().optional().refine((id) => {
+        if (id === '') return true; // Allow blank string
+        return isValidObjectId(id); // Check MongoDB ObjectId if not blank
+    }, {
+        message: "Invalid MongoDB ObjectId",
+    }),
+    comment_body: z.string().nonempty("Comment body is required"),
+    attachments: z.array(z.string().refine(isValidObjectId, {
+        message: "Invalid MongoDB ObjectId",
+    })).optional(),
 }).refine(data => {
     const { page_id, parent_id } = data;
     const keys = [page_id, parent_id];
@@ -53,16 +69,8 @@ export const postCommentSchema = z.object({
     path: ["page_id", "parent_id"]
 });
 
-export const postCommentMetaSchema = z.object({
-    associate_id: z.string().nonempty("Associate ID is required").refine(isValidObjectId, {
-        message: "Invalid MongoDB ObjectId",
-    }),
-    comment_body: z.string().nonempty("Comment body is required"),
-    // attachments: z.array().optional()
-});
 
-
-export const putCommentSchema = z.object({
+export const putCommentContentSchema = z.object({
     _id: z.string().nonempty("ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     }),
@@ -75,20 +83,19 @@ export const putCommentSchema = z.object({
 });
 
 export const putCommentMetaSchema = z.object({
-    associate_id: z.string().nonempty("Associate ID is required").refine(isValidObjectId, {
-        message: "Invalid MongoDB ObjectId",
-    }),
     comment_body: z.string().optional(),
-    // attachments: z.array().optional()
+    attachments: z.array(z.string().refine(isValidObjectId, {
+        message: "Invalid MongoDB ObjectId",
+    })).optional(),
 });
 
-export const getCommentSchema = z.object({
+export const getCommentMetaSchema = z.object({
     _id: z.string().nonempty("ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     })
 })
 
-export const deleteCommentSchema = z.object({
+export const deleteCommentMetaSchema = z.object({
     _id: z.string().nonempty("ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     })
