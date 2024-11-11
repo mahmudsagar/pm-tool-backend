@@ -1,40 +1,68 @@
 import { z } from 'zod';
-import { putCommentSchema, putCommentMetaSchema } from './config/validation.js';
+import { postCommentContentSchema, putCommentContentSchema, putCommentMetaSchema } from './config/validation.js';
 import { formatZodErrors } from '../utils/error.js';
 
 export default async (request, response) => {
     try {
         const body = await request.json();
 
-        // Validate the comment part of the request body
-        const commentData = putCommentSchema.parse({
-            _id: body.id,
-            content: body.content,
-        });
+        let commentContentResult = {};
+        let commentMetaResult;
+        let mediaAttachments = [];
 
-        // Update the validated comment data in MongoDB
-        const commentResult = await global.Comment.updateOne({ _id: commentData._id }).set(commentData).fetch();
-        console.log("🚀 ~ commentResult:", commentResult)
+        // Fetch the existing CommentMeta
+        const existingCommentMeta = await global.CommentMeta.findOne({ _id: body.id });
+        if (!existingCommentMeta) {
+            throw new Error("CommentMeta not found");
+        }
 
-        if (!commentResult) {
-            throw new Error("Comment not found");
+        // Check if the CommentMeta doesn't have the associate_id and body.content is provided
+        if (!existingCommentMeta.associate_id && body.content && Object.keys(body.content).length > 0) {
+            // Validate the comment_content part of the request body
+            const commentContentData = postCommentContentSchema.parse({
+                user_id: body.user_id,
+                content: body.content,
+            });
+
+            // Save the validated comment_content data to MongoDB
+            commentContentResult = await global.CommentContent.create(commentContentData).fetch();
+
+            // Update the associate_id in CommentMeta
+            await global.CommentMeta.updateOne({ _id: body.id }).set({ associate_id: commentContentResult._id }).fetch();
+        } else if (body.content) {
+            // Validate the comment_content part of the request body
+            const commentContentData = putCommentContentSchema.parse({
+                _id: existingCommentMeta.associate_id,
+                content: body.content,
+            });
+
+            // Update the validated comment_content data in MongoDB
+            commentContentResult = await global.CommentContent.updateOne({ _id: existingCommentMeta.associate_id }).set(commentContentData).fetch();
         }
 
         // Validate the comment_meta part of the request body
         const commentMetaData = putCommentMetaSchema.parse({
-            associate_id: commentResult._id,
             comment_body: body.comment_body,
-            // attachments: body.attachments
+            attachments: body.attachments,
         });
 
         // Update the validated comment_meta data in MongoDB
-        const commentMetaResult = await global.CommentMeta.updateOne({ associate_id: commentMetaData.associate_id }).set(commentMetaData).fetch();
+        commentMetaResult = await global.CommentMeta.updateOne({ _id: body.id }).set(commentMetaData).fetch();
 
         if (!commentMetaResult) {
             throw new Error("CommentMeta not found");
         }
 
-        response.json({ status: "success", data: { ...commentResult, commentMeta: commentMetaResult } });
+        if (commentMetaResult.attachments && commentMetaResult.attachments.length > 0) {
+            // Fetch media attachments if any
+            mediaAttachments = await Promise.all(
+                commentMetaResult.attachments.map(async (attachment) => {
+                    return await global.Media.findOne({ reference_id: commentMetaResult._id });
+                })
+            );
+        }
+
+        response.json({ status: "success", data: { ...commentMetaResult, commentContent: commentContentResult, mediaAttachments } });
     } catch (err) {
         if (err instanceof z.ZodError) {
             // Handle Zod validation errors

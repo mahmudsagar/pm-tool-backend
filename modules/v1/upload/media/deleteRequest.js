@@ -44,12 +44,7 @@ export default async (request, response) => {
 
         // Handle reference_for logic
         if (reference_for === 'page') {
-            const document = await global.Document.findOne({ _id: media.reference_id });
-            if (!document) {
-                throw new Error('Page not found');
-            }
-
-            const pageMeta = await global.PageMeta.findOne({ page_content_id: media.reference_id });
+            const pageMeta = await global.PageMeta.findOne({ _id: media.reference_id });
             if (!pageMeta) {
                 throw new Error('PageMeta not found');
             }
@@ -58,7 +53,7 @@ export default async (request, response) => {
             const index = pageMeta.attachments.indexOf(validatedParams._id);
             if (index > -1) {
                 pageMeta.attachments.splice(index, 1);
-                await global.PageMeta.updateOne({ page_content_id: media.reference_id }).set({ attachments: pageMeta.attachments });
+                await global.PageMeta.updateOne({ _id: media.reference_id }).set({ attachments: pageMeta.attachments });
             }
         } else if (reference_for === 'comment') {
             const comment = await global.Comment.findOne({ _id: media.reference_id });
