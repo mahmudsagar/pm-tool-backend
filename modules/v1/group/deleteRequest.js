@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { deleteFolderSchema, deleteGroupSchema } from './config/validation.js';
+import { deleteGroupSchema } from './config/validation.js';
 import { formatZodErrors } from '../utils/error.js';
-import { deleteFolderAndChildren, deleteCommentAndChildren } from '../utils/helper.js';
+import { deleteFolderAndChildren } from '../utils/helper.js';
 
 export default async (request, response) => {
     try {
