@@ -52,13 +52,7 @@ export const getGroupSchema = z.object({
 });
 
 export const deleteGroupSchema = z.object({
-    _id: z.string().optional().refine(isValidObjectId, {
+    _id: z.string().nonempty("ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
-    }).or(z.undefined()),
-    user_id: z.string().optional().refine(isValidObjectId, {
-        message: "Invalid MongoDB ObjectId",
-    }).or(z.undefined())
-}).refine(data => data._id || data.user_id, {
-    message: "Either _id or user_id must be provided",
-    path: ["_id", "user_id"]
+    })
 });

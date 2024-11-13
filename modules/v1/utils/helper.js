@@ -10,12 +10,6 @@ const s3Client = new S3Client({
     },
 });
 
-/**
- * deleteAttachments
- * Deletes attachments from Media schema and R2 storage.
- * @param {Array} attachments - Array of attachment IDs to be deleted.
- * @return {Promise<void>}
- */
 export const deleteAttachments = async (attachments) => {
     for (const attachmentId of attachments) {
         // Find the media by _id
@@ -37,4 +31,73 @@ export const deleteAttachments = async (attachments) => {
         // Delete the data by _id from MongoDB
         await global.Media.destroyOne({ _id: attachmentId });
     }
+};
+
+export const deleteCommentAndChildren = async (commentId) => {
+    const commentMeta = await global.CommentMeta.findOne({ _id: commentId });
+    if (!commentMeta) {
+        throw new Error('Comment not found');
+    }
+
+    if (commentMeta.attachments && commentMeta.attachments.length > 0) {
+        await deleteAttachments(commentMeta.attachments);
+    }
+
+    await global.CommentMeta.destroy({ _id: commentId });
+    await global.CommentContent.destroyOne({ _id: commentMeta.associate_id });
+
+    const childCommentMetas = await global.CommentMeta.find({ parent_id: commentId });
+    for (const childCommentMeta of childCommentMetas) {
+        await deleteCommentAndChildren(childCommentMeta._id);
+    }
+};
+
+export const deleteFolderAndChildren = async (folderId) => {
+    const childFolders = await global.Folder.find({ parent_id: folderId });
+    for (const childFolder of childFolders) {
+        await deleteFolderAndChildren(childFolder._id);
+    }
+
+    const pageMetas = await global.PageMeta.find({ folder_id: folderId });
+    for (const pageMeta of pageMetas) {
+        await global.PageContent.destroyOne({ _id: pageMeta.page_content_id });
+
+        if (pageMeta.attachments && pageMeta.attachments.length > 0) {
+            await deleteAttachments(pageMeta.attachments);
+        }
+
+        const commentMetas = await global.CommentMeta.find({ page_id: pageMeta._id });
+        for (const commentMeta of commentMetas) {
+            await deleteCommentAndChildren(commentMeta._id);
+        }
+
+        await global.PageMeta.destroyOne({ _id: pageMeta._id });
+    }
+
+    await global.Folder.destroyOne({ _id: folderId });
+};
+
+export const deleteGroupFolderAndChildren = async (groupId) => {
+    const childFolders = await global.Folder.find({ group_id: groupId });
+    for (const childFolder of childFolders) {
+        await deleteFolderAndChildren(childFolder._id);
+    }
+
+    const pageMetas = await global.PageMeta.find({ group_id: groupId });
+    for (const pageMeta of pageMetas) {
+        await global.PageContent.destroyOne({ _id: pageMeta.page_content_id });
+
+        if (pageMeta.attachments && pageMeta.attachments.length > 0) {
+            await deleteAttachments(pageMeta.attachments);
+        }
+
+        const commentMetas = await global.CommentMeta.find({ page_id: pageMeta._id });
+        for (const commentMeta of commentMetas) {
+            await deleteCommentAndChildren(commentMeta._id);
+        }
+
+        await global.PageMeta.destroyOne({ _id: pageMeta._id });
+    }
+
+    await global.Folder.destroyOne({ group_id: groupId });
 };
