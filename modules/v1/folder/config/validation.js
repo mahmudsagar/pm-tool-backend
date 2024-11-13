@@ -60,6 +60,7 @@ export const putFolderSchema = z.object({
     shared_teams: z.array(z.string().refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     })).optional(),
+    pinned: z.boolean().optional(),
     space_id: z.string().optional(),
     group_id: z.string().optional(),
     parent_id: z.string().optional(),

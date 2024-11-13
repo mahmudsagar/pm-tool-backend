@@ -127,6 +127,7 @@ export const putPageMetaSchema = z.object({
         message: "Invalid MongoDB ObjectId",
     })).optional(),
     last_updated_by: z.string().optional(),
+    pinned: z.boolean().optional(),
     entity_type: z.string().optional(),
 }).refine(data => {
     const { folder_id, space_id, group_id } = data;
