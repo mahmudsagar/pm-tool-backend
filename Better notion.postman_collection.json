@@ -315,7 +315,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\": \"67274c9a7d3717c87083fedf\",\n    \"name\": \"Folder Under Group 2\",\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ]\n}",
+							"raw": "{\n    \"id\": \"67271f925021f5b0e2fb2e93\",\n    \"pinned\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -382,6 +382,55 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"67274c9a7d3717c87083fedf\",\n        \"name\": \"Folder Under Group 2\",\n        \"description\": \"This is a description of the folder.\",\n        \"parent_id\": \"\",\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"space_id\": \"\",\n        \"group_id\": \"67271de6834f3bd8da699307\",\n        \"entity_type\": \"folder\",\n        \"createdAt\": \"2024-11-03T10:12:42.522Z\",\n        \"updatedAt\": \"2024-11-03T10:15:30.798Z\"\n    }\n}"
+						},
+						{
+							"name": "pinned folder",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"67271f925021f5b0e2fb2e93\",\n    \"pinned\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/folder",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"folder"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 13 Nov 2024 05:17:03 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "503"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"67271f925021f5b0e2fb2e93\",\n        \"name\": \"My First Folder\",\n        \"description\": \"This is a description of the folder.\",\n        \"parent_id\": \"\",\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"space_id\": \"67271da0834f3bd8da699305\",\n        \"group_id\": \"\",\n        \"pinned\": true,\n        \"entity_type\": \"folder\",\n        \"createdAt\": \"2024-11-03T07:00:34.302Z\",\n        \"updatedAt\": \"2024-11-13T05:17:03.592Z\"\n    }\n}"
 						}
 					]
 				},
@@ -1293,10 +1342,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/v1/page/document?id=67319cda412f038163982c21",
+									"raw": "http://localhost:3000/v1/page/document?id=67319cda412f038163982c21",
+									"protocol": "http",
 									"host": [
-										"{{baseUrl}}"
+										"localhost"
 									],
+									"port": "3000",
 									"path": [
 										"v1",
 										"page",
@@ -1390,7 +1441,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\": \"6731a3afa3fbe52f1b0dab8c\",\n    \"summary\": \"updating my working document summary\"\n}",
+							"raw": "{\n    \"id\": \"6731a3afa3fbe52f1b0dab8c\",\n    \"pinned\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1459,6 +1510,56 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"67319cda412f038163982c21\",\n        \"title\": \"Document Under Space\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"folder_id\": \"\",\n        \"space_id\": \"67271da0834f3bd8da699305\",\n        \"group_id\": \"\",\n        \"page_content_id\": \"67319cda412f038163982c20\",\n        \"custom_meta\": {\n            \"author\": \"John Doe\",\n            \"keywords\": [\n                \"sample\",\n                \"page\",\n                \"meta\"\n            ]\n        },\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"attachments\": [\n            \"67319d04412f038163982c22\"\n        ],\n        \"page_type\": \"document\",\n        \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n        \"entity_type\": \"page\",\n        \"createdAt\": \"2024-11-11T05:57:46.464Z\",\n        \"updatedAt\": \"2024-11-11T06:24:22.514Z\",\n        \"comments\": [],\n        \"mediaAttachments\": [\n            {\n                \"_id\": \"67319d04412f038163982c22\",\n                \"reference_id\": \"67319cda412f038163982c21\",\n                \"media_type\": \"comment_attachment\",\n                \"url\": \"https://cdn.lamith.com/1731304706416_4k-programming.jpg\",\n                \"caption\": \"Comment photo\",\n                \"description\": \"File Description\",\n                \"meta_data\": {},\n                \"createdAt\": \"2024-11-11T05:58:28.038Z\",\n                \"updatedAt\": \"2024-11-11T05:58:28.038Z\"\n            }\n        ],\n        \"pageContent\": {\n            \"_id\": \"67319cda412f038163982c20\",\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"content\": {\n                \"text\": \"I am updating the content\"\n            },\n            \"summary\": \"THis is my updated summary\"\n        }\n    }\n}"
+						},
+						{
+							"name": "pinned document",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"6731a3afa3fbe52f1b0dab8c\",\n    \"pinned\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/page/document",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"page",
+										"document"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 13 Nov 2024 05:22:47 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "3661"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"6731a3afa3fbe52f1b0dab8c\",\n        \"title\": \"Document Under Space\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"folder_id\": \"\",\n        \"space_id\": \"67271da0834f3bd8da699305\",\n        \"group_id\": \"\",\n        \"page_content_id\": \"6731a3afa3fbe52f1b0dab8b\",\n        \"custom_meta\": {\n            \"author\": \"John Doe\",\n            \"keywords\": [\n                \"sample\",\n                \"page\",\n                \"meta\"\n            ]\n        },\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"attachments\": [\n            \"6731a3e0a3fbe52f1b0dab8d\"\n        ],\n        \"page_type\": \"document\",\n        \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n        \"pinned\": true,\n        \"entity_type\": \"page\",\n        \"createdAt\": \"2024-11-11T06:26:55.762Z\",\n        \"updatedAt\": \"2024-11-13T05:22:46.536Z\",\n        \"mediaAttachments\": [\n            {\n                \"_id\": \"6731a3e0a3fbe52f1b0dab8d\",\n                \"reference_id\": \"6731a3afa3fbe52f1b0dab8c\",\n                \"media_type\": \"cover_photo\",\n                \"url\": \"https://cdn.lamith.com/1731306462486_4k-programming.jpg\",\n                \"caption\": \"Cover photo\",\n                \"description\": \"File Description\",\n                \"meta_data\": {},\n                \"createdAt\": \"2024-11-11T06:27:44.815Z\",\n                \"updatedAt\": \"2024-11-11T06:27:44.815Z\"\n            }\n        ],\n        \"pageContent\": {\n            \"_id\": \"6731a3afa3fbe52f1b0dab8b\",\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"content\": {\n                \"text\": \"This is the document content\",\n                \"adsfdf\": \"another content\"\n            },\n            \"summary\": \"updating my working document summary\"\n        },\n        \"comments\": [\n            {\n                \"_id\": \"6731c0bfaada6ee11214f7c1\",\n                \"user_id\": \"66cda5dac6886719e3345c19\",\n                \"page_id\": \"6731a3afa3fbe52f1b0dab8c\",\n                \"parent_id\": \"\",\n                \"associate_id\": \"\",\n                \"comment_body\": \"This is my First Comment\",\n                \"attachments\": [],\n                \"has_childs\": false,\n                \"createdAt\": \"2024-11-11T08:30:55.530Z\",\n                \"updatedAt\": \"2024-11-11T08:30:55.530Z\",\n                \"mediaAttachments\": []\n            },\n            {\n                \"_id\": \"6731c23faada6ee11214f7c2\",\n                \"user_id\": \"66cda5dac6886719e3345c19\",\n                \"page_id\": \"6731a3afa3fbe52f1b0dab8c\",\n                \"parent_id\": \"\",\n                \"associate_id\": \"\",\n                \"comment_body\": \"This is my Comment with content\",\n                \"attachments\": [],\n                \"has_childs\": false,\n                \"createdAt\": \"2024-11-11T08:37:19.286Z\",\n                \"updatedAt\": \"2024-11-11T08:37:19.286Z\",\n                \"mediaAttachments\": []\n            },\n            {\n                \"_id\": \"6731c2668b10fa5567f2a863\",\n                \"user_id\": \"66cda5dac6886719e3345c19\",\n                \"page_id\": \"6731a3afa3fbe52f1b0dab8c\",\n                \"parent_id\": \"\",\n                \"associate_id\": \"6731c2668b10fa5567f2a862\",\n                \"comment_body\": \"This is my Comment with content\",\n                \"attachments\": [\n                    \"6731c307fb8a7f0a9d511cc3\"\n                ],\n                \"has_childs\": true,\n                \"createdAt\": \"2024-11-11T08:37:58.649Z\",\n                \"updatedAt\": \"2024-11-11T08:42:35.163Z\",\n                \"commentContent\": {\n                    \"_id\": \"6731c2668b10fa5567f2a862\",\n                    \"user_id\": \"66cda5dac6886719e3345c19\",\n                    \"content\": {\n                        \"priority\": 103.1,\n                        \"title\": \"App Management\",\n                        \"icon\": null,\n                        \"when\": null,\n                        \"type\": \"item\",\n                        \"cursor\": \"modules.app.manage-application.dashboard\",\n                        \"href\": \"/page/modules/app/manage-application/dashboard/\",\n                        \"activeMenuPattern\": \"/^\\\\/page\\\\/modules\\\\/app\\\\/dashboard\\\\/\\\\/?(\\\\?.*)?(#.*)?$/\",\n                        \"childOf\": \"modules.app.manage-application.app_settings\"\n                    }\n                },\n                \"mediaAttachments\": [\n                    {\n                        \"_id\": \"6731c307fb8a7f0a9d511cc3\",\n                        \"reference_id\": \"6731c2668b10fa5567f2a863\",\n                        \"media_type\": \"comment_attachment\",\n                        \"url\": \"https://cdn.lamith.com/1731314437048_4k-programming.jpg\",\n                        \"caption\": \"Comment photo\",\n                        \"description\": \"File Description\",\n                        \"meta_data\": {},\n                        \"createdAt\": \"2024-11-11T08:40:39.453Z\",\n                        \"updatedAt\": \"2024-11-11T08:40:39.453Z\"\n                    }\n                ]\n            },\n            {\n                \"_id\": \"6731c27f8b10fa5567f2a864\",\n                \"user_id\": \"66cda5dac6886719e3345c19\",\n                \"page_id\": \"6731a3afa3fbe52f1b0dab8c\",\n                \"parent_id\": \"\",\n                \"associate_id\": \"\",\n                \"comment_body\": \"This is my Second Comment\",\n                \"attachments\": [],\n                \"has_childs\": false,\n                \"createdAt\": \"2024-11-11T08:38:23.928Z\",\n                \"updatedAt\": \"2024-11-11T08:38:23.928Z\",\n                \"mediaAttachments\": []\n            },\n            {\n                \"_id\": \"6731cdab05fbba5056746b22\",\n                \"user_id\": \"66cda5dac6886719e3345c19\",\n                \"page_id\": \"6731a3afa3fbe52f1b0dab8c\",\n                \"parent_id\": \"\",\n                \"associate_id\": \"\",\n                \"comment_body\": \"test comment for test\",\n                \"attachments\": [],\n                \"has_childs\": true,\n                \"createdAt\": \"2024-11-11T09:26:03.414Z\",\n                \"updatedAt\": \"2024-11-11T09:26:17.138Z\",\n                \"mediaAttachments\": []\n            }\n        ]\n    }\n}"
 						}
 					]
 				},
@@ -1916,12 +2017,10 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:3000/v1/space?user_id=66cda5dac6886719e3345c19",
-									"protocol": "http",
+									"raw": "{{baseUrl}}/v1/space?user_id=66cda5dac6886719e3345c19",
 									"host": [
-										"localhost"
+										"{{baseUrl}}"
 									],
-									"port": "3000",
 									"path": [
 										"v1",
 										"space"
@@ -2391,12 +2490,10 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:3000/v1/group?user_id=66cda5dac6886719e3345c19",
-									"protocol": "http",
+									"raw": "{{baseUrl}}/v1/group?user_id=66cda5dac6886719e3345c19",
 									"host": [
-										"localhost"
+										"{{baseUrl}}"
 									],
-									"port": "3000",
 									"path": [
 										"v1",
 										"group"
@@ -3081,12 +3178,10 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:3000/v1/upload/media?id=672c7c62deb85c9321f3ae94",
-									"protocol": "http",
+									"raw": "{{baseUrl}}/v1/upload/media?id=672c7c62deb85c9321f3ae94",
 									"host": [
-										"localhost"
+										"{{baseUrl}}"
 									],
-									"port": "3000",
 									"path": [
 										"v1",
 										"upload",

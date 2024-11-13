@@ -15,6 +15,7 @@ const Folder = Waterline.Collection.extend({
         user_id: { type: 'string', required: true },
         space_id: { type: 'string' },
         group_id: { type: 'string' },
+        pinned: { type: 'boolean', defaultsTo: false },
         entity_type: { type: 'string', defaultsTo: 'folder' },
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },

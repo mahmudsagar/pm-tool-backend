@@ -23,6 +23,7 @@ export default async (request, response) => {
             shared_teams: rest.shared_teams,
             attachments: rest.attachments,
             last_updated_by: rest.last_updated_by,
+            pinned: rest.pinned,
             entity_type: rest.entity_type,
         });
 
@@ -63,14 +64,6 @@ export default async (request, response) => {
             }
         }
 
-        // Fetch comments by page_id
-        // const comments = await global.Comment.find({ page_id: pageMetaResult._id });
-        // commentsWithMeta = await Promise.all(
-        // 	comments.map(async (comment) => {
-        // 		const commentMeta = await global.CommentMeta.findOne({ associate_id: comment._id });
-        // 		return { ...comment, commentMeta };
-        // 	})
-        // );
 
         if (pageMetaResult.attachments && pageMetaResult.attachments.length > 0) {
             mediaAttachments = await Promise.all(
@@ -80,7 +73,25 @@ export default async (request, response) => {
             );
         }
 
-        response.json({ status: "success", data: { ...pageMetaResult, comments, mediaAttachments, pageContent: pageContentResult } });
+        // Fetch commentsMeta by page_id
+        const commentsMeta = await global.CommentMeta.find({ page_id: pageMetaResult._id });
+        const commentsWithMeta = await Promise.all(
+            commentsMeta.map(async (comment) => {
+                const commentContent = await global.CommentContent.findOne({ _id: comment.associate_id });
+                const mediaAttachments = comment.attachments && comment.attachments.length > 0
+                    ? await Promise.all(
+                        comment.attachments.map(async (attachment) => {
+                            return await global.Media.findOne({ reference_id: comment._id });
+                        })
+                    )
+                    : [];
+
+                return { ...comment, commentContent, mediaAttachments };
+
+            })
+        );
+
+        response.json({ status: "success", data: { ...pageMetaResult, mediaAttachments, pageContent: pageContentResult, comments: commentsWithMeta } });
     } catch (err) {
         if (err instanceof z.ZodError) {
             const formattedErrors = formatZodErrors(err.errors);
