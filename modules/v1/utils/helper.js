@@ -76,3 +76,28 @@ export const deleteFolderAndChildren = async (folderId) => {
 
     await global.Folder.destroyOne({ _id: folderId });
 };
+
+export const deleteGroupFolderAndChildren = async (groupId) => {
+    const childFolders = await global.Folder.find({ group_id: groupId });
+    for (const childFolder of childFolders) {
+        await deleteFolderAndChildren(childFolder._id);
+    }
+
+    const pageMetas = await global.PageMeta.find({ group_id: groupId });
+    for (const pageMeta of pageMetas) {
+        await global.PageContent.destroyOne({ _id: pageMeta.page_content_id });
+
+        if (pageMeta.attachments && pageMeta.attachments.length > 0) {
+            await deleteAttachments(pageMeta.attachments);
+        }
+
+        const commentMetas = await global.CommentMeta.find({ page_id: pageMeta._id });
+        for (const commentMeta of commentMetas) {
+            await deleteCommentAndChildren(commentMeta._id);
+        }
+
+        await global.PageMeta.destroyOne({ _id: pageMeta._id });
+    }
+
+    await global.Folder.destroyOne({ group_id: groupId });
+};

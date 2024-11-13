@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { deleteGroupSchema } from './config/validation.js';
 import { formatZodErrors } from '../utils/error.js';
-import { deleteFolderAndChildren } from '../utils/helper.js';
+import { deleteGroupFolderAndChildren } from '../utils/helper.js';
 
 export default async (request, response) => {
     try {
@@ -10,7 +10,7 @@ export default async (request, response) => {
         const validatedParams = deleteGroupSchema.parse({ _id });
 
         if (validatedParams._id) {
-            await deleteFolderAndChildren(validatedParams._id); // Assuming similar structure for group
+            await deleteGroupFolderAndChildren(validatedParams._id); // Assuming similar structure for group
         } else {
             return response.status(400).json({ status: 'failed', error: 'Group ID must be provided' });
         }
