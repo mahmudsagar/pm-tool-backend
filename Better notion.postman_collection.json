@@ -1062,7 +1062,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"content\": {\n        \"text\": \"This is the document content\",\n        \"adsfdf\": \"another content\"\n    },\n    \"summary\": \"This is the document summary\",\n    \"page_type\": \"document\",\n    \"title\": \"Document Under Space\",\n    \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n    \"custom_meta\": {\n        \"author\": \"John Doe\",\n        \"keywords\": [\"sample\", \"page\", \"meta\"]\n    },\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"space_id\": \"67271da0834f3bd8da699305\"\n}",
+							"raw": "{\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"content\": {\n        \"text\": \"This is the document content\",\n        \"adsfdf\": \"another content\"\n    },\n    \"summary\": \"This is the document summary\",\n    \"page_type\": \"document\",\n    \"title\": \"document Under Space\",\n    \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n    \"custom_meta\": {\n        \"author\": \"John Doe\",\n        \"keywords\": [\"sample\", \"page\", \"meta\"]\n    },\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"space_id\": \"67271da0834f3bd8da699305\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1281,6 +1281,192 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"6731a3afa3fbe52f1b0dab8c\",\n        \"title\": \"Document Under Space\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"folder_id\": \"\",\n        \"space_id\": \"67271da0834f3bd8da699305\",\n        \"group_id\": \"\",\n        \"page_content_id\": \"6731a3afa3fbe52f1b0dab8b\",\n        \"custom_meta\": {\n            \"author\": \"John Doe\",\n            \"keywords\": [\n                \"sample\",\n                \"page\",\n                \"meta\"\n            ]\n        },\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"attachments\": [],\n        \"page_type\": \"document\",\n        \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n        \"entity_type\": \"page\",\n        \"createdAt\": \"2024-11-11T06:26:55.762Z\",\n        \"updatedAt\": \"2024-11-11T06:26:55.762Z\",\n        \"pageContent\": {\n            \"_id\": \"6731a3afa3fbe52f1b0dab8b\",\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"content\": {\n                \"text\": \"This is the document content\",\n                \"adsfdf\": \"another content\"\n            },\n            \"summary\": \"This is the document summary\"\n        }\n    }\n}"
+						},
+						{
+							"name": "whiteboard response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"content\": {\n        \"text\": \"This is the whiteboard content\",\n        \"adsfdf\": \"another content\"\n    },\n    \"summary\": \"This is the document summary\",\n    \"page_type\": \"whiteboard\",\n    \"title\": \"Whiteboard Under Space\",\n    \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n    \"custom_meta\": {\n        \"author\": \"John Doe\",\n        \"keywords\": [\"sample\", \"page\", \"meta\"]\n    },\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"space_id\": \"67271da0834f3bd8da699305\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/page/document",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"page",
+										"document"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 13 Nov 2024 16:38:19 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "414"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "CF-Ray",
+									"value": "8e2030fd0abda48e-DAC"
+								},
+								{
+									"key": "CF-Cache-Status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "rndr-id",
+									"value": "74261c3d-c010-41f9"
+								},
+								{
+									"key": "x-render-origin-server",
+									"value": "Render"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"6734d5fb0624964cdf7cc223\",\n        \"title\": \"Whiteboard Under Space\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"folder_id\": \"\",\n        \"space_id\": \"67271da0834f3bd8da699305\",\n        \"group_id\": \"\",\n        \"page_content_id\": \"6734d5fa0624964cdf7cc222\",\n        \"custom_meta\": {\n            \"author\": \"John Doe\",\n            \"keywords\": [\n                \"sample\",\n                \"page\",\n                \"meta\"\n            ]\n        },\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"attachments\": [],\n        \"page_type\": \"whiteboard\",\n        \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n        \"pinned\": false,\n        \"entity_type\": \"page\",\n        \"createdAt\": \"2024-11-13T16:38:19.104Z\",\n        \"updatedAt\": \"2024-11-13T16:38:19.104Z\",\n        \"pageContent\": {\n            \"_id\": \"6734d5fa0624964cdf7cc222\",\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"content\": {\n                \"text\": \"This is the whiteboard content\",\n                \"adsfdf\": \"another content\"\n            },\n            \"summary\": \"This is the document summary\"\n        }\n    }\n}"
+						},
+						{
+							"name": "success message structure",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"content\": {\n        \"text\": \"This is the document content\",\n        \"adsfdf\": \"another content\"\n    },\n    \"summary\": \"This is the document summary\",\n    \"page_type\": \"document\",\n    \"title\": \"document Under Space\",\n    \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n    \"custom_meta\": {\n        \"author\": \"John Doe\",\n        \"keywords\": [\"sample\", \"page\", \"meta\"]\n    },\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"space_id\": \"67271da0834f3bd8da699305\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/page/document",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"page",
+										"document"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 14 Nov 2024 05:08:15 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "935"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Page content and meta data saved successfully\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"_id\": \"673585bf6117adb5a2016402\",\n        \"title\": \"document Under Space\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"folder_id\": \"\",\n        \"space_id\": \"67271da0834f3bd8da699305\",\n        \"group_id\": \"\",\n        \"page_content_id\": \"673585bf6117adb5a2016401\",\n        \"custom_meta\": {\n            \"author\": \"John Doe\",\n            \"keywords\": [\n                \"sample\",\n                \"page\",\n                \"meta\"\n            ]\n        },\n        \"shared_members\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_teams\": [\n            \"66cda5dac6886719e3345c19\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"attachments\": [],\n        \"page_type\": \"document\",\n        \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n        \"pinned\": false,\n        \"entity_type\": \"page\",\n        \"createdAt\": \"2024-11-14T05:08:15.861Z\",\n        \"updatedAt\": \"2024-11-14T05:08:15.861Z\",\n        \"pageContent\": {\n            \"_id\": \"673585bf6117adb5a2016401\",\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"content\": {\n                \"text\": \"This is the document content\",\n                \"adsfdf\": \"another content\"\n            },\n            \"summary\": \"This is the document summary\"\n        }\n    }\n}"
+						},
+						{
+							"name": "error message structure",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": \"66cda5dac6886719e3345c19\",\n    \"content\": {\n        \"text\": \"This is the document content\",\n        \"adsfdf\": \"another content\"\n    },\n    \"summary\": \"This is the document summary\",\n    \"title\": \"document Under Space\",\n    \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n    \"custom_meta\": {\n        \"author\": \"John Doe\",\n        \"keywords\": [\"sample\", \"page\", \"meta\"]\n    },\n    \"shared_teams\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_members\": [\n        \"66cda5dac6886719e3345c19\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"space_id\": \"67271da0834f3bd8da699305\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/page/document",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"page",
+										"document"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 14 Nov 2024 09:25:18 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "130"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"failed\",\n    \"message\": [\n        {\n            \"error\": [\n                [\n                    \"Invalid page type. Allowed types are document, sheet, and whiteboard. at page_type\"\n                ]\n            ]\n        }\n    ]\n}"
 						}
 					]
 				},
@@ -1342,12 +1528,10 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:3000/v1/page/document?id=67319cda412f038163982c21",
-									"protocol": "http",
+									"raw": "{{baseUrl}}/v1/page/document?id=67319cda412f038163982c21",
 									"host": [
-										"localhost"
+										"{{baseUrl}}"
 									],
-									"port": "3000",
 									"path": [
 										"v1",
 										"page",
