@@ -1,12 +1,12 @@
 import { z } from 'zod';
 import { getFolderSchema } from './config/validation.js';
-import { formatZodErrors } from '../utils/error.js';
+import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
+import { formatSuccessMessage } from '../utils/success.js';
 
 export default async (request, response) => {
     try {
         const { id, user_id } = request.query;
 
-        // Validate the query parameters
         const validateQuery = getFolderSchema.parse({ _id: id, user_id });
 
         const query = {};
@@ -23,32 +23,26 @@ export default async (request, response) => {
                     validateQuery.user_id ?
                         'No folders found for the given user_id' :
                         'No folders found';
-            return response.status(404).json({ status: 'failed', error });
+            return response.status(404).json(formatErrorMessage(error));
         }
 
-        // Fetch related data from Page Meta collections for each folder _id
         for (const folder of result) {
             const folders = await global.Folder.find({ parent_id: folder._id }).sort('createdAt ASC');
             const pageMeta = await global.PageMeta.find({ folder_id: folder._id }).sort('createdAt ASC');
 
-            // Initialize an empty array for combined data
             let combinedData = [...folders, ...pageMeta];
 
-            // Sort all data by createdAt
             combinedData.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
-            // Add the combined data to the folder under the 'child' array
             folder.childs = combinedData;
         }
-        response.json({ status: "success", data: result });
+        response.json(formatSuccessMessage("Folders fetched successfully", result));
     } catch (err) {
         if (err instanceof z.ZodError) {
-            // Handle Zod validation errors
             const formattedErrors = formatZodErrors(err.errors);
-            response.status(400).json({ status: 'failed', error: formattedErrors });
+            response.status(400).json(formatErrorMessage(formattedErrors));
         } else {
-            // Handle other errors
-            response.status(400).json({ status: 'failed', error: err.message });
+            response.status(400).json(formatErrorMessage(err.message));
         }
     }
 };

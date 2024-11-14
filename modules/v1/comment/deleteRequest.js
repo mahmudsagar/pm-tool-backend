@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { deleteCommentMetaSchema } from './config/validation.js';
-import { formatZodErrors } from '../utils/error.js';
+import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
+import { formatSuccessMessage } from '../utils/success.js';
 import { deleteAttachments } from '../utils/helper.js';
-
 
 export default async (request, response) => {
     try {
@@ -15,7 +15,7 @@ export default async (request, response) => {
         // Find the corresponding comment_meta by associate_id
         const commentMeta = await global.CommentMeta.findOne({ _id: validatedParams._id });
         if (!commentMeta) {
-            return response.status(404).json({ status: 'failed', error: 'Comment not found' });
+            return response.status(404).json(formatErrorMessage('Comment not found'));
         }
 
         if (commentMeta && commentMeta.attachments && commentMeta.attachments.length > 0) {
@@ -29,7 +29,7 @@ export default async (request, response) => {
         // Delete the comment_content by _id from MongoDB
         const commentContentResult = await global.CommentContent.destroyOne({ _id: commentMeta.associate_id });
         if (!commentContentResult) {
-            return response.status(404).json({ status: 'failed', error: 'Comment content not found' });
+            return response.status(404).json(formatErrorMessage('Comment content not found'));
         }
 
         // Find the corresponding comment by _id
@@ -52,19 +52,15 @@ export default async (request, response) => {
             message = 'Comment and its child comments deleted successfully';
         }
 
-        response.json({
-            status: "success", data: [{
-                message: message
-            }]
-        });
+        response.json(formatSuccessMessage(message, null));
     } catch (err) {
         if (err instanceof z.ZodError) {
             // Handle Zod validation errors
             const formattedErrors = formatZodErrors(err.errors);
-            response.status(400).json({ status: 'failed', error: formattedErrors });
+            response.status(400).json(formatErrorMessage(formattedErrors));
         } else {
             // Handle other errors
-            response.status(400).json({ status: 'failed', error: err.message });
+            response.status(400).json(formatErrorMessage(err.message));
         }
     }
 };

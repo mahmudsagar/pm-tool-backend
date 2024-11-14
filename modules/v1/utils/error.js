@@ -8,3 +8,16 @@ export const formatZodErrors = (errors) => {
         };
     });
 };
+
+export const formatErrorMessage = (message) => {
+    return {
+        status: 'failed',
+        message: [
+            {
+                error: [
+                    message
+                ]
+            }
+        ]
+    };
+};

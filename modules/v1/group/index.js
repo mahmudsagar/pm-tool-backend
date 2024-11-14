@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { getGroupSchema } from './config/validation.js';
-import { formatZodErrors } from '../utils/error.js';
+import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
+import { formatSuccessMessage } from '../utils/success.js';
 
 export default async (request, response) => {
     try {
@@ -23,32 +24,18 @@ export default async (request, response) => {
                     validateQuery.user_id ?
                         'No groups found for the given user_id' :
                         'No groups found';
-            return response.status(404).json({ status: 'failed', error });
+            return response.status(404).json(formatErrorMessage(error));
         }
 
-        // Fetch related data from Folder and Page Meta collections for each group _id
-        for (const group of result) {
-            const folders = await global.Folder.find({ group_id: group._id }).sort('createdAt ASC');
-            const pageMeta = await global.PageMeta.find({ group_id: group._id }).sort('createdAt ASC');
-
-            // Initialize an empty array for combined data
-            let combinedData = [...folders, ...pageMeta];
-
-            // Sort all data by createdAt
-            combinedData.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-
-            // Add the combined data to the group under the 'child' array
-            group.childs = combinedData;
-        }
-        response.json({ status: "success", data: result });
+        response.json(formatSuccessMessage("Groups fetched successfully", result));
     } catch (err) {
         if (err instanceof z.ZodError) {
             // Handle Zod validation errors
             const formattedErrors = formatZodErrors(err.errors);
-            response.status(400).json({ status: 'failed', error: formattedErrors });
+            response.status(400).json(formatErrorMessage(formattedErrors));
         } else {
             // Handle other errors
-            response.status(400).json({ status: 'failed', error: err.message });
+            response.status(400).json(formatErrorMessage(err.message));
         }
     }
 };

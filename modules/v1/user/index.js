@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { getUserSchema } from './config/validation.js';
-import { formatZodErrors } from '../utils/error.js';
+import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
+import { formatSuccessMessage } from '../utils/success.js';
 
 export default async (request, response) => {
     try {
@@ -14,22 +15,22 @@ export default async (request, response) => {
             // Fetch data by _id
             result = await global.User.findOne({ _id: validatedParams._id });
             if (!result) {
-                return response.status(404).json({ status: 'failed', error: 'User not found' });
+                return response.status(404).json(formatErrorMessage('User not found'));
             }
         } else {
             // Fetch all data
             result = await global.User.find();
         }
 
-        response.json({ status: "success", data: result });
+        response.json(formatSuccessMessage("Users fetched successfully", result));
     } catch (err) {
         if (err instanceof z.ZodError) {
             // Handle Zod validation errors
             const formattedErrors = formatZodErrors(err.errors);
-            response.status(400).json({ status: 'failed', error: formattedErrors });
+            response.status(400).json(formatErrorMessage(formattedErrors));
         } else {
             // Handle other errors
-            response.status(400).json({ status: 'failed', error: err.message });
+            response.status(400).json(formatErrorMessage(err.message));
         }
     }
 };

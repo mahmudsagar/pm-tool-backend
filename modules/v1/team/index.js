@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { getTeamSchema } from './config/validation.js';
-import { formatZodErrors } from '../utils/error.js';
+import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
+import { formatSuccessMessage } from '../utils/success.js';
 
 export default async (request, response) => {
     try {
@@ -14,34 +15,31 @@ export default async (request, response) => {
             // Fetch data by both _id and user_id
             result = await global.Team.findOne({ _id: validateQuery._id, user_id: validateQuery.user_id });
             if (!result) {
-                return response.status(404).json({ status: 'failed', error: 'Team not found for the given _id and user_id' });
+                return response.status(404).json(formatErrorMessage('Team not found for the given _id and user_id'));
             }
         } else if (validateQuery._id) {
             // Fetch data by _id
             result = await global.Team.findOne({ _id: validateQuery._id });
             if (!result) {
-                return response.status(404).json({ status: 'failed', error: 'Team not found' });
+                return response.status(404).json(formatErrorMessage('Team not found'));
             }
         } else if (validateQuery.user_id) {
             // Fetch data by user_id
             result = await global.Team.find({ user_id: validateQuery.user_id });
             if (result.length === 0) {
-                return response.status(404).json({ status: 'failed', error: 'No teams found for the given user_id' });
+                return response.status(404).json(formatErrorMessage('No teams found for the given user_id'));
             }
-        } else {
-            // Fetch all data
-            result = await global.Team.find();
         }
 
-        response.json({ status: "success", data: result });
+        response.json(formatSuccessMessage("Team fetched successfully", result));
     } catch (err) {
         if (err instanceof z.ZodError) {
             // Handle Zod validation errors
             const formattedErrors = formatZodErrors(err.errors);
-            response.status(400).json({ status: 'failed', error: formattedErrors });
+            response.status(400).json(formatErrorMessage(formattedErrors));
         } else {
             // Handle other errors
-            response.status(400).json({ status: 'failed', error: err.message });
+            response.status(400).json(formatErrorMessage(err.message));
         }
     }
 };

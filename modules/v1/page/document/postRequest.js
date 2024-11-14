@@ -1,22 +1,20 @@
 import { z } from 'zod';
 import { postPageMetaSchema, postPageContentSchema } from './config/validation.js';
-import { formatZodErrors } from '../../utils/error.js';
+import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
+import { formatSuccessMessage } from '../../utils/success.js';
 
 export default async (request, response) => {
     try {
         const body = await request.json();
 
-        // Validate the page_content part of the request body
         const pageContentData = postPageContentSchema.parse({
             user_id: body.user_id,
             content: body.content,
             summary: body.summary,
         });
 
-        // Save the validated page_content data to MongoDB
         const pageContentResult = await global.PageContent.create(pageContentData).fetch();
 
-        // Validate the page_meta part of the request body
         const pageMetaData = postPageMetaSchema.parse({
             title: body.title,
             user_id: body.user_id,
@@ -33,18 +31,15 @@ export default async (request, response) => {
             entity_type: body.entity_type,
         });
 
-        // Save the validated page_meta data to MongoDB
         const pageMetaResult = await global.PageMeta.create(pageMetaData).fetch();
 
-        response.json({ status: "success", data: { ...pageMetaResult, pageContent: pageContentResult } });
+        response.json(formatSuccessMessage("Page content and meta data saved successfully", { ...pageMetaResult, pageContent: pageContentResult }));
     } catch (err) {
         if (err instanceof z.ZodError) {
-            // Handle Zod validation errors
             const formattedErrors = formatZodErrors(err.errors);
-            response.status(400).json({ status: 'failed', error: formattedErrors });
+            response.status(400).json(formatErrorMessage(formattedErrors));
         } else {
-            // Handle other errors
-            response.status(400).json({ status: 'failed', error: err.message });
+            response.status(400).json(formatErrorMessage(err.message));
         }
     }
 };

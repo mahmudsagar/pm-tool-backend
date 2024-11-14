@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { getMediaSchema } from './config/validation.js';
-import { formatZodErrors } from '../../utils/error.js';
+import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
+import { formatSuccessMessage } from '../../utils/success.js';
 
 export default async (request, response) => {
     try {
@@ -12,18 +13,18 @@ export default async (request, response) => {
         // Fetch media by _id
         const mediaResult = await global.Media.findOne({ _id: validateQuery._id });
         if (!mediaResult) {
-            return response.status(404).json({ status: 'failed', error: 'Media not found' });
+            return response.status(404).json(formatErrorMessage('Media not found'));
         }
 
-        response.json({ status: "success", data: mediaResult });
+        response.json(formatSuccessMessage("Media fetched successfully", mediaResult));
     } catch (err) {
         if (err instanceof z.ZodError) {
             // Handle Zod validation errors
             const formattedErrors = formatZodErrors(err.errors);
-            response.status(400).json({ status: 'failed', error: formattedErrors });
+            response.status(400).json(formatErrorMessage(formattedErrors));
         } else {
             // Handle other errors
-            response.status(400).json({ status: 'failed', error: err.message });
+            response.status(400).json(formatErrorMessage(err.message));
         }
     }
 };
