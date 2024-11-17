@@ -7,14 +7,14 @@ export default async (request, response) => {
     try {
         const { id: _id, ...rest } = await request.json();
 
+        // Validate the request body using Zod
+        const validatedData = putGroupSchema.parse({ _id, ...rest });
+
         // Fetch the existing group data
-        const existingGroup = await global.Group.findOne({ _id });
+        const existingGroup = await global.Group.findOne({ _id: validatedData._id });
         if (!existingGroup) {
             return response.status(404).json(formatErrorMessage('Group not found'));
         }
-
-        // Validate the request body using Zod
-        const validatedData = putGroupSchema.parse({ _id, ...rest });
 
         // Save the validated data to MongoDB
         let result = await global.Group.update({ _id: validatedData._id }, validatedData).fetch();

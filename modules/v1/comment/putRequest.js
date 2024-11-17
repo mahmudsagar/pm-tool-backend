@@ -11,8 +11,15 @@ export default async (request, response) => {
         let commentMetaResult;
         let mediaAttachments = [];
 
+        // Validate the comment_meta part of the request body
+        const commentMetaData = putCommentMetaSchema.parse({
+            _id: body.id,
+            comment_body: body.comment_body,
+            attachments: body.attachments,
+        });
+
         // Fetch the existing CommentMeta
-        const existingCommentMeta = await global.CommentMeta.findOne({ _id: body.id });
+        const existingCommentMeta = await global.CommentMeta.findOne({ _id: commentMetaData._id });
         if (!existingCommentMeta) {
             throw new Error("CommentMeta not found");
         }
@@ -29,7 +36,7 @@ export default async (request, response) => {
             commentContentResult = await global.CommentContent.create(commentContentData).fetch();
 
             // Update the associate_id in CommentMeta
-            await global.CommentMeta.updateOne({ _id: body.id }).set({ associate_id: commentContentResult._id }).fetch();
+            await global.CommentMeta.updateOne({ _id: commentMetaData._id }).set({ associate_id: commentContentResult._id }).fetch();
         } else if (body.content) {
             // Validate the comment_content part of the request body
             const commentContentData = putCommentContentSchema.parse({
@@ -41,14 +48,8 @@ export default async (request, response) => {
             commentContentResult = await global.CommentContent.updateOne({ _id: existingCommentMeta.associate_id }).set(commentContentData).fetch();
         }
 
-        // Validate the comment_meta part of the request body
-        const commentMetaData = putCommentMetaSchema.parse({
-            comment_body: body.comment_body,
-            attachments: body.attachments,
-        });
-
         // Update the validated comment_meta data in MongoDB
-        commentMetaResult = await global.CommentMeta.updateOne({ _id: body.id }).set(commentMetaData).fetch();
+        commentMetaResult = await global.CommentMeta.updateOne({ _id: commentMetaData._id }).set(commentMetaData).fetch();
 
         if (!commentMetaResult) {
             throw new Error("CommentMeta not found");
