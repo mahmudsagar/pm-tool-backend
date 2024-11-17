@@ -1,24 +1,21 @@
 import { z } from 'zod';
 import { getPageMetaSchema } from './config/validation.js';
-import { formatZodErrors } from '../../utils/error.js';
+import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
+import { formatSuccessMessage } from '../../utils/success.js';
 
 export default async (request, response) => {
 	try {
 		const { id } = request.query;
 
-		// Validate the query parameters
 		const validateQuery = getPageMetaSchema.parse({ _id: id });
 
-		// Fetch PageMeta by _id
 		const pageMetaResult = await global.PageMeta.findOne({ _id: validateQuery._id });
 		if (!pageMetaResult) {
-			return response.status(404).json({ status: 'failed', error: 'Page not found' });
+			return response.status(404).json(formatErrorMessage('Page not found'));
 		}
 
-		// Fetch PageContent by page_content_id
 		const pageContentResult = await global.PageContent.findOne({ _id: pageMetaResult.page_content_id });
 
-		// Fetch media attachments if any
 		const mediaAttachments = pageMetaResult.attachments && pageMetaResult.attachments.length > 0
 			? await Promise.all(
 				pageMetaResult.attachments.map(async (attachment) => {
@@ -27,7 +24,6 @@ export default async (request, response) => {
 			)
 			: [];
 
-		// Fetch commentsMeta by page_id
 		const commentsMeta = await global.CommentMeta.find({ page_id: pageMetaResult._id });
 		const commentsWithMeta = await Promise.all(
 			commentsMeta.map(async (comment) => {
@@ -44,15 +40,13 @@ export default async (request, response) => {
 
 			})
 		);
-		response.json({ status: "success", data: { ...pageMetaResult, pageContent: pageContentResult, mediaAttachments, comments: commentsWithMeta } });
+		response.json(formatSuccessMessage("Page data fetched successfully", { ...pageMetaResult, pageContent: pageContentResult, mediaAttachments, comments: commentsWithMeta }));
 	} catch (err) {
 		if (err instanceof z.ZodError) {
-			// Handle Zod validation errors
 			const formattedErrors = formatZodErrors(err.errors);
-			response.status(400).json({ status: 'failed', error: formattedErrors });
+			response.status(400).json(formatErrorMessage(formattedErrors));
 		} else {
-			// Handle other errors
-			response.status(400).json({ status: 'failed', error: err.message });
+			response.status(400).json(formatErrorMessage(err.message));
 		}
 	}
 };

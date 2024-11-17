@@ -48,5 +48,5 @@ export const deleteMediaSchema = z.object({
     }),
     reference_for: z.enum(['page', 'comment'], {
         errorMap: () => ({ message: 'Invalid reference_for value. Allowed values are page and comment.' })
-    }).optional()
+    }),
 });

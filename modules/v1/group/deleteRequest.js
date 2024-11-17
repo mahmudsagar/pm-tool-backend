@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { deleteGroupSchema } from './config/validation.js';
-import { formatZodErrors } from '../utils/error.js';
+import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
+import { formatSuccessMessage } from '../utils/success.js';
 import { deleteGroupFolderAndChildren } from '../utils/helper.js';
 
 export default async (request, response) => {
@@ -12,23 +13,19 @@ export default async (request, response) => {
         if (validatedParams._id) {
             await deleteGroupFolderAndChildren(validatedParams._id); // Assuming similar structure for group
         } else {
-            return response.status(400).json({ status: 'failed', error: 'Group ID must be provided' });
+            return response.status(400).json(formatErrorMessage('Group ID must be provided'));
         }
 
         // deleting the group at last
         await global.Group.destroyOne({ _id: validatedParams._id });
 
-        response.json({
-            status: "success", data: [{
-                message: 'Group deleted successfully'
-            }]
-        });
+        response.json(formatSuccessMessage('Group deleted successfully', null));
     } catch (err) {
         if (err instanceof z.ZodError) {
             const formattedErrors = formatZodErrors(err.errors);
-            response.status(400).json({ status: 'failed', error: formattedErrors });
+            response.status(400).json(formatErrorMessage(formattedErrors));
         } else {
-            response.status(400).json({ status: 'failed', error: err.message });
+            response.status(400).json(formatErrorMessage(err.message));
         }
     }
 };

@@ -83,6 +83,9 @@ export const putCommentContentSchema = z.object({
 });
 
 export const putCommentMetaSchema = z.object({
+    _id: z.string().nonempty("ID is required").refine(isValidObjectId, {
+        message: "Invalid MongoDB ObjectId",
+    }),
     comment_body: z.string().optional(),
     attachments: z.array(z.string().refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",

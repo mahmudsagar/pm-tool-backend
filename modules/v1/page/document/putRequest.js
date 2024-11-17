@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { putPageMetaSchema, putPageContentSchema } from './config/validation.js';
-import { formatZodErrors } from '../../utils/error.js';
+import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
+import { formatSuccessMessage } from '../../utils/success.js';
 
 export default async (request, response) => {
     try {
@@ -10,7 +11,6 @@ export default async (request, response) => {
         let comments = [];
         let pageContentResult, pageMetaResult;
 
-        // Validate and update the page_meta
         const pageMetaData = putPageMetaSchema.parse({
             _id,
             page_type: rest.page_type,
@@ -33,13 +33,11 @@ export default async (request, response) => {
         ).fetch();
 
         if (!pageMetaResult || !pageMetaResult.length) {
-            return response.status(404).json({ status: 'failed', error: 'PageMeta not found' });
+            return response.status(404).json(formatErrorMessage('PageMeta not found'));
         }
 
-        // take the array into an object
         if (pageMetaResult.length > 0) pageMetaResult = pageMetaResult[0];
 
-        // Validate and update the page_content if its fields are present in the rest
         if (rest.content || rest.summary) {
             const pageContentData = putPageContentSchema.parse({
                 _id: pageMetaResult.page_content_id,
@@ -52,18 +50,16 @@ export default async (request, response) => {
                 pageContentData
             ).fetch();
             if (!pageContentResult || !pageContentResult.length) {
-                return response.status(404).json({ status: 'failed', error: 'PageContent not found' });
+                return response.status(404).json(formatErrorMessage('PageContent not found'));
             }
 
-            // take the array into an object
             if (pageContentResult.length > 0) pageContentResult = pageContentResult[0];
         } else {
             pageContentResult = await global.PageContent.findOne({ _id: pageMetaResult.page_content_id });
             if (!pageContentResult) {
-                return response.status(404).json({ status: 'failed', error: 'PageContent not found' });
+                return response.status(404).json(formatErrorMessage('PageContent not found'));
             }
         }
-
 
         if (pageMetaResult.attachments && pageMetaResult.attachments.length > 0) {
             mediaAttachments = await Promise.all(
@@ -73,7 +69,6 @@ export default async (request, response) => {
             );
         }
 
-        // Fetch commentsMeta by page_id
         const commentsMeta = await global.CommentMeta.find({ page_id: pageMetaResult._id });
         const commentsWithMeta = await Promise.all(
             commentsMeta.map(async (comment) => {
@@ -91,13 +86,13 @@ export default async (request, response) => {
             })
         );
 
-        response.json({ status: "success", data: { ...pageMetaResult, mediaAttachments, pageContent: pageContentResult, comments: commentsWithMeta } });
+        response.json(formatSuccessMessage("Page updated successfully", { ...pageMetaResult, mediaAttachments, pageContent: pageContentResult, comments: commentsWithMeta }));
     } catch (err) {
         if (err instanceof z.ZodError) {
             const formattedErrors = formatZodErrors(err.errors);
-            response.status(400).json({ status: 'failed', error: formattedErrors });
+            response.status(400).json(formatErrorMessage(formattedErrors));
         } else {
-            response.status(400).json({ status: 'failed', error: err.message });
+            response.status(400).json(formatErrorMessage(err.message));
         }
     }
 };

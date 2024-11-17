@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { getCommentMetaSchema } from './config/validation.js';
-import { formatZodErrors } from '../utils/error.js';
+import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
+import { formatSuccessMessage } from '../utils/success.js';
 
 export default async (request, response) => {
     try {
@@ -17,7 +18,7 @@ export default async (request, response) => {
         // Fetch CommentMeta by _id
         commentMetaResult = await global.CommentMeta.findOne({ _id: validateQuery._id });
         if (!commentMetaResult) {
-            return response.status(404).json({ status: 'failed', error: 'CommentMeta not found' });
+            return response.status(404).json(formatErrorMessage('CommentMeta not found'));
         }
 
         // Fetch CommentContent by associate_id
@@ -32,37 +33,15 @@ export default async (request, response) => {
             );
         }
 
-        // Fetch child comments and their meta if has_childs is true
-        if (commentMetaResult.has_childs) {
-            const childComments = await global.CommentMeta.find({ parent_id: validateQuery._id });
-            childCommentsWithMeta = await Promise.all(
-                childComments.map(async (childComment) => {
-                    const childCommentContent = await global.CommentContent.findOne({ _id: childComment.associate_id });
-                    let childMediaAttachments = [];
-
-                    // Fetch media attachments for child comments if any
-                    if (childComment.attachments && childComment.attachments.length > 0) {
-                        childMediaAttachments = await Promise.all(
-                            childComment.attachments.map(async (attachment) => {
-                                return await global.Media.findOne({ reference_id: childComment._id });
-                            })
-                        );
-                    }
-
-                    return { ...childComment, commentContent: childCommentContent, mediaAttachments: childMediaAttachments };
-                })
-            );
-        }
-
-        return response.json({ status: "success", data: { ...commentMetaResult, commentContent: commentContentResult, mediaAttachments, childs: childCommentsWithMeta } });
+        response.json(formatSuccessMessage("CommentMeta fetched successfully", { ...commentMetaResult, commentContent: commentContentResult, mediaAttachments }));
     } catch (err) {
         if (err instanceof z.ZodError) {
             // Handle Zod validation errors
             const formattedErrors = formatZodErrors(err.errors);
-            response.status(400).json({ status: 'failed', error: formattedErrors });
+            response.status(400).json(formatErrorMessage(formattedErrors));
         } else {
             // Handle other errors
-            response.status(400).json({ status: 'failed', error: err.message });
+            response.status(400).json(formatErrorMessage(err.message));
         }
     }
 };

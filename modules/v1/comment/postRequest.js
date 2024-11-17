@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { postCommentContentSchema, postCommentMetaSchema } from './config/validation.js';
-import { formatZodErrors } from '../utils/error.js';
+import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
+import { formatSuccessMessage } from '../utils/success.js';
 
 export default async (request, response) => {
     try {
@@ -16,7 +17,6 @@ export default async (request, response) => {
 
             // Save the validated comment_content data to MongoDB
             commentContentResult = await global.CommentContent.create(commentContentData).fetch();
-
         }
 
         // Validate the comment_meta part of the request body
@@ -43,15 +43,15 @@ export default async (request, response) => {
         // Save the validated comment_meta data to MongoDB
         const commentMetaResult = await global.CommentMeta.create(commentMetaData).fetch();
 
-        response.json({ status: "success", data: { ...commentMetaResult, commentContent: commentContentResult } });
+        response.json(formatSuccessMessage("CommentMeta created successfully", { ...commentMetaResult, commentContent: commentContentResult }));
     } catch (err) {
         if (err instanceof z.ZodError) {
             // Handle Zod validation errors
             const formattedErrors = formatZodErrors(err.errors);
-            response.status(400).json({ status: 'failed', error: formattedErrors });
+            response.status(400).json(formatErrorMessage(formattedErrors));
         } else {
             // Handle other errors
-            response.status(400).json({ status: 'failed', error: err.message });
+            response.status(400).json(formatErrorMessage(err.message));
         }
     }
 };

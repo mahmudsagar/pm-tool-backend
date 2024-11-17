@@ -1,12 +1,12 @@
 import { z } from 'zod';
 import { getSpaceSchema } from './config/validation.js';
-import { formatZodErrors } from '../utils/error.js';
+import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
+import { formatSuccessMessage } from '../utils/success.js';
 
 export default async (request, response) => {
     try {
         const { id, user_id } = request.query;
 
-        // Validate the query parameters
         const validateQuery = getSpaceSchema.parse({ _id: id, user_id });
 
         const query = {};
@@ -23,33 +23,16 @@ export default async (request, response) => {
                     validateQuery.user_id ?
                         'No spaces found for the given user_id' :
                         'No spaces found';
-            return response.status(404).json({ status: 'failed', error });
+            return response.status(404).json(formatErrorMessage(error));
         }
 
-        // Fetch related data from Group, Folder, and Page Meta collections for each space _id
-        for (const space of result) {
-            const groups = await global.Group.find({ space_id: space._id }).sort('createdAt ASC');
-            const folders = await global.Folder.find({ space_id: space._id }).sort('createdAt ASC');
-            const pageMeta = await global.PageMeta.find({ space_id: space._id }).sort('createdAt ASC');
-
-            // Initialize an empty array for combined data
-            let combinedData = [...groups, ...folders, ...pageMeta];
-
-            // Sort all data by createdAt
-            combinedData.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-
-            // Add the combined data to the space under the 'child' array
-            space.childs = combinedData;
-        }
-        response.json({ status: "success", data: result });
+        response.json(formatSuccessMessage("Spaces fetched successfully", result));
     } catch (err) {
         if (err instanceof z.ZodError) {
-            // Handle Zod validation errors
             const formattedErrors = formatZodErrors(err.errors);
-            response.status(400).json({ status: 'failed', error: formattedErrors });
+            response.status(400).json(formatErrorMessage(formattedErrors));
         } else {
-            // Handle other errors
-            response.status(400).json({ status: 'failed', error: err.message });
+            response.status(400).json(formatErrorMessage(err.message));
         }
     }
 };

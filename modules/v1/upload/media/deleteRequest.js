@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { deleteMediaSchema } from './config/validation.js';
-import { formatZodErrors } from '../../utils/error.js';
+import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
+import { formatSuccessMessage } from '../../utils/success.js';
 
 // Configure S3 client for R2
 const s3Client = new S3Client({
@@ -23,7 +24,7 @@ export default async (request, response) => {
         // Find the media by _id
         const media = await global.Media.findOne({ _id: validatedParams._id });
         if (!media) {
-            return response.status(400).json({ status: 'failed', error: 'No media found with this id!' });
+            return response.status(400).json(formatErrorMessage('No media found with this id!'));
         }
 
         // Delete the image from R2
@@ -39,7 +40,7 @@ export default async (request, response) => {
         // Delete the data by _id from MongoDB
         const result = await global.Media.destroyOne({ _id: validatedParams._id });
         if (!result) {
-            return response.status(404).json({ status: 'failed', error: 'Media not found' });
+            return response.status(404).json(formatErrorMessage('Media not found'));
         }
 
         // Handle reference_for logic
@@ -76,19 +77,15 @@ export default async (request, response) => {
             throw new Error('Invalid reference_for value. Allowed values are page and comment.');
         }
 
-        response.json({
-            status: "success", data: [{
-                message: 'Media deleted successfully'
-            }]
-        });
+        response.json(formatSuccessMessage('Media deleted successfully', null));
     } catch (err) {
         if (err instanceof z.ZodError) {
             // Handle Zod validation errors
             const formattedErrors = formatZodErrors(err.errors);
-            response.status(400).json({ status: 'failed', error: formattedErrors });
+            response.status(400).json(formatErrorMessage(formattedErrors));
         } else {
             // Handle other errors
-            response.status(400).json({ status: 'failed', error: err.message });
+            response.status(400).json(formatErrorMessage(err.message));
         }
     }
 };
