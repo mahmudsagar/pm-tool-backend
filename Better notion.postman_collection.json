@@ -440,7 +440,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/v1/folder?id=67271f925021f5b0e2fb2e93",
+							"raw": "{{baseUrl}}/v1/folder?id=6727422d201cbaec290637bb",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -451,7 +451,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "67271f925021f5b0e2fb2e93"
+									"value": "6727422d201cbaec290637bb"
 								}
 							]
 						}
@@ -1528,10 +1528,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/v1/page/document?id=67319cda412f038163982c21",
+									"raw": "http://localhost:3000/v1/page/document?id=67319cda412f038163982c21",
+									"protocol": "http",
 									"host": [
-										"{{baseUrl}}"
+										"localhost"
 									],
+									"port": "3000",
 									"path": [
 										"v1",
 										"page",
@@ -2169,7 +2171,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/v1/space?id=67271da0834f3bd8da699305",
+							"raw": "{{baseUrl}}/v1/space?id=67271d90834f3bd8da699304",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -2180,7 +2182,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "67271da0834f3bd8da699305"
+									"value": "67271d90834f3bd8da699304"
 								}
 							]
 						}
@@ -2201,10 +2203,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseUrl}}/v1/space?user_id=66cda5dac6886719e3345c19",
+									"raw": "http://localhost:3000/v1/space?user_id=66cda5dac6886719e3345c19",
+									"protocol": "http",
 									"host": [
-										"{{baseUrl}}"
+										"localhost"
 									],
+									"port": "3000",
 									"path": [
 										"v1",
 										"space"
