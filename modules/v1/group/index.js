@@ -27,6 +27,17 @@ export default async (request, response) => {
             return response.status(404).json(formatErrorMessage(error));
         }
 
+        for (const group of result) {
+            const folders = await global.Folder.find({ group_id: group._id }).sort('createdAt ASC');
+            const pageMeta = await global.PageMeta.find({ group_id: group._id }).sort('createdAt ASC');
+
+            let combinedData = [...folders, ...pageMeta];
+
+            combinedData.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
+            group.childs = combinedData;
+        }
+
         response.json(formatSuccessMessage("Groups fetched successfully", result));
     } catch (err) {
         if (err instanceof z.ZodError) {
