@@ -19,7 +19,7 @@ export default async (request, response) => {
 		const mediaAttachments = pageMetaResult.attachments && pageMetaResult.attachments.length > 0
 			? await Promise.all(
 				pageMetaResult.attachments.map(async (attachment) => {
-					return await global.Media.findOne({ reference_id: pageMetaResult._id });
+					return await global.Media.findOne({ _id: attachment });
 				})
 			)
 			: [];
@@ -31,7 +31,7 @@ export default async (request, response) => {
 				const mediaAttachments = comment.attachments && comment.attachments.length > 0
 					? await Promise.all(
 						comment.attachments.map(async (attachment) => {
-							return await global.Media.findOne({ reference_id: comment._id });
+							return await global.Media.findOne({ _id: attachment });
 						})
 					)
 					: [];
