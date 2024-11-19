@@ -28,12 +28,29 @@ export default async (request, response) => {
         if (commentMetaResult.attachments && commentMetaResult.attachments.length > 0) {
             mediaAttachments = await Promise.all(
                 commentMetaResult.attachments.map(async (attachment) => {
-                    return await global.Media.findOne({ reference_id: commentMetaResult._id });
+                    return await global.Media.findOne({ _id: attachment });
                 })
             );
         }
 
-        response.json(formatSuccessMessage("CommentMeta fetched successfully", { ...commentMetaResult, commentContent: commentContentResult, mediaAttachments }));
+        const childComments = await global.CommentMeta.find({ parent_id: validateQuery._id });
+
+        childCommentsWithMeta = await Promise.all(
+            childComments.map(async (childComment) => {
+                const childCommentContent = await global.CommentContent.findOne({ _id: childComment.associate_id });
+                let childMediaAttachments = [];
+                if (childComment.attachments && childComment.attachments.length > 0) {
+                    childMediaAttachments = await Promise.all(
+                        childComment.attachments.map(async (attachment) => {
+                            return await global.Media.findOne({ _id: attachment });
+                        })
+                    );
+                }
+                return { ...childComment, commentContent: childCommentContent, mediaAttachments: childMediaAttachments };
+            })
+        );
+
+        response.json(formatSuccessMessage("CommentMeta fetched successfully", { ...commentMetaResult, commentContent: commentContentResult, mediaAttachments, childs: childCommentsWithMeta }));
     } catch (err) {
         if (err instanceof z.ZodError) {
             // Handle Zod validation errors
