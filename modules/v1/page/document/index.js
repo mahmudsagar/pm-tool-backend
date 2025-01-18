@@ -24,7 +24,7 @@ export default async (request, response) => {
 			)
 			: [];
 
-		const commentsMeta = await global.CommentMeta.find({ page_id: pageMetaResult._id });
+		const commentsMeta = await global.CommentMeta.find({ page_id: pageMetaResult._id, inner_comment: false });
 		const commentsWithMeta = await Promise.all(
 			commentsMeta.map(async (comment) => {
 				const commentContent = await global.CommentContent.findOne({ _id: comment.associate_id });
@@ -40,7 +40,41 @@ export default async (request, response) => {
 
 			})
 		);
-		response.json(formatSuccessMessage("Page data fetched successfully", { ...pageMetaResult, pageContent: pageContentResult, mediaAttachments, comments: commentsWithMeta }));
+
+		// Fetch inner comments
+		const innerComments = await global.CommentMeta.find({ page_id: pageMetaResult._id, inner_comment: true });
+		const innerCommentsWithMeta = await Promise.all(
+			innerComments.map(async (innerComment) => {
+				const innerCommentContent = await global.CommentContent.findOne({ _id: innerComment.associate_id });
+
+				// Fetch child comments for inner comments
+				const childComments = await global.CommentMeta.find({ parent_id: innerComment._id });
+				const childCommentsWithMeta = await Promise.all(
+					childComments.map(async (childComment) => {
+						const childCommentContent = await global.CommentContent.findOne({ _id: childComment.associate_id });
+						const childMediaAttachments = childComment.attachments && childComment.attachments.length > 0
+							? await Promise.all(
+								childComment.attachments.map(async (attachment) => {
+									return await global.Media.findOne({ _id: attachment });
+								})
+							)
+							: [];
+						return { ...childComment, commentContent: childCommentContent, mediaAttachments: childMediaAttachments };
+					})
+				);
+
+				return { ...innerComment, commentContent: innerCommentContent, childComments: childCommentsWithMeta };
+			})
+		);
+
+		response.json(formatSuccessMessage("Page data fetched successfully",
+			{
+				...pageMetaResult,
+				pageContent: pageContentResult,
+				mediaAttachments,
+				comments: commentsWithMeta,
+				innerComments: innerCommentsWithMeta
+			}));
 	} catch (err) {
 		if (err instanceof z.ZodError) {
 			const formattedErrors = formatZodErrors(err.errors);
