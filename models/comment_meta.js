@@ -14,6 +14,7 @@ const CommentMeta = Waterline.Collection.extend({
         comment_body: { type: 'string', required: true },
         attachments: { type: 'json', defaultsTo: [] },
         has_childs: { type: 'boolean', defaultsTo: false },
+        inner_comment: { type: 'boolean', defaultsTo: false },
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },
     }
