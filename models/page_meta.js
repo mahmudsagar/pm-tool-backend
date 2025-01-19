@@ -21,6 +21,7 @@ const PageMeta = Waterline.Collection.extend({
         last_updated_by: { type: 'string' },
         pinned: { type: 'boolean', defaultsTo: false },
         entity_type: { type: 'string', defaultsTo: 'page' },
+        inner_comments: { type: 'json', defaultsTo: [] },
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },
     },

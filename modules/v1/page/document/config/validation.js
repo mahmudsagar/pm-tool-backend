@@ -55,6 +55,7 @@ export const postPageMetaSchema = z.object({
     page_type: z.enum(['document', 'sheet', 'whiteboard'], {
         errorMap: () => ({ message: 'Invalid page type. Allowed types are document, sheet, and whiteboard.' })
     }),
+    inner_comments: z.array(z.any()).optional(),
     last_updated_by: z.string().optional(),
     entity_type: z.string().optional(),
 }).refine(data => {
@@ -129,6 +130,7 @@ export const putPageMetaSchema = z.object({
     last_updated_by: z.string().optional(),
     pinned: z.boolean().optional(),
     entity_type: z.string().optional(),
+    inner_comments: z.array(z.any()).optional(),
 }).refine(data => {
     const { folder_id, space_id, group_id } = data;
     const keys = [folder_id, space_id, group_id];
