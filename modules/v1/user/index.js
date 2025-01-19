@@ -8,6 +8,7 @@ export default async (request, response) => {
         const { id } = request.query;
 
         let result;
+        let mediaAttachments = [];
         if (id) {
             // Validate the _id if present in query
             const validatedParams = getUserSchema.parse({ _id: id });
@@ -17,12 +18,18 @@ export default async (request, response) => {
             if (!result) {
                 return response.status(404).json(formatErrorMessage('User not found'));
             }
+
+            // Fetch media attachments
+            mediaAttachments = await Promise.all(result.attachments.map(async (attachment) => {
+                return await global.Media.findOne({ _id: attachment });
+            }));
+
         } else {
             // Fetch all data
             result = await global.User.find();
         }
 
-        response.json(formatSuccessMessage("Users fetched successfully", result));
+        response.json(formatSuccessMessage("Users fetched successfully", { ...result, mediaAttachments }));
     } catch (err) {
         if (err instanceof z.ZodError) {
             // Handle Zod validation errors

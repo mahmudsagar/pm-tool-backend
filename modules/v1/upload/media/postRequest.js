@@ -93,6 +93,15 @@ export default async (request, response) => {
             commentMeta.attachments = commentMeta.attachments || [];
             commentMeta.attachments.push(result._id);
             await global.CommentMeta.updateOne({ _id: reference_id }).set({ attachments: commentMeta.attachments });
+        } else if (reference_for === 'user') {
+            const user = await global.User.findOne({ _id: reference_id });
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            user.attachments = user.attachments || [];
+            user.attachments.push(result._id);
+            await global.User.updateOne({ _id: reference_id }).set({ attachments: user.attachments });
         } else {
             throw new Error('Invalid reference_for value. Allowed values are page and comment.');
         }

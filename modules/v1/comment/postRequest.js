@@ -43,7 +43,20 @@ export default async (request, response) => {
         // Save the validated comment_meta data to MongoDB
         const commentMetaResult = await global.CommentMeta.create(commentMetaData).fetch();
 
-        response.json(formatSuccessMessage("CommentMeta created successfully", { ...commentMetaResult, commentContent: commentContentResult }));
+        // Returning user and media attachments of user for each comment
+        const user = await global.User.findOne({ _id: body.user_id });
+        const userMediaAttachments = await Promise.all(user.attachments.map(async (attachment) => {
+            return await global.Media.findOne({ _id: attachment });
+        }));
+
+        response.json(formatSuccessMessage("CommentMeta created successfully",
+            {
+                ...commentMetaResult, commentContent: commentContentResult,
+                userInfo: {
+                    name: user.full_name,
+                    url: userMediaAttachments?.length > 0 ? userMediaAttachments[0]?.url : ''
+                }
+            }));
     } catch (err) {
         if (err instanceof z.ZodError) {
             // Handle Zod validation errors

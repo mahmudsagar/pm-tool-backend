@@ -21,6 +21,12 @@ export default async (request, response) => {
             return response.status(404).json(formatErrorMessage('CommentMeta not found'));
         }
 
+        // Returning user and media attachments of user for each comment
+        const user = await global.User.findOne({ _id: commentMetaResult.user_id });
+        const userMediaAttachments = await Promise.all(user.attachments.map(async (attachment) => {
+            return await global.Media.findOne({ _id: attachment });
+        }));
+
         // Fetch CommentContent by associate_id
         commentContentResult = await global.CommentContent.findOne({ _id: commentMetaResult.associate_id });
 
@@ -37,6 +43,12 @@ export default async (request, response) => {
 
         childCommentsWithMeta = await Promise.all(
             childComments.map(async (childComment) => {
+                // Returning user and media attachments of user for each comment
+                const user = await global.User.findOne({ _id: childComment.user_id });
+                const userMediaAttachments = await Promise.all(user.attachments.map(async (attachment) => {
+                    return await global.Media.findOne({ _id: attachment });
+                }));
+
                 const childCommentContent = await global.CommentContent.findOne({ _id: childComment.associate_id });
                 let childMediaAttachments = [];
                 if (childComment.attachments && childComment.attachments.length > 0) {
@@ -46,11 +58,26 @@ export default async (request, response) => {
                         })
                     );
                 }
-                return { ...childComment, commentContent: childCommentContent, mediaAttachments: childMediaAttachments };
+                return {
+                    ...childComment, commentContent: childCommentContent, mediaAttachments: childMediaAttachments,
+                    userInfo: {
+                        name: user.full_name,
+                        url: userMediaAttachments?.length > 0 ? userMediaAttachments[0]?.url : ''
+                    }
+                };
             })
         );
 
-        response.json(formatSuccessMessage("CommentMeta fetched successfully", { ...commentMetaResult, commentContent: commentContentResult, mediaAttachments, childs: childCommentsWithMeta }));
+        response.json(formatSuccessMessage("CommentMeta fetched successfully", {
+            ...commentMetaResult,
+            userInfo: {
+                name: user.full_name,
+                url: userMediaAttachments?.length > 0 ? userMediaAttachments[0]?.url : ''
+            },
+            commentContent: commentContentResult,
+            mediaAttachments,
+            childs: childCommentsWithMeta
+        }));
     } catch (err) {
         if (err instanceof z.ZodError) {
             // Handle Zod validation errors

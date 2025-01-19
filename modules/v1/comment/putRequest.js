@@ -64,7 +64,20 @@ export default async (request, response) => {
             );
         }
 
-        response.json(formatSuccessMessage("CommentMeta updated successfully", { ...commentMetaResult, commentContent: commentContentResult, mediaAttachments }));
+        // Returning user and media attachments of user for each comment
+        const user = await global.User.findOne({ _id: commentMetaResult.user_id });
+        const userMediaAttachments = await Promise.all(user.attachments.map(async (attachment) => {
+            return await global.Media.findOne({ _id: attachment });
+        }));
+
+        response.json(formatSuccessMessage("CommentMeta updated successfully",
+            {
+                ...commentMetaResult, commentContent: commentContentResult, mediaAttachments,
+                userInfo: {
+                    name: user.full_name,
+                    url: userMediaAttachments?.length > 0 ? userMediaAttachments[0]?.url : ''
+                }
+            }));
     } catch (err) {
         if (err instanceof z.ZodError) {
             // Handle Zod validation errors
