@@ -41,7 +41,6 @@ export const postCommentMetaSchema = z.object({
     attachments: z.array(z.string().refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     })).optional(),
-    inner_comment: z.boolean().optional(),
 }).refine(data => {
     const { page_id, parent_id } = data;
     const keys = [page_id, parent_id];
@@ -91,19 +90,6 @@ export const putCommentMetaSchema = z.object({
     attachments: z.array(z.string().refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     })).optional(),
-});
-
-
-export const putInnerCommentMetaSchema = z.object({
-    _id: z.string().refine(isValidObjectId, {
-        message: "Invalid MongoDB ObjectId",
-    }).optional(),
-    parent_id: z.string().optional(),
-    comment_body: z.string().optional(),
-    attachments: z.array(z.string().refine(isValidObjectId, {
-        message: "Invalid MongoDB ObjectId",
-    })).optional(),
-    inner_comment: z.boolean().optional(),
 });
 
 export const getCommentMetaSchema = z.object({
