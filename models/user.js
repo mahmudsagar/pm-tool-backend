@@ -10,7 +10,8 @@ const User = Waterline.Collection.extend({
         email: { type: 'string', required: true },
         first_name: { type: 'string', required: true },
         last_name: { type: 'string', required: true },
-        full_name: { type: 'string', required: true }
+        full_name: { type: 'string', required: true },
+        attachments: { type: 'json', defaultsTo: [] }
     }
 });
 

@@ -74,20 +74,24 @@
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
 									"key": "content-type",
 									"value": "application/json; charset=utf-8"
 								},
 								{
 									"key": "Date",
-									"value": "Tue, 27 Aug 2024 10:14:53 GMT"
+									"value": "Sun, 19 Jan 2025 06:36:59 GMT"
 								},
 								{
 									"key": "Content-Length",
-									"value": "190"
+									"value": "638"
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"66cda5dac6886719e3345c19\",\n        \"email\": \"mdmuhtasim.fahim@gmail.com\",\n        \"first_name\": \"Md. Muhtasim\",\n        \"last_name\": \"Fuad Fahim\",\n        \"full_name\": \"Md. Muhtasim Fuad Fahim\"\n    }\n}"
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Users fetched successfully\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"_id\": \"66cda5dac6886719e3345c19\",\n        \"email\": \"mdmuhtasim.fahim@gmail.com\",\n        \"first_name\": \"Md. Muhtasim\",\n        \"last_name\": \"Fuad Fahim\",\n        \"full_name\": \"Md. Muhtasim Fuad Fahim\",\n        \"attachments\": [\n            \"678c9cb8b2c2a34372845fba\"\n        ],\n        \"mediaAttachments\": [\n            {\n                \"_id\": \"678c9cb8b2c2a34372845fba\",\n                \"reference_id\": \"66cda5dac6886719e3345c19\",\n                \"media_type\": \"comment_attachment\",\n                \"url\": \"https://cdn.lamith.com/1737268406677_4k-programming.jpg\",\n                \"caption\": \"Protfie Picture\",\n                \"description\": \"File Description\",\n                \"meta_data\": {},\n                \"createdAt\": \"2025-01-19T06:33:28.988Z\",\n                \"updatedAt\": \"2025-01-19T06:33:28.988Z\"\n            }\n        ]\n    }\n}"
 						},
 						{
 							"name": "get users",
@@ -1623,6 +1627,53 @@
 					},
 					"response": [
 						{
+							"name": "Page with user name and media",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/v1/page/document?id=678c7c3b5a98b2bca3af4c02",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"page",
+										"document"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "678c7c3b5a98b2bca3af4c02"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 19 Jan 2025 06:49:51 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "5123"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Page data fetched successfully\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"_id\": \"678c7c3b5a98b2bca3af4c02\",\n        \"title\": \"Test Document for Inner Comment\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"folder_id\": \"\",\n        \"space_id\": \"67271da0834f3bd8da699305\",\n        \"group_id\": \"\",\n        \"page_content_id\": \"678c7c3b5a98b2bca3af4c01\",\n        \"custom_meta\": {\n            \"values\": {\n                \"dep8rw\": \"dgfgdf\",\n                \"360od\": \"ttt hoise\",\n                \"hxor82\": [\n                    \"fdgfdg\"\n                ],\n                \"a8pd6e\": [\n                    \"ghfghfgh\",\n                    \"drfh\"\n                ],\n                \"a2xtc\": \"dfgdsgdfs\",\n                \"s5isqs\": \"2024-11-29T18:00:00.000Z\",\n                \"iwu72u\": \"2024-11-21T18:00:00.000Z\"\n            },\n            \"fields\": [\n                {\n                    \"type\": \"multiSelect\",\n                    \"initialized\": true,\n                    \"label\": \"Multi Select\",\n                    \"name\": \"hxor82\",\n                    \"hasOptions\": true,\n                    \"options\": [\n                        {\n                            \"value\": \"dsfgsdg\",\n                            \"label\": \"dsfgsdg\"\n                        },\n                        {\n                            \"value\": \"fdgfdg\",\n                            \"label\": \"fdgfdg\"\n                        }\n                    ]\n                },\n                {\n                    \"type\": \"select\",\n                    \"initialized\": true,\n                    \"label\": \"Select\",\n                    \"name\": \"360od\",\n                    \"hasOptions\": true,\n                    \"options\": [\n                        {\n                            \"value\": \"ttt hoise\",\n                            \"label\": \"ttt hoise\"\n                        },\n                        {\n                            \"value\": \"t\",\n                            \"label\": \"t\"\n                        }\n                    ]\n                },\n                {\n                    \"type\": \"date\",\n                    \"initialized\": true,\n                    \"label\": \"Date\",\n                    \"name\": \"iwu72u\",\n                    \"hasOptions\": false\n                },\n                {\n                    \"type\": \"daterange\",\n                    \"initialized\": true,\n                    \"label\": \"Date Range\",\n                    \"name\": \"gv7pzg\",\n                    \"hasOptions\": false\n                },\n                {\n                    \"type\": \"select\",\n                    \"initialized\": true,\n                    \"label\": \"Select\",\n                    \"name\": \"a2xtc\",\n                    \"hasOptions\": true,\n                    \"options\": [\n                        {\n                            \"value\": \"dfgdsgdfs\",\n                            \"label\": \"dfgdsgdfs\"\n                        },\n                        {\n                            \"value\": \"gfdgdfg\",\n                            \"label\": \"gfdgdfg\"\n                        }\n                    ]\n                },\n                {\n                    \"type\": \"date\",\n                    \"initialized\": true,\n                    \"label\": \"Date\",\n                    \"name\": \"s5isqs\",\n                    \"hasOptions\": false\n                }\n            ]\n        },\n        \"shared_members\": [],\n        \"shared_teams\": [],\n        \"attachments\": [],\n        \"page_type\": \"document\",\n        \"last_updated_by\": \"66cda5dac6886719e3345c19\",\n        \"pinned\": false,\n        \"entity_type\": \"page\",\n        \"inner_comments\": [\n            {\n                \"comments\": [\n                    {\n                        \"content\": \"ok\",\n                        \"deleted\": false,\n                        \"id\": \"ilyhz\",\n                        \"timeStamp\": 1737202229013.4,\n                        \"type\": \"comment\"\n                    }\n                ],\n                \"id\": \"yjhxk\",\n                \"quote\": \" idsdn\",\n                \"type\": \"thread\"\n            },\n            {\n                \"comments\": [\n                    {\n                        \"content\": \"ok 2\",\n                        \"deleted\": false,\n                        \"id\": \"ilyhz\",\n                        \"timeStamp\": 1737202229013.4,\n                        \"type\": \"comment\"\n                    }\n                ],\n                \"id\": \"yjhxk\",\n                \"quote\": \" idsdn\",\n                \"type\": \"thread\"\n            }\n        ],\n        \"createdAt\": \"2025-01-19T04:14:51.660Z\",\n        \"updatedAt\": \"2025-01-19T04:17:05.779Z\",\n        \"pageContent\": {\n            \"_id\": \"678c7c3b5a98b2bca3af4c01\",\n            \"user_id\": \"66cda5dac6886719e3345c19\",\n            \"content\": \"{\\\"root\\\":{\\\"children\\\":[{\\\"children\\\":[{\\\"children\\\":[{\\\"detail\\\":0,\\\"format\\\":0,\\\"mode\\\":\\\"normal\\\",\\\"style\\\":\\\"\\\",\\\"text\\\":\\\"sdgdgdfgdf\\\",\\\"type\\\":\\\"text\\\",\\\"version\\\":1}],\\\"direction\\\":\\\"ltr\\\",\\\"format\\\":\\\"\\\",\\\"indent\\\":0,\\\"type\\\":\\\"mark\\\",\\\"version\\\":1,\\\"ids\\\":[\\\"tklhm\\\",\\\"wttgo\\\"]},{\\\"children\\\":[{\\\"detail\\\":0,\\\"format\\\":0,\\\"mode\\\":\\\"normal\\\",\\\"style\\\":\\\"\\\",\\\"text\\\":\\\" \\\",\\\"type\\\":\\\"text\\\",\\\"version\\\":1}],\\\"direction\\\":null,\\\"format\\\":\\\"\\\",\\\"indent\\\":0,\\\"type\\\":\\\"mark\\\",\\\"version\\\":1,\\\"ids\\\":[\\\"tklhm\\\"]},{\\\"children\\\":[{\\\"detail\\\":0,\\\"format\\\":0,\\\"mode\\\":\\\"normal\\\",\\\"style\\\":\\\"\\\",\\\"text\\\":\\\"jktgyjhfghjgjkhkj\\\",\\\"type\\\":\\\"text\\\",\\\"version\\\":1}],\\\"direction\\\":\\\"ltr\\\",\\\"format\\\":\\\"\\\",\\\"indent\\\":0,\\\"type\\\":\\\"mark\\\",\\\"version\\\":1,\\\"ids\\\":[\\\"eptwq\\\",\\\"hpsfh\\\"]},{\\\"detail\\\":0,\\\"format\\\":0,\\\"mode\\\":\\\"normal\\\",\\\"style\\\":\\\"\\\",\\\"text\\\":\\\";\\\",\\\"type\\\":\\\"text\\\",\\\"version\\\":1},{\\\"children\\\":[{\\\"detail\\\":0,\\\"format\\\":0,\\\"mode\\\":\\\"normal\\\",\\\"style\\\":\\\"\\\",\\\"text\\\":\\\"k'l\\\",\\\"type\\\":\\\"text\\\",\\\"version\\\":1}],\\\"direction\\\":\\\"ltr\\\",\\\"format\\\":\\\"\\\",\\\"indent\\\":0,\\\"type\\\":\\\"mark\\\",\\\"version\\\":1,\\\"ids\\\":[\\\"ykmig\\\"]},{\\\"detail\\\":0,\\\"format\\\":0,\\\"mode\\\":\\\"normal\\\",\\\"style\\\":\\\"\\\",\\\"text\\\":\\\";\\\",\\\"type\\\":\\\"text\\\",\\\"version\\\":1}],\\\"direction\\\":\\\"ltr\\\",\\\"format\\\":\\\"\\\",\\\"indent\\\":0,\\\"type\\\":\\\"paragraph\\\",\\\"version\\\":1,\\\"textFormat\\\":0,\\\"textStyle\\\":\\\"\\\"},{\\\"children\\\":[{\\\"children\\\":[{\\\"detail\\\":0,\\\"format\\\":0,\\\"mode\\\":\\\"normal\\\",\\\"style\\\":\\\"\\\",\\\"text\\\":\\\"hgjhg\\\",\\\"type\\\":\\\"text\\\",\\\"version\\\":1}],\\\"direction\\\":\\\"ltr\\\",\\\"format\\\":\\\"\\\",\\\"indent\\\":0,\\\"type\\\":\\\"mark\\\",\\\"version\\\":1,\\\"ids\\\":[\\\"ksjox\\\",\\\"fhlof\\\"]}],\\\"direction\\\":\\\"ltr\\\",\\\"format\\\":\\\"\\\",\\\"indent\\\":0,\\\"type\\\":\\\"paragraph\\\",\\\"version\\\":1,\\\"textFormat\\\":0,\\\"textStyle\\\":\\\"\\\"},{\\\"children\\\":[],\\\"direction\\\":null,\\\"format\\\":\\\"\\\",\\\"indent\\\":0,\\\"type\\\":\\\"paragraph\\\",\\\"version\\\":1,\\\"textFormat\\\":0,\\\"textStyle\\\":\\\"\\\"},{\\\"children\\\":[],\\\"direction\\\":null,\\\"format\\\":\\\"\\\",\\\"indent\\\":0,\\\"type\\\":\\\"paragraph\\\",\\\"version\\\":1,\\\"textFormat\\\":0,\\\"textStyle\\\":\\\"\\\"},{\\\"children\\\":[],\\\"direction\\\":\\\"ltr\\\",\\\"format\\\":\\\"\\\",\\\"indent\\\":0,\\\"type\\\":\\\"paragraph\\\",\\\"version\\\":1,\\\"textFormat\\\":0,\\\"textStyle\\\":\\\"\\\"}],\\\"direction\\\":null,\\\"format\\\":\\\"\\\",\\\"indent\\\":0,\\\"type\\\":\\\"root\\\",\\\"version\\\":1}}\",\n            \"summary\": \"\"\n        },\n        \"mediaAttachments\": [],\n        \"comments\": [\n            {\n                \"_id\": \"678c9f15d77676712d4fba66\",\n                \"user_id\": \"66cda5dac6886719e3345c19\",\n                \"page_id\": \"678c7c3b5a98b2bca3af4c02\",\n                \"parent_id\": \"\",\n                \"associate_id\": \"\",\n                \"comment_body\": \"Comment for testing\",\n                \"attachments\": [],\n                \"has_childs\": false,\n                \"createdAt\": \"2025-01-19T06:43:33.129Z\",\n                \"updatedAt\": \"2025-01-19T06:43:33.129Z\",\n                \"mediaAttachments\": [],\n                \"userInfo\": {\n                    \"name\": \"Md. Muhtasim Fuad Fahim\",\n                    \"url\": \"https://cdn.lamith.com/1737268406677_4k-programming.jpg\"\n                }\n            },\n            {\n                \"_id\": \"678c9f784cb8920a7292b620\",\n                \"user_id\": \"66cda5dac6886719e3345c19\",\n                \"page_id\": \"678c7c3b5a98b2bca3af4c02\",\n                \"parent_id\": \"\",\n                \"associate_id\": \"\",\n                \"comment_body\": \"Comment for testing 2\",\n                \"attachments\": [],\n                \"has_childs\": true,\n                \"createdAt\": \"2025-01-19T06:45:12.438Z\",\n                \"updatedAt\": \"2025-01-19T06:45:29.591Z\",\n                \"mediaAttachments\": [],\n                \"userInfo\": {\n                    \"name\": \"Md. Muhtasim Fuad Fahim\",\n                    \"url\": \"https://cdn.lamith.com/1737268406677_4k-programming.jpg\"\n                }\n            }\n        ]\n    }\n}"
+						},
+						{
 							"name": "Page with inner comment",
 							"originalRequest": {
 								"method": "GET",
@@ -3054,13 +3105,13 @@
 								},
 								{
 									"key": "caption",
-									"value": "Comment photo",
+									"value": "Protfie Picture",
 									"description": "// mandatory",
 									"type": "text"
 								},
 								{
 									"key": "reference_id",
-									"value": "6731c37bfb8a7f0a9d511cc4",
+									"value": "66cda5dac6886719e3345c19",
 									"description": "// comment id or page id",
 									"type": "text"
 								},
@@ -3083,7 +3134,7 @@
 								},
 								{
 									"key": "reference_for",
-									"value": "comment",
+									"value": "user",
 									"description": "// page or comment",
 									"type": "text"
 								}
@@ -3443,6 +3494,93 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"status\": \"failed\",\n    \"message\": [\n        {\n            \"error\": [\n                [\n                    \"Required at reference_id\",\n                    \"Invalid reference_for value. Allowed values are page and comment. at reference_for\",\n                    \"Invalid media type. Allowed types are cover_photo, comment_attachment and icon. at media_type\"\n                ]\n            ]\n        }\n    ]\n}"
+						},
+						{
+							"name": "Media for User",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "media_type",
+											"value": "comment_attachment",
+											"description": "// mandatory >> it would be cover_photo / icon / comment_attachment",
+											"type": "text"
+										},
+										{
+											"key": "caption",
+											"value": "Protfie Picture",
+											"description": "// mandatory",
+											"type": "text"
+										},
+										{
+											"key": "reference_id",
+											"value": "66cda5dac6886719e3345c19",
+											"description": "// comment id or page id",
+											"type": "text"
+										},
+										{
+											"key": "meta_data",
+											"value": "{\"a\": \"b\"}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "description",
+											"value": "File Description",
+											"type": "text"
+										},
+										{
+											"key": "file",
+											"description": "// mandatory",
+											"type": "file",
+											"src": "postman-cloud:///1eedaf6f-66be-4460-aa67-1a00e1a23009"
+										},
+										{
+											"key": "reference_for",
+											"value": "user",
+											"description": "// page or comment",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/upload/media",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"upload",
+										"media"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 19 Jan 2025 06:33:28 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "411"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Media created successfully\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"_id\": \"678c9cb8b2c2a34372845fba\",\n        \"reference_id\": \"66cda5dac6886719e3345c19\",\n        \"media_type\": \"comment_attachment\",\n        \"url\": \"https://cdn.lamith.com/1737268406677_4k-programming.jpg\",\n        \"caption\": \"Protfie Picture\",\n        \"description\": \"File Description\",\n        \"meta_data\": {},\n        \"createdAt\": \"2025-01-19T06:33:28.988Z\",\n        \"updatedAt\": \"2025-01-19T06:33:28.988Z\"\n    }\n}"
 						}
 					]
 				},
@@ -3821,7 +3959,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"page_id\": \"6731a3afa3fbe52f1b0dab8c\",\n\t\"user_id\": \"66cda5dac6886719e3345c19\",\n\t\"comment_body\": \"Comment for testing\"\n}",
+							"raw": "{\n\t\"parent_id\": \"678c9f894cb8920a7292b621\",\n\t\"user_id\": \"66cda5dac6886719e3345c19\",\n\t\"comment_body\": \"Comment for testing 2\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3840,6 +3978,55 @@
 						}
 					},
 					"response": [
+						{
+							"name": "Comment with user name and media",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"parent_id\": \"678c9f894cb8920a7292b621\",\n\t\"user_id\": \"66cda5dac6886719e3345c19\",\n\t\"comment_body\": \"Comment for testing 2\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/comment",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"comment"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 19 Jan 2025 06:56:53 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "513"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"CommentMeta created successfully\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"_id\": \"678ca235f11fc55d338793f9\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"page_id\": \"\",\n        \"parent_id\": \"678c9f894cb8920a7292b621\",\n        \"associate_id\": \"\",\n        \"comment_body\": \"Comment for testing 2\",\n        \"attachments\": [],\n        \"has_childs\": false,\n        \"createdAt\": \"2025-01-19T06:56:53.526Z\",\n        \"updatedAt\": \"2025-01-19T06:56:53.526Z\",\n        \"commentContent\": {},\n        \"userInfo\": {\n            \"name\": \"Md. Muhtasim Fuad Fahim\",\n            \"url\": \"https://cdn.lamith.com/1737268406677_4k-programming.jpg\"\n        }\n    }\n}"
+						},
 						{
 							"name": "comment for page / parent comment",
 							"originalRequest": {
@@ -3996,7 +4183,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\": \"6731c37bfb8a7f0a9d511cc4\",\n    \"content\": {\n        \"icon\": \"TimeMonitoringLiner\",\n        \"_id\": \"123abc\",\n        \"value\": 41,\n        \"title\": \"Sick Leave\",\n        \"sub_text\": \"days available\",\n        \"footer_text\": \"Total Leave 40 Days\"\n    }\n}",
+							"raw": "{\n    \"id\": \"678ca235f11fc55d338793f9\",\n    \"content\": {\n        \"icon\": \"TimeMonitoringLiner\",\n        \"_id\": \"123abc\",\n        \"value\": 41,\n        \"title\": \"Sick Leave\",\n        \"sub_text\": \"days available\",\n        \"footer_text\": \"Total Leave 40 Days\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4015,6 +4202,55 @@
 						}
 					},
 					"response": [
+						{
+							"name": "Comment with user name and media",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"678ca235f11fc55d338793f9\",\n    \"content\": {\n        \"icon\": \"TimeMonitoringLiner\",\n        \"_id\": \"123abc\",\n        \"value\": 41,\n        \"title\": \"Sick Leave\",\n        \"sub_text\": \"days available\",\n        \"footer_text\": \"Total Leave 40 Days\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/comment",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"comment"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 19 Jan 2025 06:58:36 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "756"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"CommentMeta updated successfully\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"_id\": \"678ca235f11fc55d338793f9\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"page_id\": \"\",\n        \"parent_id\": \"678c9f894cb8920a7292b621\",\n        \"associate_id\": \"678ca29c3ba93c31f8db0970\",\n        \"comment_body\": \"Comment for testing 2\",\n        \"attachments\": [],\n        \"has_childs\": false,\n        \"createdAt\": \"2025-01-19T06:56:53.526Z\",\n        \"updatedAt\": \"2025-01-19T06:58:36.859Z\",\n        \"commentContent\": {\n            \"_id\": \"678ca29c3ba93c31f8db0970\",\n            \"user_id\": \"\",\n            \"content\": {\n                \"icon\": \"TimeMonitoringLiner\",\n                \"_id\": \"123abc\",\n                \"value\": 41,\n                \"title\": \"Sick Leave\",\n                \"sub_text\": \"days available\",\n                \"footer_text\": \"Total Leave 40 Days\"\n            }\n        },\n        \"mediaAttachments\": [],\n        \"userInfo\": {\n            \"name\": \"Md. Muhtasim Fuad Fahim\",\n            \"url\": \"https://cdn.lamith.com/1737268406677_4k-programming.jpg\"\n        }\n    }\n}"
+						},
 						{
 							"name": "update comment with content",
 							"originalRequest": {
@@ -4072,7 +4308,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/v1/comment?id=6731c2668b10fa5567f2a863",
+							"raw": "{{baseUrl}}/v1/comment?id=678c9f784cb8920a7292b620",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -4083,12 +4319,58 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "6731c2668b10fa5567f2a863"
+									"value": "678c9f784cb8920a7292b620"
 								}
 							]
 						}
 					},
 					"response": [
+						{
+							"name": "Comment with user name and media",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/v1/comment?id=678c9f784cb8920a7292b620",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"comment"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "678c9f784cb8920a7292b620"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 19 Jan 2025 06:54:42 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "951"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"CommentMeta fetched successfully\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"_id\": \"678c9f784cb8920a7292b620\",\n        \"user_id\": \"66cda5dac6886719e3345c19\",\n        \"page_id\": \"678c7c3b5a98b2bca3af4c02\",\n        \"parent_id\": \"\",\n        \"associate_id\": \"\",\n        \"comment_body\": \"Comment for testing 2\",\n        \"attachments\": [],\n        \"has_childs\": true,\n        \"createdAt\": \"2025-01-19T06:45:12.438Z\",\n        \"updatedAt\": \"2025-01-19T06:45:29.591Z\",\n        \"userInfo\": {\n            \"name\": \"Md. Muhtasim Fuad Fahim\",\n            \"url\": \"https://cdn.lamith.com/1737268406677_4k-programming.jpg\"\n        },\n        \"mediaAttachments\": [],\n        \"childs\": [\n            {\n                \"_id\": \"678c9f894cb8920a7292b621\",\n                \"user_id\": \"66cda5dac6886719e3345c19\",\n                \"page_id\": \"\",\n                \"parent_id\": \"678c9f784cb8920a7292b620\",\n                \"associate_id\": \"\",\n                \"comment_body\": \"Comment for testing 2\",\n                \"attachments\": [],\n                \"has_childs\": true,\n                \"createdAt\": \"2025-01-19T06:45:29.846Z\",\n                \"updatedAt\": \"2025-01-19T06:45:36.368Z\",\n                \"mediaAttachments\": [],\n                \"userInfo\": {\n                    \"name\": \"Md. Muhtasim Fuad Fahim\",\n                    \"url\": \"https://cdn.lamith.com/1737268406677_4k-programming.jpg\"\n                }\n            }\n        ]\n    }\n}"
+						},
 						{
 							"name": "comment with content, child and attachments",
 							"originalRequest": {

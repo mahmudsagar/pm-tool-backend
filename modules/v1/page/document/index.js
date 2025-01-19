@@ -27,6 +27,13 @@ export default async (request, response) => {
 		const commentsMeta = await global.CommentMeta.find({ page_id: pageMetaResult._id });
 		const commentsWithMeta = await Promise.all(
 			commentsMeta.map(async (comment) => {
+				// Returning user and media attachments of user for each comment
+				const user = await global.User.findOne({ _id: comment.user_id });
+				const userMediaAttachments = await Promise.all(user.attachments.map(async (attachment) => {
+					return await global.Media.findOne({ _id: attachment });
+				}));
+
+				// Returning comment content and media attachments of comments for each comment
 				const commentContent = await global.CommentContent.findOne({ _id: comment.associate_id });
 				const mediaAttachments = comment.attachments && comment.attachments.length > 0
 					? await Promise.all(
@@ -36,8 +43,13 @@ export default async (request, response) => {
 					)
 					: [];
 
-				return { ...comment, commentContent, mediaAttachments };
-
+				return {
+					...comment, commentContent, mediaAttachments,
+					userInfo: {
+						name: user.full_name,
+						url: userMediaAttachments?.length > 0 ? userMediaAttachments[0]?.url : ''
+					}
+				};
 			})
 		);
 
