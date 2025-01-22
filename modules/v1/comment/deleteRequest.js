@@ -28,9 +28,9 @@ export default async (request, response) => {
 
         // Delete the comment_content by _id from MongoDB
         const commentContentResult = await global.CommentContent.destroyOne({ _id: commentMeta.associate_id });
-        if (!commentContentResult) {
-            return response.status(404).json(formatErrorMessage('Comment content not found'));
-        }
+        // if (!commentContentResult) {
+        //     return response.status(404).json(formatErrorMessage('Comment content not found'));
+        // }
 
         // Find the corresponding comment by _id
         if (commentMeta.has_childs) {
