@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import Waterline from 'waterline';
 import sailsDiskAdapter from 'sails-disk';
 import mongoAdapter from 'sails-mongo';
-// import User from '../models/user.model';
+import userModel from '../models/user.js';
 // .env connected
 dotenv.config();
 
