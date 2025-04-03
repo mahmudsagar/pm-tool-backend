@@ -1,18 +1,37 @@
 import Waterline from 'waterline';
+import bcrypt from 'bcrypt';
 
 const User = Waterline.Collection.extend({
     identity: 'user',
     datastore: 'default',
-    primaryKey: '_id',
+    primaryKey: 'id',
 
     attributes: {
-        _id: { type: 'string', columnName: '_id', autoMigrations: { autoIncrement: false } },
+        id: { type: 'string', columnName: '_id' },
         email: { type: 'string', required: true },
-        first_name: { type: 'string', required: true },
-        last_name: { type: 'string', required: true },
-        full_name: { type: 'string', required: true },
-        attachments: { type: 'json', defaultsTo: [] }
+        password: { type: 'string', required: true }
+    },
+
+    // Add indexes at the model level instead of on individual attributes
+    indexes: [
+        { attributes: { email: 1 }, unique: true }
+    ],
+
+    // Lifecycle callback to hash password before creating a user
+    beforeCreate: async function (values, proceed) {
+        try {
+            const salt = await bcrypt.genSalt(10);
+            values.password = await bcrypt.hash(values.password, salt);
+            return proceed();
+        } catch (error) {
+            return proceed(error);
+        }
     }
 });
 
 export default User;
+
+// Add a standalone helper function for password verification
+export const verifyPassword = async (user, password) => {
+    return bcrypt.compare(password, user.password);
+};
