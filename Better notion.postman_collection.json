@@ -26,10 +26,20 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/v1/user?id=66cda5dac6886719e3345c19",
+							"raw": "{{baseUrl}}/v1/user?id=67f7adb41a84e462d190432a",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -40,7 +50,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "66cda5dac6886719e3345c19"
+									"value": "67f7adb41a84e462d190432a"
 								}
 							]
 						},
@@ -130,6 +140,212 @@
 							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"_id\": \"66cda5dac6886719e3345c19\",\n            \"email\": \"mdmuhtasim.fahim@gmail.com\",\n            \"first_name\": \"Md. Muhtasim\",\n            \"last_name\": \"Fuad Fahim\",\n            \"full_name\": \"Md. Muhtasim Fuad Fahim\"\n        },\n        {\n            \"_id\": \"66e404cf089aef7c495015f4\",\n            \"email\": \"muhtasim.fahim.98@gmail.com\",\n            \"first_name\": \"Md. Muhtasim\",\n            \"last_name\": \"Fuad Fahim\",\n            \"full_name\": \"Md. Muhtasim Fuad Fahim\"\n        }\n    ]\n}"
 						}
 					]
+				},
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Ornab\",\n    \"email\": \"fahim908@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "register user",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Ornab\",\n    \"email\": \"muhtasim.fahim@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/register",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"register"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET, POST, PUT, DELETE, OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 10 Apr 2025 10:21:06 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "405"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Registration successful\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"user_info\": {\n            \"id\": \"67f79b93c9fa4ac56d5f48b1\",\n            \"name\": \"Ornab\",\n            \"email\": \"muhtasim.fahim@gmail.com\"\n        },\n        \"token\": \"{{vault:json-web-token}}\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"fahim908@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "login user",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"muhtasim.fahim@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET, POST, PUT, DELETE, OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 10 Apr 2025 10:44:43 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "398"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Login successful\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"user_info\": {\n            \"id\": \"67f79b93c9fa4ac56d5f48b1\",\n            \"name\": \"Ornab\",\n            \"email\": \"muhtasim.fahim@gmail.com\"\n        },\n        \"token\": \"{{vault:json-web-token}}\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Logout User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"logout"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"description": "The `/me` endpoints let you manage information about the authenticated user."
@@ -140,6 +356,16 @@
 				{
 					"name": "Create folder",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -315,11 +541,21 @@
 				{
 					"name": "Update Folder",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\": \"67271f925021f5b0e2fb2e93\",\n    \"pinned\": true\n}",
+							"raw": "{\n    \"id\": \"67f7ae3a1a84e462d190432d\",\n    \"pinned\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -441,10 +677,20 @@
 				{
 					"name": "Get Folder",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/v1/folder?id=6727422d201cbaec290637bb",
+							"raw": "{{baseUrl}}/v1/folder?id=67f7ae3a1a84e462d190432d",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -455,7 +701,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "6727422d201cbaec290637bb"
+									"value": "67f7ae3a1a84e462d190432d"
 								}
 							]
 						}
@@ -558,6 +804,16 @@
 				{
 					"name": "Delete Folder",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"body": {
@@ -570,7 +826,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/v1/folder?id=66f71210c0275805cb992d16",
+							"raw": "{{baseUrl}}/v1/folder?id=67f7ae3a1a84e462d190432d",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -581,7 +837,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "66f71210c0275805cb992d16"
+									"value": "67f7ae3a1a84e462d190432d"
 								}
 							]
 						}
@@ -723,6 +979,16 @@
 				{
 					"name": "Create Team",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -800,6 +1066,16 @@
 				{
 					"name": "Update Team",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [],
 						"body": {
@@ -873,6 +1149,16 @@
 				{
 					"name": "Get Team",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1062,6 +1348,16 @@
 				{
 					"name": "Create Page",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -1577,6 +1873,16 @@
 				{
 					"name": "changed attachments",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -1605,6 +1911,16 @@
 				{
 					"name": "Get Page",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1819,6 +2135,16 @@
 				{
 					"name": "Update Page",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [],
 						"body": {
@@ -2048,10 +2374,20 @@
 				{
 					"name": "Delete Page",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/v1/page/document?id=67319cda412f038163982c21",
+							"raw": "{{baseUrl}}/v1/page/document?id=67469ade87eb83c0ef4995b3",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -2063,7 +2399,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "67319cda412f038163982c21"
+									"value": "67469ade87eb83c0ef4995b3"
 								}
 							]
 						}
@@ -2126,6 +2462,16 @@
 				{
 					"name": "Create Space",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -2334,6 +2680,16 @@
 				{
 					"name": "Update Space",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [],
 						"body": {
@@ -2455,6 +2811,16 @@
 						"disableBodyPruning": true
 					},
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"body": {
@@ -2599,6 +2965,16 @@
 				{
 					"name": "Delete Space",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
@@ -2755,6 +3131,16 @@
 				{
 					"name": "Create Group",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -2873,6 +3259,16 @@
 				{
 					"name": "Update Group",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [],
 						"body": {
@@ -2946,10 +3342,20 @@
 				{
 					"name": "Get Group",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/v1/group?id=672f74912ef35e63bc0d1a51",
+							"raw": "{{baseUrl}}/v1/group?id=67f7af051a84e462d190432f",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -2960,7 +3366,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "672f74912ef35e63bc0d1a51"
+									"value": "67f7af051a84e462d190432f"
 								}
 							]
 						}
@@ -3063,10 +3469,20 @@
 				{
 					"name": "Delete Group",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/v1/group?id=672f74912ef35e63bc0d1a51",
+							"raw": "{{baseUrl}}/v1/group?id=67f7af051a84e462d190432f",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -3077,7 +3493,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "672f74912ef35e63bc0d1a51"
+									"value": "67f7af051a84e462d190432f"
 								}
 							]
 						}
@@ -3587,6 +4003,16 @@
 				{
 					"name": "Delete Media",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
@@ -3766,10 +4192,20 @@
 				{
 					"name": "Get Media",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/v1/upload/media?id=672c7c62deb85c9321f3ae94",
+							"raw": "{{baseUrl}}/v1/upload/media?id=67f7ade21a84e462d190432c",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -3781,7 +4217,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "672c7c62deb85c9321f3ae94"
+									"value": "67f7ade21a84e462d190432c"
 								}
 							]
 						}
@@ -3839,6 +4275,16 @@
 				{
 					"name": "Update Media",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [],
 						"body": {
@@ -3851,17 +4297,17 @@
 								},
 								{
 									"key": "reference_id",
-									"value": "672723995d651a60d9254810",
+									"value": "66cda5dac6886719e3345c19",
 									"type": "text"
 								},
 								{
 									"key": "media_type",
-									"value": "cover_photo",
+									"value": "comment_attachment",
 									"type": "text"
 								},
 								{
 									"key": "id",
-									"value": "672c7c62deb85c9321f3ae94",
+									"value": "67f7ade21a84e462d190432c",
 									"type": "text"
 								}
 							]
@@ -3955,11 +4401,21 @@
 				{
 					"name": "Add Comment",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"parent_id\": \"678c9f894cb8920a7292b621\",\n\t\"user_id\": \"66cda5dac6886719e3345c19\",\n\t\"comment_body\": \"Comment for testing 2\"\n}",
+							"raw": "{\n\t\"page_id\": \"678c7c3b5a98b2bca3af4c02\",\n\t\"user_id\": \"66cda5dac6886719e3345c19\",\n\t\"comment_body\": \"Comment for testing 2\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4179,11 +4635,21 @@
 				{
 					"name": "Update Comment",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\": \"678ca235f11fc55d338793f9\",\n    \"content\": {\n        \"icon\": \"TimeMonitoringLiner\",\n        \"_id\": \"123abc\",\n        \"value\": 41,\n        \"title\": \"Sick Leave\",\n        \"sub_text\": \"days available\",\n        \"footer_text\": \"Total Leave 40 Days\"\n    }\n}",
+							"raw": "{\n    \"id\": \"67f7b0d2db367177ec9e8943\",\n    \"content\": {\n        \"icon\": \"TimeMonitoringLiner\",\n        \"_id\": \"123abc\",\n        \"value\": 41,\n        \"title\": \"Sick Leave\",\n        \"sub_text\": \"days available\",\n        \"footer_text\": \"Total Leave 40 Days\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4305,10 +4771,20 @@
 				{
 					"name": "Get Comment",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/v1/comment?id=678c9f784cb8920a7292b620",
+							"raw": "{{baseUrl}}/v1/comment?id=67f7b0d2db367177ec9e8943",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -4319,7 +4795,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "678c9f784cb8920a7292b620"
+									"value": "67f7b0d2db367177ec9e8943"
 								}
 							]
 						}
@@ -4471,7 +4947,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/v1/comment?id=6731cdb905fbba5056746b23",
+							"raw": "{{baseUrl}}/v1/comment?id=67908032c772773f06222dd3",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -4482,7 +4958,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "6731cdb905fbba5056746b23"
+									"value": "67908032c772773f06222dd3"
 								}
 							]
 						}
@@ -4531,6 +5007,10 @@
 		{
 			"key": "baseUrl",
 			"value": "http://localhost:3000"
+		},
+		{
+			"key": "token",
+			"value": "{{vault:json-web-token}}"
 		}
 	]
 }
