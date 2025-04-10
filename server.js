@@ -37,7 +37,7 @@ webserver.use((req, res, next) => {
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
     res.header('Access-Control-Allow-Credentials', 'true');
-    
+
     // Handle actual OPTIONS requests
     if (req.method === 'OPTIONS') {
         return res.status(204).send();
@@ -85,12 +85,6 @@ passport.use(
     )
 );
 
-webserver.use((req, res, next) => {
-    console.log(`${req.method} ${req.path}`);
-    console.log('Headers:', req.headers);
-    next();
-});
-
 // Configure JWT strategy
 const jwtOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -137,12 +131,12 @@ webserver.use(passport.initialize());
 //         if (!user) {
 //             return res.status(401).json({ message: info.message || 'Authentication failed' });
 //         }
-        
+
 //         req.login(user, (loginErr) => {
 //             if (loginErr) {
 //                 return res.status(500).json({ message: 'Session error', error: loginErr.message });
 //             }
-            
+
 //             // Don't include password in response
 //             const { password, ...userWithoutPassword } = user;
 //             return res.status(200).json({ 
@@ -157,22 +151,22 @@ webserver.use(passport.initialize());
 // webserver.post('/register', async (req, res) => {
 //     try {
 //         const { email, password } = req.body;
-        
+
 //         // Check if user already exists
 //         const existingUser = await waterline.collections.user.findOne({ email });
 //         if (existingUser) {
 //             return res.status(400).json({ message: 'User with this email already exists' });
 //         }
-        
+
 //         // Create new user
 //         const newUser = await waterline.collections.user.create({ 
 //             email, 
 //             password
 //         }).fetch();
-        
+
 //         // Remove password from response
 //         const { password: _, ...userWithoutPassword } = newUser;
-        
+
 //         res.status(201).json({ 
 //             message: 'Registration successful', 
 //             user: userWithoutPassword 

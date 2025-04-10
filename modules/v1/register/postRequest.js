@@ -1,45 +1,50 @@
+import { z } from 'zod';
 import jwt from 'jsonwebtoken';
+import { registerUserSchema } from './config/validation.js';
+import { formatSuccessMessage } from '../utils/success.js';
+import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 
-export default async (request, res) => {
-    console.log('Registering user...');
-    
+export default async (request, response) => {
     try {
-        const { email, password } = await request.json();;
-        
+        const body = await request.json();
+
+        // Validate request body
+        const validatedData = registerUserSchema.parse(body);
+        const { name, email, password } = validatedData;
+
         // Check if user already exists
         const existingUser = await global.User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ message: 'User with this email already exists' });
+            return response.status(400).json(formatErrorMessage("User with this email already exists"));
         }
-        
-        // Validate password (optional - add your rules)
-        if (!password || password.length < 6) {
-            return res.status(400).json({ message: 'Password must be at least 6 characters' });
-        }
-        
+
         // Create new user
-        const newUser = await global.User.create({ 
-            email, 
-            password  // Password will be hashed by beforeCreate hook
+        const newUser = await global.User.create({
+            name,
+            email,
+            // password will be hashed by the beforeCreate hook
+            password
         }).fetch();
-        
+
         // Generate JWT token
         const token = jwt.sign(
-            { id: newUser.id, email: newUser.email }, 
+            { id: newUser.id, email: newUser.email },
             process.env.JWT_SECRET || 'your-jwt-secret',
             { expiresIn: '24h' }
         );
-        
+
         // Remove password from response
         const { password: _, ...userWithoutPassword } = newUser;
-        
-        res.status(201).json({ 
-            message: 'Registration successful', 
-            user: userWithoutPassword,
-            token
-        });
-    } catch (error) {
-        console.error('Registration error:', error);
-        res.status(500).json({ message: 'Registration failed', error: error.message });
+        // Send success response
+        response.json(formatSuccessMessage("Registration successful", { user_info: userWithoutPassword, token }));
+    } catch (err) {
+        if (err instanceof z.ZodError) {
+            // Handle Zod validation errors
+            const formattedErrors = formatZodErrors(err.errors);
+            response.status(400).json(formatErrorMessage(formattedErrors));
+        } else {
+            // Handle other errors
+            response.status(400).json(formatErrorMessage(err.message));
+        }
     }
 }

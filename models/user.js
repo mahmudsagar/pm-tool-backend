@@ -8,6 +8,7 @@ const User = Waterline.Collection.extend({
 
     attributes: {
         id: { type: 'string', columnName: '_id' },
+        name: { type: 'string', required: true },
         email: { type: 'string', required: true },
         password: { type: 'string', required: true }
     },
