@@ -4,10 +4,10 @@ import bcrypt from 'bcrypt';
 const User = Waterline.Collection.extend({
     identity: 'user',
     datastore: 'default',
-    primaryKey: 'id',
+    primaryKey: '_id',
 
     attributes: {
-        id: { type: 'string', columnName: '_id' },
+        _id: { type: 'string', columnName: '_id', autoMigrations: { autoIncrement: false } },
         name: { type: 'string', required: true },
         email: { type: 'string', required: true },
         password: { type: 'string', required: true }

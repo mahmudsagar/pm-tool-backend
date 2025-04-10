@@ -29,8 +29,8 @@ export default async (request, response) => {
         // Generate JWT token
         const token = jwt.sign(
             { id: newUser.id, email: newUser.email },
-            process.env.JWT_SECRET || 'your-jwt-secret',
-            { expiresIn: '24h' }
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRES_IN }
         );
 
         // Remove password from response

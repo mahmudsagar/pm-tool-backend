@@ -28,8 +28,8 @@ export default async (request, response, next) => {
             // Generate JWT token
             const token = jwt.sign(
                 { id: user.id, email: user.email },
-                process.env.JWT_SECRET || 'your-secret-key',
-                { expiresIn: '24h' }
+                process.env.JWT_SECRET,
+                { expiresIn: process.env.JWT_EXPIRES_IN }
             );
 
             // Don't include password in response
