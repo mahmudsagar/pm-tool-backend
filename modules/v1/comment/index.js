@@ -23,9 +23,12 @@ export default async (request, response) => {
 
         // Returning user and media attachments of user for each comment
         const user = await global.User.findOne({ _id: commentMetaResult.user_id });
-        const userMediaAttachments = await Promise.all(user.attachments.map(async (attachment) => {
-            return await global.Media.findOne({ _id: attachment });
-        }));
+        const attachments = Array.isArray(user.attachments) ? user.attachments : [];
+        const userMediaAttachments = await Promise.all(
+            attachments.map(async (attachment) => {
+                return await global.Media.findOne({ _id: attachment });
+            })
+        );
 
         // Fetch CommentContent by associate_id
         commentContentResult = await global.CommentContent.findOne({ _id: commentMetaResult.associate_id });

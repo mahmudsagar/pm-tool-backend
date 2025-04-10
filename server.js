@@ -10,6 +10,7 @@ import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { verifyPassword } from './models/user.js';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import jwtValidation from './modules/v1/middlewares/jwtValidation.js';
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
@@ -37,28 +38,13 @@ webserver.use((req, res, next) => {
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
     res.header('Access-Control-Allow-Credentials', 'true');
-    
+
     // Handle actual OPTIONS requests
     if (req.method === 'OPTIONS') {
         return res.status(204).send();
     }
     next();
 });
-
-// Add this before your route loading 
-// Add cookie parser
-// webserver.use(cookieParser());
-
-// Session middleware must be added before Passport initialization
-// webserver.use(session({
-//     secret: process.env.SESSION_SECRET || 'your-secret-key',
-//     resave: false,
-//     saveUninitialized: false,
-//     cookie: { 
-//         secure: process.env.NODE_ENV === 'production',
-//         maxAge: 24 * 60 * 60 * 1000 // 24 hours
-//     }
-// }));
 
 passport.use(
     new LocalStrategy(
@@ -84,12 +70,6 @@ passport.use(
         }
     )
 );
-
-webserver.use((req, res, next) => {
-    console.log(`${req.method} ${req.path}`);
-    console.log('Headers:', req.headers);
-    next();
-});
 
 // Configure JWT strategy
 const jwtOptions = {
@@ -127,61 +107,6 @@ passport.deserializeUser(async (id, done) => {
 // Initialize passport middleware - AFTER session middleware
 webserver.use(passport.initialize());
 // webserver.use(passport.session());
-
-// // Add login and register routes
-// webserver.post('/login', (req, res, next) => {
-//     passport.authenticate('local', (err, user, info) => {
-//         if (err) {
-//             return res.status(500).json({ message: 'Authentication error', error: err.message });
-//         }
-//         if (!user) {
-//             return res.status(401).json({ message: info.message || 'Authentication failed' });
-//         }
-        
-//         req.login(user, (loginErr) => {
-//             if (loginErr) {
-//                 return res.status(500).json({ message: 'Session error', error: loginErr.message });
-//             }
-            
-//             // Don't include password in response
-//             const { password, ...userWithoutPassword } = user;
-//             return res.status(200).json({ 
-//                 message: 'Login successful',
-//                 user: userWithoutPassword
-//             });
-//         });
-//     })(req, res, next);
-// });
-
-// // User registration route
-// webserver.post('/register', async (req, res) => {
-//     try {
-//         const { email, password } = req.body;
-        
-//         // Check if user already exists
-//         const existingUser = await waterline.collections.user.findOne({ email });
-//         if (existingUser) {
-//             return res.status(400).json({ message: 'User with this email already exists' });
-//         }
-        
-//         // Create new user
-//         const newUser = await waterline.collections.user.create({ 
-//             email, 
-//             password
-//         }).fetch();
-        
-//         // Remove password from response
-//         const { password: _, ...userWithoutPassword } = newUser;
-        
-//         res.status(201).json({ 
-//             message: 'Registration successful', 
-//             user: userWithoutPassword 
-//         });
-//     } catch (error) {
-//         console.error('Registration error:', error);
-//         res.status(500).json({ message: 'Registration failed', error: error.message });
-//     }
-// });
 
 async function loadRoutes(directory, baseRoute = '') {
     const filesAndFolders = fs.readdirSync(directory, { withFileTypes: true });
@@ -240,16 +165,9 @@ async function loadRoutes(directory, baseRoute = '') {
 
                 const handler = (await import(pathToFileURL(fullPath).href)).default;
 
-                // Load middleware if exists
-                const middlewareFiles = ['index.middleware', `${method}.middleware`].map(m => `${directory}/${m}.js`);
-                const middlewares = await Promise.all(
-                    middlewareFiles
-                        .filter(file => fs.existsSync(file))
-                        .map(async file => {
-                            const module = await import(pathToFileURL(file).href);
-                            return module.default;
-                        })
-                );
+                // Exclude 'register' and 'login' routes from JWT validation
+                const isExcludedRoute = routePath.includes('/register') || routePath.includes('/login');
+                const middlewares = isExcludedRoute ? [] : [jwtValidation];
 
                 console.log(`Route loaded: ${method.toUpperCase()} ${routePath}`);
                 // console.log(`Middlewares loaded: ${middlewares.map(m => m.name).join(', ')}`);
@@ -257,32 +175,16 @@ async function loadRoutes(directory, baseRoute = '') {
                 // Create the route with middleware and handler
                 switch (method) {
                     case 'get':
-                        if (middlewares.length > 0) {
-                            webserver.get(routePath, ...middlewares, handler);
-                        } else {
-                            webserver.get(routePath, handler);
-                        }
+                        webserver.get(routePath, ...middlewares, handler);
                         break;
                     case 'post':
-                        if (middlewares.length > 0) {
-                            webserver.post(routePath, ...middlewares, handler);
-                        } else {
-                            webserver.post(routePath, handler);
-                        }
+                        webserver.post(routePath, ...middlewares, handler);
                         break;
                     case 'put':
-                        if (middlewares.length > 0) {
-                            webserver.put(routePath, ...middlewares, handler);
-                        } else {
-                            webserver.put(routePath, handler);
-                        }
+                        webserver.put(routePath, ...middlewares, handler);
                         break;
                     case 'delete':
-                        if (middlewares.length > 0) {
-                            webserver.delete(routePath, ...middlewares, handler);
-                        } else {
-                            webserver.delete(routePath, handler);
-                        }
+                        webserver.delete(routePath, ...middlewares, handler);
                         break;
                 }
             }

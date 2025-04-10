@@ -1,43 +1,52 @@
+import { z } from 'zod';
 import passport from "passport";
 import jwt from 'jsonwebtoken';
+import { loginUserSchema } from './config/validation.js';
+import { formatSuccessMessage } from '../utils/success.js';
+import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 
-export default async (req, res, next) => {
+export default async (request, response, next) => {
     try {
         // Get request body - HyperExpress requires manual parsing
-        const body = await req.json();
-        console.log('Logging in user...', body);
-        
-        // Set body on req object for Passport
-        req.body = body;
-        
+        const body = await request.json();
+
+        const validatedData = loginUserSchema.parse(body);
+
+        // Set body on request object for Passport
+        request.body = validatedData;
+
         passport.authenticate('local', { session: false }, (err, user, info) => {
             if (err) {
                 console.error('Authentication error:', err);
-                return res.status(500).json({ message: 'Authentication error', error: err.message });
+                return response.status(501).json(formatErrorMessage("Authentication error"));
             }
-            
+
             if (!user) {
-                return res.status(401).json({ message: info?.message || 'Authentication failed' });
+                return response.status(400).json(formatErrorMessage("Authentication failed"));
             }
-            
+
             // Generate JWT token
             const token = jwt.sign(
-                { id: user.id, email: user.email }, 
-                process.env.JWT_SECRET || 'your-secret-key',
-                { expiresIn: '24h' }
+                { id: user.id, email: user.email },
+                process.env.JWT_SECRET,
+                { expiresIn: process.env.JWT_EXPIRES_IN }
             );
-            
+
             // Don't include password in response
             const { password, ...userWithoutPassword } = user;
-            
-            return res.status(200).json({ 
-                message: 'Login successful',
-                user: userWithoutPassword,
-                token
-            });
-        })(req, res, next);
-    } catch (error) {
-        console.error('Login error:', error);
-        return res.status(500).json({ message: 'Internal server error', error: error.message });
+
+            return response.json(formatSuccessMessage("Login successful",
+                { user_info: userWithoutPassword, token }
+            ));
+        })(request, response, next);
+    } catch (err) {
+        if (err instanceof z.ZodError) {
+            // Handle Zod validation errors
+            const formattedErrors = formatZodErrors(err.errors);
+            response.status(400).json(formatErrorMessage(formattedErrors));
+        } else {
+            // Handle other errors
+            response.status(400).json(formatErrorMessage(err.message));
+        }
     }
 }

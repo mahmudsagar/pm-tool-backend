@@ -19,10 +19,13 @@ export default async (request, response) => {
                 return response.status(404).json(formatErrorMessage('User not found'));
             }
 
-            // Fetch media attachments
-            mediaAttachments = await Promise.all(result.attachments.map(async (attachment) => {
-                return await global.Media.findOne({ _id: attachment });
-            }));
+            // Ensure attachments is an array before iterating
+            const attachments = Array.isArray(result.attachments) ? result.attachments : [];
+            mediaAttachments = await Promise.all(
+                attachments.map(async (attachment) => {
+                    return await global.Media.findOne({ _id: attachment });
+                })
+            );
 
         } else {
             // Fetch all data
