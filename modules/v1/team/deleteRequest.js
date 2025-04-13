@@ -12,11 +12,6 @@ export default async (request, response) => {
 
         let result;
         if (validatedParams._id) {
-            // Check if the team has child teams
-            const childTeams = await global.Team.find({ parent_id: validatedParams._id });
-            if (childTeams.length > 0) {
-                return response.status(400).json(formatErrorMessage('This team has some child teams. Delete them first.'));
-            }
 
             // Delete the data by _id from MongoDB
             result = await global.Team.destroyOne({ _id: validatedParams._id });
