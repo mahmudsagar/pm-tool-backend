@@ -1,25 +1,26 @@
+import { z } from 'zod';
 import jwt from 'jsonwebtoken';
 import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 
 
 /**
  * Middleware to validate JWT token.
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
+ * @param {Object} request - The request object.
+ * @param {Object} response - The response object.
  * @param {Function} next - The next middleware function.
  */
-export default function jwtValidation(req, res, next) {
+export default function jwtValidation(request, response, next) {
     try {
-        const authHeader = req.headers.authorization;
+        const authHeader = request.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json(formatErrorMessage("No token provided"));
+            return response.status(401).json(formatErrorMessage("No token provided"));
         }
 
         const token = authHeader.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         // Attach decoded user info to the request object
-        req.user = decoded;
+        request.user = decoded;
         next();
     } catch (err) {
         if (err instanceof z.ZodError) {
