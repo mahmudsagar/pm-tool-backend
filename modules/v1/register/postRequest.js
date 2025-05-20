@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { registerUserSchema } from './config/validation.js';
 import { formatSuccessMessage } from '../utils/success.js';
 import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
-import defaultWorkspaces from './config/defaultWorkspaces.json' assert { type: 'json' };
+// import defaultWorkspaces from './config/defaultWorkspaces.json' assert { type: 'json' };
 
 export default async (request, response) => {
     try {
@@ -35,23 +35,27 @@ export default async (request, response) => {
         );
 
         // Create default workspaces for the user using Promise.all
-        const workspacesToCreate = defaultWorkspaces.map(workspace => ({
-            ...workspace,
-            user_id: newUser._id
-        }));
+        // const workspacesToCreate = defaultWorkspaces.map(workspace => ({
+        //     ...workspace,
+        //     user_id: newUser._id
+        // }));
 
-        const workspaces = await Promise.all(
-            workspacesToCreate.map(async (workspace) => {
-                return await global.Space.create(workspace).fetch();
-            })
-        );
+        // const workspaces = await Promise.all(
+        //     workspacesToCreate.map(async (workspace) => {
+        //         return await global.Space.create(workspace).fetch();
+        //     })
+        // );
 
         // Remove password from response
         const { password: _, ...userWithoutPassword } = newUser;
 
         // Send success response
         response.json(formatSuccessMessage("Registration successful",
-            { user_info: userWithoutPassword, workspace_info: workspaces, token }));
+            {
+                user_info: userWithoutPassword,
+                // workspace_info: workspaces, 
+                token
+            }));
     } catch (err) {
         if (err instanceof z.ZodError) {
             // Handle Zod validation errors
