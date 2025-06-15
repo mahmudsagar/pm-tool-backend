@@ -15,7 +15,7 @@ export default async (request, response, next) => {
         // Set body on request object for Passport
         request.body = validatedData;
 
-        passport.authenticate('local', { session: false }, (err, user, info) => {
+        passport.authenticate('local', { session: false }, async (err, user, info) => {
             if (err) {
                 console.error('Authentication error:', err);
                 return response.status(501).json(formatErrorMessage("Authentication error"));
@@ -34,6 +34,14 @@ export default async (request, response, next) => {
 
             // Don't include password in response
             const { password, ...userWithoutPassword } = user;
+
+            // Find workspaces for this user
+            const workspaces = await global.Space.find({ user_id: userWithoutPassword._id });
+            if (!workspaces || workspaces.length === 0) {
+                userWithoutPassword.workspaces_flag = false;
+            } else {
+                userWithoutPassword.workspaces_flag = true;
+            }
 
             return response.json(formatSuccessMessage("Login successful",
                 { user_info: userWithoutPassword, token }

@@ -27,6 +27,14 @@ export default async (request, response) => {
                 })
             );
 
+            // Find workspaces for this user
+            const workspaces = await global.Space.find({ user_id: validatedParams._id });
+            if (!workspaces || workspaces.length === 0) {
+                result.workspaces_flag = false;
+            } else {
+                result.workspaces_flag = true;
+            }
+
         } else {
             // Fetch all data
             result = await global.User.find();
