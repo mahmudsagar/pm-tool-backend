@@ -138,6 +138,64 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"_id\": \"66cda5dac6886719e3345c19\",\n            \"email\": \"mdmuhtasim.fahim@gmail.com\",\n            \"first_name\": \"Md. Muhtasim\",\n            \"last_name\": \"Fuad Fahim\",\n            \"full_name\": \"Md. Muhtasim Fuad Fahim\"\n        },\n        {\n            \"_id\": \"66e404cf089aef7c495015f4\",\n            \"email\": \"muhtasim.fahim.98@gmail.com\",\n            \"first_name\": \"Md. Muhtasim\",\n            \"last_name\": \"Fuad Fahim\",\n            \"full_name\": \"Md. Muhtasim Fuad Fahim\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "with workspace flag",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/v1/user?id=67f7adb41a84e462d190432a",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"user"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "67f7adb41a84e462d190432a"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET, POST, PUT, DELETE, OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 15 Jun 2025 08:56:07 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "280"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Users fetched successfully\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"_id\": \"67f7adb41a84e462d190432a\",\n        \"name\": \"Ornab\",\n        \"email\": \"fahim908@gmail.com\",\n        \"password\": \"$2b$10$FNEbnyqc/BjHp/Zg.rawfOeDfCDGMoqeAKCHXw9XHyCpuu.NO9nMC\",\n        \"workspaces_flag\": true,\n        \"mediaAttachments\": []\n    }\n}"
 						}
 					]
 				},
@@ -148,7 +206,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Ornab\",\n    \"email\": \"muhtasimfuadfahim@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
+							"raw": "{\n    \"name\": \"Ornab\",\n    \"email\": \"tesbsjdhb@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -226,7 +284,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Registration successful\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"user_info\": {\n            \"_id\": \"67fb8695913f446715f7f87f\",\n            \"name\": \"Ornab\",\n            \"email\": \"muhtasimfuadfahim@gmail.com\"\n        },\n        \"workspace_info\": [\n            {\n                \"_id\": \"67fb8695913f446715f7f880\",\n                \"name\": \"Public Workspace\",\n                \"description\": \"A public workspace for collaboration\",\n                \"is_private\": false,\n                \"shared_teams\": [],\n                \"shared_members\": [],\n                \"user_id\": \"67fb8695913f446715f7f87f\",\n                \"is_default\": true,\n                \"entity_type\": \"space\",\n                \"createdAt\": \"2025-04-13T09:40:37.398Z\",\n                \"updatedAt\": \"2025-04-13T09:40:37.398Z\"\n            },\n            {\n                \"_id\": \"67fb8695913f446715f7f881\",\n                \"name\": \"Private Workspace\",\n                \"description\": \"A private workspace for personal use\",\n                \"is_private\": true,\n                \"shared_teams\": [],\n                \"shared_members\": [],\n                \"user_id\": \"67fb8695913f446715f7f87f\",\n                \"is_default\": true,\n                \"entity_type\": \"space\",\n                \"createdAt\": \"2025-04-13T09:40:37.398Z\",\n                \"updatedAt\": \"2025-04-13T09:40:37.398Z\"\n            }\n        ],\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZmI4Njk1OTEzZjQ0NjcxNWY3Zjg3ZiIsImVtYWlsIjoibXVodGFzaW1mdWFkZmFoaW1AZ21haWwuY29tIiwiaWF0IjoxNzQ0NTM3MjM3LCJleHAiOjE3NDQ2MjM2Mzd9.suTvnS1ImhdYTu5ggrMMMTsE3MIVASTL81yrGjdA2NM\"\n    }\n}"
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Registration successful\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"user_info\": {\n            \"_id\": \"67fb8695913f446715f7f87f\",\n            \"name\": \"Ornab\",\n            \"email\": \"muhtasimfuadfahim@gmail.com\"\n        },\n        \"workspace_info\": [\n            {\n                \"_id\": \"67fb8695913f446715f7f880\",\n                \"name\": \"Public Workspace\",\n                \"description\": \"A public workspace for collaboration\",\n                \"is_private\": false,\n                \"shared_teams\": [],\n                \"shared_members\": [],\n                \"user_id\": \"67fb8695913f446715f7f87f\",\n                \"is_default\": true,\n                \"entity_type\": \"space\",\n                \"createdAt\": \"2025-04-13T09:40:37.398Z\",\n                \"updatedAt\": \"2025-04-13T09:40:37.398Z\"\n            },\n            {\n                \"_id\": \"67fb8695913f446715f7f881\",\n                \"name\": \"Private Workspace\",\n                \"description\": \"A private workspace for personal use\",\n                \"is_private\": true,\n                \"shared_teams\": [],\n                \"shared_members\": [],\n                \"user_id\": \"67fb8695913f446715f7f87f\",\n                \"is_default\": true,\n                \"entity_type\": \"space\",\n                \"createdAt\": \"2025-04-13T09:40:37.398Z\",\n                \"updatedAt\": \"2025-04-13T09:40:37.398Z\"\n            }\n        ],\n        \"token\": \"{{vault:json-web-token}}\"\n    }\n}"
 						}
 					]
 				},
@@ -316,6 +374,67 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Login successful\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"user_info\": {\n            \"id\": \"67f79b93c9fa4ac56d5f48b1\",\n            \"name\": \"Ornab\",\n            \"email\": \"muhtasim.fahim@gmail.com\"\n        },\n        \"token\": \"{{vault:json-web-token}}\"\n    }\n}"
+						},
+						{
+							"name": "with workspace flag",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"fahim908@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET, POST, PUT, DELETE, OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 15 Jun 2025 08:55:26 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "366"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Login successful\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"user_info\": {\n            \"_id\": \"67f7adb41a84e462d190432a\",\n            \"name\": \"Ornab\",\n            \"email\": \"fahim908@gmail.com\",\n            \"workspaces_flag\": true\n        },\n        \"token\": \"{{vault:json-web-token}}\"\n    }\n}"
 						}
 					]
 				},
@@ -5016,7 +5135,7 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "http://localhost:3000"
+			"value": "https://better-notion-api-server.onrender.com"
 		},
 		{
 			"key": "token",
