@@ -5095,6 +5095,120 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "Global Search",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/search?query=F&limit=10&user_id=67f7adb41a84e462d190432a",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"search"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "F"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "user_id",
+									"value": "67f7adb41a84e462d190432a"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Global Search",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/v1/search?query=F&limit=10&user_id=67f7adb41a84e462d190432a",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"search"
+									],
+									"query": [
+										{
+											"key": "query",
+											"value": "F"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										},
+										{
+											"key": "user_id",
+											"value": "67f7adb41a84e462d190432a"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET, POST, PUT, DELETE, OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 15 Jun 2025 10:26:48 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "4409"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Search results\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"folders\": [\n            {\n                \"_id\": \"684e9cecb4a9662b4b801211\",\n                \"name\": \"Folder Under Group\",\n                \"description\": \"This is a description of the folder.\",\n                \"parent_id\": \"\",\n                \"shared_members\": [\n                    \"67f7adb41a84e462d190432a\",\n                    \"66e404cf089aef7c495015f4\"\n                ],\n                \"shared_teams\": [\n                    \"67f7adb41a84e462d190432a\",\n                    \"66e404cf089aef7c495015f4\"\n                ],\n                \"user_id\": \"67f7adb41a84e462d190432a\",\n                \"space_id\": \"\",\n                \"group_id\": \"67271de6834f3bd8da699307\",\n                \"pinned\": false,\n                \"entity_type\": \"folder\",\n                \"createdAt\": \"2025-06-15T10:14:04.043Z\",\n                \"updatedAt\": \"2025-06-15T10:14:04.043Z\",\n                \"type\": \"folder\"\n            }\n        ],\n        \"pages\": [\n            {\n                \"_id\": \"684e9fb5a0f4b8e3b7fd4039\",\n                \"title\": \"File\",\n                \"user_id\": \"67f7adb41a84e462d190432a\",\n                \"folder_id\": \"\",\n                \"space_id\": \"684e8a21d39c54d5e418ea5f\",\n                \"group_id\": \"\",\n                \"page_content_id\": \"684e9fb5a0f4b8e3b7fd4038\",\n                \"custom_meta\": {\n                    \"values\": {\n                        \"dep8rw\": \"dgfgdf\",\n                        \"360od\": \"ttt hoise\",\n                        \"hxor82\": [\n                            \"fdgfdg\"\n                        ],\n                        \"a8pd6e\": [\n                            \"ghfghfgh\",\n                            \"drfh\"\n                        ],\n                        \"a2xtc\": \"dfgdsgdfs\",\n                        \"s5isqs\": \"2024-11-29T18:00:00.000Z\",\n                        \"iwu72u\": \"2024-11-21T18:00:00.000Z\"\n                    },\n                    \"fields\": [\n                        {\n                            \"type\": \"multiSelect\",\n                            \"initialized\": true,\n                            \"label\": \"Multi Select\",\n                            \"name\": \"hxor82\",\n                            \"hasOptions\": true,\n                            \"options\": [\n                                {\n                                    \"value\": \"dsfgsdg\",\n                                    \"label\": \"dsfgsdg\"\n                                },\n                                {\n                                    \"value\": \"fdgfdg\",\n                                    \"label\": \"fdgfdg\"\n                                }\n                            ]\n                        },\n                        {\n                            \"type\": \"select\",\n                            \"initialized\": true,\n                            \"label\": \"Select\",\n                            \"name\": \"360od\",\n                            \"hasOptions\": true,\n                            \"options\": [\n                                {\n                                    \"value\": \"ttt hoise\",\n                                    \"label\": \"ttt hoise\"\n                                },\n                                {\n                                    \"value\": \"t\",\n                                    \"label\": \"t\"\n                                }\n                            ]\n                        },\n                        {\n                            \"type\": \"date\",\n                            \"initialized\": true,\n                            \"label\": \"Date\",\n                            \"name\": \"iwu72u\",\n                            \"hasOptions\": false\n                        },\n                        {\n                            \"type\": \"daterange\",\n                            \"initialized\": true,\n                            \"label\": \"Date Range\",\n                            \"name\": \"gv7pzg\",\n                            \"hasOptions\": false\n                        },\n                        {\n                            \"type\": \"select\",\n                            \"initialized\": true,\n                            \"label\": \"Select\",\n                            \"name\": \"a2xtc\",\n                            \"hasOptions\": true,\n                            \"options\": [\n                                {\n                                    \"value\": \"dfgdsgdfs\",\n                                    \"label\": \"dfgdsgdfs\"\n                                },\n                                {\n                                    \"value\": \"gfdgdfg\",\n                                    \"label\": \"gfdgdfg\"\n                                }\n                            ]\n                        },\n                        {\n                            \"type\": \"date\",\n                            \"initialized\": true,\n                            \"label\": \"Date\",\n                            \"name\": \"s5isqs\",\n                            \"hasOptions\": false\n                        }\n                    ]\n                },\n                \"shared_members\": [],\n                \"shared_teams\": [],\n                \"attachments\": [],\n                \"page_type\": \"document\",\n                \"last_updated_by\": \"67f7adb41a84e462d190432a\",\n                \"pinned\": false,\n                \"entity_type\": \"page\",\n                \"inner_comments\": [\n                    {\n                        \"comments\": [\n                            {\n                                \"content\": \"ok\",\n                                \"deleted\": false,\n                                \"id\": \"ilyhz\",\n                                \"timeStamp\": 1737202229013.4,\n                                \"type\": \"comment\"\n                            }\n                        ],\n                        \"id\": \"yjhxk\",\n                        \"quote\": \" idsdn\",\n                        \"type\": \"thread\"\n                    }\n                ],\n                \"createdAt\": \"2025-06-15T10:25:57.677Z\",\n                \"updatedAt\": \"2025-06-15T10:25:57.677Z\",\n                \"type\": \"page\"\n            }\n        ],\n        \"groups\": [],\n        \"teams\": [],\n        \"spaces\": [],\n        \"total\": 2,\n        \"all\": [\n            {\n                \"_id\": \"684e9cecb4a9662b4b801211\",\n                \"name\": \"Folder Under Group\",\n                \"description\": \"This is a description of the folder.\",\n                \"parent_id\": \"\",\n                \"shared_members\": [\n                    \"67f7adb41a84e462d190432a\",\n                    \"66e404cf089aef7c495015f4\"\n                ],\n                \"shared_teams\": [\n                    \"67f7adb41a84e462d190432a\",\n                    \"66e404cf089aef7c495015f4\"\n                ],\n                \"user_id\": \"67f7adb41a84e462d190432a\",\n                \"space_id\": \"\",\n                \"group_id\": \"67271de6834f3bd8da699307\",\n                \"pinned\": false,\n                \"entity_type\": \"folder\",\n                \"createdAt\": \"2025-06-15T10:14:04.043Z\",\n                \"updatedAt\": \"2025-06-15T10:14:04.043Z\",\n                \"type\": \"folder\"\n            },\n            {\n                \"_id\": \"684e9fb5a0f4b8e3b7fd4039\",\n                \"title\": \"File\",\n                \"user_id\": \"67f7adb41a84e462d190432a\",\n                \"folder_id\": \"\",\n                \"space_id\": \"684e8a21d39c54d5e418ea5f\",\n                \"group_id\": \"\",\n                \"page_content_id\": \"684e9fb5a0f4b8e3b7fd4038\",\n                \"custom_meta\": {\n                    \"values\": {\n                        \"dep8rw\": \"dgfgdf\",\n                        \"360od\": \"ttt hoise\",\n                        \"hxor82\": [\n                            \"fdgfdg\"\n                        ],\n                        \"a8pd6e\": [\n                            \"ghfghfgh\",\n                            \"drfh\"\n                        ],\n                        \"a2xtc\": \"dfgdsgdfs\",\n                        \"s5isqs\": \"2024-11-29T18:00:00.000Z\",\n                        \"iwu72u\": \"2024-11-21T18:00:00.000Z\"\n                    },\n                    \"fields\": [\n                        {\n                            \"type\": \"multiSelect\",\n                            \"initialized\": true,\n                            \"label\": \"Multi Select\",\n                            \"name\": \"hxor82\",\n                            \"hasOptions\": true,\n                            \"options\": [\n                                {\n                                    \"value\": \"dsfgsdg\",\n                                    \"label\": \"dsfgsdg\"\n                                },\n                                {\n                                    \"value\": \"fdgfdg\",\n                                    \"label\": \"fdgfdg\"\n                                }\n                            ]\n                        },\n                        {\n                            \"type\": \"select\",\n                            \"initialized\": true,\n                            \"label\": \"Select\",\n                            \"name\": \"360od\",\n                            \"hasOptions\": true,\n                            \"options\": [\n                                {\n                                    \"value\": \"ttt hoise\",\n                                    \"label\": \"ttt hoise\"\n                                },\n                                {\n                                    \"value\": \"t\",\n                                    \"label\": \"t\"\n                                }\n                            ]\n                        },\n                        {\n                            \"type\": \"date\",\n                            \"initialized\": true,\n                            \"label\": \"Date\",\n                            \"name\": \"iwu72u\",\n                            \"hasOptions\": false\n                        },\n                        {\n                            \"type\": \"daterange\",\n                            \"initialized\": true,\n                            \"label\": \"Date Range\",\n                            \"name\": \"gv7pzg\",\n                            \"hasOptions\": false\n                        },\n                        {\n                            \"type\": \"select\",\n                            \"initialized\": true,\n                            \"label\": \"Select\",\n                            \"name\": \"a2xtc\",\n                            \"hasOptions\": true,\n                            \"options\": [\n                                {\n                                    \"value\": \"dfgdsgdfs\",\n                                    \"label\": \"dfgdsgdfs\"\n                                },\n                                {\n                                    \"value\": \"gfdgdfg\",\n                                    \"label\": \"gfdgdfg\"\n                                }\n                            ]\n                        },\n                        {\n                            \"type\": \"date\",\n                            \"initialized\": true,\n                            \"label\": \"Date\",\n                            \"name\": \"s5isqs\",\n                            \"hasOptions\": false\n                        }\n                    ]\n                },\n                \"shared_members\": [],\n                \"shared_teams\": [],\n                \"attachments\": [],\n                \"page_type\": \"document\",\n                \"last_updated_by\": \"67f7adb41a84e462d190432a\",\n                \"pinned\": false,\n                \"entity_type\": \"page\",\n                \"inner_comments\": [\n                    {\n                        \"comments\": [\n                            {\n                                \"content\": \"ok\",\n                                \"deleted\": false,\n                                \"id\": \"ilyhz\",\n                                \"timeStamp\": 1737202229013.4,\n                                \"type\": \"comment\"\n                            }\n                        ],\n                        \"id\": \"yjhxk\",\n                        \"quote\": \" idsdn\",\n                        \"type\": \"thread\"\n                    }\n                ],\n                \"createdAt\": \"2025-06-15T10:25:57.677Z\",\n                \"updatedAt\": \"2025-06-15T10:25:57.677Z\",\n                \"type\": \"page\"\n            }\n        ]\n    }\n}"
+						}
+					]
+				}
+			]
 		}
 	],
 	"auth": {

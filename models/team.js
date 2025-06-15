@@ -14,7 +14,11 @@ const Team = Waterline.Collection.extend({
         entity_type: { type: 'string', defaultsTo: 'team' },
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },
-    }
+    },
+
+    indexes: [
+        { attributes: { name: 'text', description: 'text' } }
+    ]
 });
 
 export default Team;

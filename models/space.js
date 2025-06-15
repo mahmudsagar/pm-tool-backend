@@ -17,7 +17,11 @@ const Space = Waterline.Collection.extend({
         entity_type: { type: 'string', defaultsTo: 'space' },
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },
-    }
+    },
+
+    indexes: [
+        { attributes: { name: 'text', description: 'text' } }
+    ]
 });
 
 export default Space;

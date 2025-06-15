@@ -40,7 +40,11 @@ const PageMeta = Waterline.Collection.extend({
             return cb(new Error('Invalid page type'));
         }
         return cb();
-    }
+    },
+
+    indexes: [
+        { attributes: { title: 'text', description: 'text' } }
+    ]
 });
 
 export default PageMeta;
