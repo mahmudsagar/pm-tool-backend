@@ -49,6 +49,14 @@ export default async (request, response) => {
         // Remove password from response
         const { password: _, ...userWithoutPassword } = newUser;
 
+        // Find workspaces for this user
+        const workspaces = await global.Space.find({ user_id: userWithoutPassword._id });
+        if (!workspaces || workspaces.length === 0) {
+            userWithoutPassword.workspaces_flag = false;
+        } else {
+            userWithoutPassword.workspaces_flag = true;
+        }
+
         // Send success response
         response.json(formatSuccessMessage("Registration successful",
             {
