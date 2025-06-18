@@ -285,6 +285,67 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Registration successful\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"user_info\": {\n            \"_id\": \"67fb8695913f446715f7f87f\",\n            \"name\": \"Ornab\",\n            \"email\": \"muhtasimfuadfahim@gmail.com\"\n        },\n        \"workspace_info\": [\n            {\n                \"_id\": \"67fb8695913f446715f7f880\",\n                \"name\": \"Public Workspace\",\n                \"description\": \"A public workspace for collaboration\",\n                \"is_private\": false,\n                \"shared_teams\": [],\n                \"shared_members\": [],\n                \"user_id\": \"67fb8695913f446715f7f87f\",\n                \"is_default\": true,\n                \"entity_type\": \"space\",\n                \"createdAt\": \"2025-04-13T09:40:37.398Z\",\n                \"updatedAt\": \"2025-04-13T09:40:37.398Z\"\n            },\n            {\n                \"_id\": \"67fb8695913f446715f7f881\",\n                \"name\": \"Private Workspace\",\n                \"description\": \"A private workspace for personal use\",\n                \"is_private\": true,\n                \"shared_teams\": [],\n                \"shared_members\": [],\n                \"user_id\": \"67fb8695913f446715f7f87f\",\n                \"is_default\": true,\n                \"entity_type\": \"space\",\n                \"createdAt\": \"2025-04-13T09:40:37.398Z\",\n                \"updatedAt\": \"2025-04-13T09:40:37.398Z\"\n            }\n        ],\n        \"token\": \"{{vault:json-web-token}}\"\n    }\n}"
+						},
+						{
+							"name": "with workspace flag",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Ornab\",\n    \"email\": \"fdsfefft@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/register",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"register"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET, POST, PUT, DELETE, OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 18 Jun 2025 11:26:13 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "416"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Registration successful\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"user_info\": {\n            \"_id\": \"6852a255701c9b357818ac0e\",\n            \"name\": \"Ornab\",\n            \"email\": \"fdsfefft@gmail.com\",\n            \"workspaces_flag\": false\n        },\n        \"token\": \"{{vault:json-web-token}}\"\n    }\n}"
 						}
 					]
 				},
