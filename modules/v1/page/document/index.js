@@ -53,6 +53,13 @@ export default async (request, response) => {
 			})
 		);
 
+		if (pageMetaResult.board_id !== "") {
+			const boardData = await global.Board.findOne({ _id: pageMetaResult.board_id });
+			if (boardData) {
+				pageMetaResult.board = boardData;
+			}
+		}
+
 		response.json(formatSuccessMessage("Page data fetched successfully",
 			{
 				...pageMetaResult,

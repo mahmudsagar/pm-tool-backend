@@ -101,3 +101,23 @@ export const deleteGroupFolderAndChildren = async (groupId) => {
 
     await global.Folder.destroyOne({ group_id: groupId });
 };
+
+export const deleteBoardAndChildren = async (boardId) => {
+    const pageMetas = await global.PageMeta.find({ board_id: boardId });
+    for (const pageMeta of pageMetas) {
+        await global.PageContent.destroyOne({ _id: pageMeta.page_content_id });
+
+        if (pageMeta.attachments && pageMeta.attachments.length > 0) {
+            await deleteAttachments(pageMeta.attachments);
+        }
+
+        const commentMetas = await global.CommentMeta.find({ page_id: pageMeta._id });
+        for (const commentMeta of commentMetas) {
+            await deleteCommentAndChildren(commentMeta._id);
+        }
+
+        await global.PageMeta.destroyOne({ _id: pageMeta._id });
+    }
+
+    await global.Board.destroyOne({ _id: boardId });
+};
