@@ -16,10 +16,38 @@ export const postBoardSchema = z.object({
         message: "Invalid MongoDB ObjectId",
     }),
     pinned: z.boolean().optional(),
-    space_id: z.string().nonempty("Space ID is required").refine(isValidObjectId, {
-        message: "Invalid MongoDB ObjectId",
-    }),
+    folder_id: z.string().optional(),
+    space_id: z.string().optional(),
+    group_id: z.string().optional(),
     custom_meta: z.object({}).passthrough().optional(),
+}).refine(data => {
+    const { folder_id, space_id, group_id } = data;
+    const keys = [folder_id, space_id, group_id];
+    const presentKeys = keys.filter(key => key !== undefined && key !== '');
+    if (presentKeys.length === 0) {
+        return false; // One of folder_id, board_id, space_id, or group_id must be present
+    }
+    if (presentKeys.length > 1) {
+        return false; // Only one of folder_id, board_id, space_id, or group_id must be present
+    }
+    return true;
+}, {
+    message: "One of folder_id, space_id, or group_id must be present, and only one can be present",
+    path: ["folder_id", "space_id", "group_id"]
+}).refine(data => {
+    if (data.folder_id && !isValidObjectId(data.folder_id)) {
+        return false;
+    }
+    if (data.space_id && !isValidObjectId(data.space_id)) {
+        return false;
+    }
+    if (data.group_id && !isValidObjectId(data.group_id)) {
+        return false;
+    }
+    return true;
+}, {
+    message: "Invalid MongoDB ObjectId",
+    path: ["folder_id", "space_id", "group_id"]
 });
 
 export const putBoardSchema = z.object({
@@ -35,10 +63,38 @@ export const putBoardSchema = z.object({
         message: "Invalid MongoDB ObjectId",
     })).optional(),
     pinned: z.boolean().optional(),
-    space_id: z.string().optional().refine(value => !value || isValidObjectId(value), {
-        message: "Invalid MongoDB ObjectId",
-    }),
+    folder_id: z.string().optional(),
+    space_id: z.string().optional(),
+    group_id: z.string().optional(),
     custom_meta: z.object({}).passthrough().optional(),
+}).refine(data => {
+    const { folder_id, space_id, group_id } = data;
+    const keys = [folder_id, space_id, group_id];
+    const presentKeys = keys.filter(key => key !== undefined && key !== '');
+    if (presentKeys.length === 0) {
+        return false; // One of folder_id, board_id, space_id, or group_id must be present
+    }
+    if (presentKeys.length > 1) {
+        return false; // Only one of folder_id, board_id, space_id, or group_id must be present
+    }
+    return true;
+}, {
+    message: "One of folder_id, space_id, or group_id must be present, and only one can be present",
+    path: ["folder_id", "space_id", "group_id"]
+}).refine(data => {
+    if (data.folder_id && !isValidObjectId(data.folder_id)) {
+        return false;
+    }
+    if (data.space_id && !isValidObjectId(data.space_id)) {
+        return false;
+    }
+    if (data.group_id && !isValidObjectId(data.group_id)) {
+        return false;
+    }
+    return true;
+}, {
+    message: "Invalid MongoDB ObjectId",
+    path: ["folder_id", "space_id", "group_id"]
 });
 
 export const getBoardSchema = z.object({

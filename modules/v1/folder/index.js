@@ -28,9 +28,10 @@ export default async (request, response) => {
 
         for (const folder of result) {
             const folders = await global.Folder.find({ parent_id: folder._id }).sort('createdAt ASC');
+            const boards = await global.Board.find({ folder_id: folder._id }).sort('createdAt ASC');
             const pageMeta = await global.PageMeta.find({ folder_id: folder._id }).sort('createdAt ASC');
 
-            let combinedData = [...folders, ...pageMeta];
+            let combinedData = [...folders, ...boards, ...pageMeta];
 
             combinedData.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
