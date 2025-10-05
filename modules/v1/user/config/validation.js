@@ -4,7 +4,11 @@ import { z } from 'zod';
 const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
 
 export const getUserSchema = z.object({
-    _id: z.string().optional().refine(isValidObjectId, {
+    _id: z.string().optional().refine(value => !value || isValidObjectId(value), {
         message: "Invalid MongoDB ObjectId",
-    })
+    }),
+    search: z.string().optional()
+}).refine(data => data._id || data.search, {
+    message: "Either _id or search query must be provided",
+    path: ["_id", "search"]
 });
