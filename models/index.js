@@ -1,4 +1,5 @@
 import { waterline, dbConfig } from '../db/connection.js';
+import Auth from './auth.js';
 import Attachment from './attachment.js';
 import User from './user.js';
 import Space from './space.js';
@@ -13,6 +14,7 @@ import CommentContent from './comment_content.js';
 import Media from './media.js';
 
 // Register models
+waterline.registerModel(Auth);
 waterline.registerModel(Attachment);
 waterline.registerModel(User);
 waterline.registerModel(Space);
@@ -36,6 +38,7 @@ const initializeWaterline = async () => {
             }
             console.log('ORM initialized');
             // Make models globally accessible
+            global.Auth = ontology.collections.auth;
             global.Attachment = ontology.collections.attachment;
             global.User = ontology.collections.user;
             global.Space = ontology.collections.space;
