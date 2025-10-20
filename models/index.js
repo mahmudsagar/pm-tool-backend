@@ -12,6 +12,7 @@ import CustomMeta from './custom_meta.js';
 import CommentMeta from './comment_meta.js';
 import CommentContent from './comment_content.js';
 import Media from './media.js';
+import Board from './board.js';
 
 // Register models
 waterline.registerModel(Auth);
@@ -27,6 +28,7 @@ waterline.registerModel(CommentMeta);
 waterline.registerModel(CommentContent);
 waterline.registerModel(CustomMeta);
 waterline.registerModel(Media);
+waterline.registerModel(Board);
 
 // Register other models as needed
 const initializeWaterline = async () => {
@@ -51,6 +53,7 @@ const initializeWaterline = async () => {
             global.CommentContent = ontology.collections.comment_content;
             global.CustomMeta = ontology.collections.custom_meta;
             global.Media = ontology.collections.media;
+            global.Board = ontology.collections.board;
             resolve(ontology);
         });
     });

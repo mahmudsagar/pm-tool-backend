@@ -29,9 +29,10 @@ export default async (request, response) => {
         for (const spcae of result) {
             const groups = await global.Group.find({ space_id: spcae._id }).sort('createdAt ASC');
             const folders = await global.Folder.find({ space_id: spcae._id }).sort('createdAt ASC');
+            const boards = await global.Board.find({ space_id: spcae._id }).sort('createdAt ASC');
             const pageMeta = await global.PageMeta.find({ space_id: spcae._id }).sort('createdAt ASC');
 
-            let combinedData = [...folders, ...groups, ...pageMeta];
+            let combinedData = [...folders, ...groups, ...boards, ...pageMeta];
 
             combinedData.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 

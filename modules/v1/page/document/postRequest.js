@@ -5,6 +5,7 @@ import { formatSuccessMessage } from '../../utils/success.js';
 
 export default async (request, response) => {
     try {
+        let boardData = {};
         const body = await request.json();
 
         const pageContentData = postPageContentSchema.parse({
@@ -19,6 +20,7 @@ export default async (request, response) => {
             title: body.title,
             user_id: body.user_id,
             folder_id: body.folder_id,
+            board_id: body.board_id,
             space_id: body.space_id,
             group_id: body.group_id,
             page_content_id: pageContentResult._id,
@@ -32,9 +34,14 @@ export default async (request, response) => {
             inner_comments: body.inner_comments
         });
 
+        if (body.board_id && body.custom_meta) {
+            // update the board custom meta with the page custom meta
+            boardData = await global.Board.update({ _id: body.board_id }, { custom_meta: body.custom_meta }).fetch();
+        }
+
         const pageMetaResult = await global.PageMeta.create(pageMetaData).fetch();
 
-        response.json(formatSuccessMessage("Page content, meta data, and inner comments saved successfully", { ...pageMetaResult, pageContent: pageContentResult }));
+        response.json(formatSuccessMessage("Page content, meta data, and inner comments saved successfully", { ...pageMetaResult, pageContent: pageContentResult, board: boardData?.length > 0 ? boardData[0] : {} }));
     } catch (err) {
         if (err instanceof z.ZodError) {
             const formattedErrors = formatZodErrors(err.errors);

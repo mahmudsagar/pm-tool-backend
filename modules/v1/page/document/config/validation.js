@@ -32,6 +32,7 @@ export const postPageMetaSchema = z.object({
         message: "Invalid MongoDB ObjectId",
     }),
     folder_id: z.string().optional(),
+    board_id: z.string().optional(),
     space_id: z.string().optional(),
     group_id: z.string().optional(),
     page_content_id: z.string().nonempty("Page content ID is required").refine(isValidObjectId, {
@@ -59,21 +60,24 @@ export const postPageMetaSchema = z.object({
     last_updated_by: z.string().optional(),
     entity_type: z.string().optional(),
 }).refine(data => {
-    const { folder_id, space_id, group_id } = data;
-    const keys = [folder_id, space_id, group_id];
+    const { folder_id, board_id, space_id, group_id } = data;
+    const keys = [folder_id, board_id, space_id, group_id];
     const presentKeys = keys.filter(key => key !== undefined && key !== '');
     if (presentKeys.length === 0) {
-        return false; // One of folder_id, space_id, or group_id must be present
+        return false; // One of folder_id, board_id, space_id, or group_id must be present
     }
     if (presentKeys.length > 1) {
-        return false; // Only one of folder_id, space_id, or group_id must be present
+        return false; // Only one of folder_id, board_id, space_id, or group_id must be present
     }
     return true;
 }, {
-    message: "One of folder_id, space_id, or group_id must be present, and only one can be present",
-    path: ["folder_id", "space_id", "group_id"]
+    message: "One of folder_id, board_id, space_id, or group_id must be present, and only one can be present",
+    path: ["folder_id", "board_id", "space_id", "group_id"]
 }).refine(data => {
     if (data.folder_id && !isValidObjectId(data.folder_id)) {
+        return false;
+    }
+    if (data.board_id && !isValidObjectId(data.board_id)) {
         return false;
     }
     if (data.space_id && !isValidObjectId(data.space_id)) {
@@ -110,6 +114,7 @@ export const putPageMetaSchema = z.object({
     }).optional(),
     title: z.string().optional(),
     folder_id: z.string().optional(),
+    board_id: z.string().optional(),
     space_id: z.string().optional(),
     group_id: z.string().optional(),
     custom_meta: z.union([
@@ -132,18 +137,21 @@ export const putPageMetaSchema = z.object({
     entity_type: z.string().optional(),
     inner_comments: z.array(z.any()).optional(),
 }).refine(data => {
-    const { folder_id, space_id, group_id } = data;
-    const keys = [folder_id, space_id, group_id];
+    const { folder_id, board_id, space_id, group_id } = data;
+    const keys = [folder_id, board_id, space_id, group_id];
     const presentKeys = keys.filter(key => key !== undefined && key !== '');
     if (presentKeys.length > 1) {
-        return false; // Only one of folder_id, space_id, or group_id must be present
+        return false; // Only one of folder_id, board_id, space_id, or group_id must be present
     }
     return true;
 }, {
-    message: "Only one of folder_id, space_id, or group_id must be present",
-    path: ["folder_id", "space_id", "group_id"]
+    message: "Only one of folder_id, board_id, space_id, or group_id must be present",
+    path: ["folder_id", "board_id", "space_id", "group_id"]
 }).refine(data => {
     if (data.folder_id && !isValidObjectId(data.folder_id)) {
+        return false;
+    }
+    if (data.board_id && !isValidObjectId(data.board_id)) {
         return false;
     }
     if (data.space_id && !isValidObjectId(data.space_id)) {

@@ -8,7 +8,7 @@ export default async (request, response) => {
         const { id: _id, ...rest } = await request.json();
 
         let mediaAttachments = [];
-        let comments = [];
+        let boardData = {};
         let pageContentResult, pageMetaResult;
 
         const pageMetaData = putPageMetaSchema.parse({
@@ -16,6 +16,7 @@ export default async (request, response) => {
             page_type: rest.page_type,
             title: rest.title,
             folder_id: rest.folder_id,
+            board_id: rest.board_id,
             space_id: rest.space_id,
             group_id: rest.group_id,
             custom_meta: rest.custom_meta,
@@ -64,25 +65,26 @@ export default async (request, response) => {
 
         if (pageMetaResult.attachments && pageMetaResult.attachments.length > 0) {
             mediaAttachments = await Promise.all(
-                pageMetaResult.attachments.map(async (attachment) => {
+                pageMetaResult.attachments?.map(async (attachment) => {
                     return await global.Media.findOne({ reference_id: pageMetaResult._id });
                 })
             );
         }
 
+
         const commentsMeta = await global.CommentMeta.find({ page_id: pageMetaResult._id });
         const commentsWithMeta = await Promise.all(
-            commentsMeta.map(async (comment) => {
+            commentsMeta?.map(async (comment) => {
                 // Returning user and media attachments of user for each comment
                 const user = await global.User.findOne({ _id: comment.user_id });
-                const userMediaAttachments = await Promise.all(user.attachments.map(async (attachment) => {
+                const userMediaAttachments = await Promise.all(user.attachments?.map(async (attachment) => {
                     return await global.Media.findOne({ _id: attachment });
                 }));
 
                 const commentContent = await global.CommentContent.findOne({ _id: comment.associate_id });
                 const mediaAttachments = comment.attachments && comment.attachments.length > 0
                     ? await Promise.all(
-                        comment.attachments.map(async (attachment) => {
+                        comment.attachments?.map(async (attachment) => {
                             return await global.Media.findOne({ reference_id: comment._id });
                         })
                     )
@@ -99,7 +101,12 @@ export default async (request, response) => {
             })
         );
 
-        response.json(formatSuccessMessage("Page updated successfully", { ...pageMetaResult, mediaAttachments, pageContent: pageContentResult, comments: commentsWithMeta }));
+        if (rest.board_id && rest.custom_meta) {
+            // update the board custom meta with the page custom meta
+            boardData = await global.Board.update({ _id: rest.board_id }, { custom_meta: rest.custom_meta }).fetch();
+        }
+
+        response.json(formatSuccessMessage("Page updated successfully", { ...pageMetaResult, mediaAttachments, pageContent: pageContentResult, comments: commentsWithMeta, board: boardData?.length > 0 ? boardData[0] : {} }));
     } catch (err) {
         if (err instanceof z.ZodError) {
             const formattedErrors = formatZodErrors(err.errors);
