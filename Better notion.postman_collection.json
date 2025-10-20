@@ -39,7 +39,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/v1/user?id=67f7adb41a84e462d190432a",
+							"raw": "{{baseUrl}}/v1/user?search=ornab@gmail.com",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -49,8 +49,8 @@
 							],
 							"query": [
 								{
-									"key": "id",
-									"value": "67f7adb41a84e462d190432a"
+									"key": "search",
+									"value": "ornab@gmail.com"
 								}
 							]
 						},
@@ -196,336 +196,124 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Users fetched successfully\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"_id\": \"67f7adb41a84e462d190432a\",\n        \"name\": \"Ornab\",\n        \"email\": \"fahim908@gmail.com\",\n        \"password\": \"$2b$10$FNEbnyqc/BjHp/Zg.rawfOeDfCDGMoqeAKCHXw9XHyCpuu.NO9nMC\",\n        \"workspaces_flag\": true,\n        \"mediaAttachments\": []\n    }\n}"
+						},
+						{
+							"name": "get user by name",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/v1/user?search=Ornab",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"user"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "Ornab"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET, POST, PUT, DELETE, OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 05 Oct 2025 09:13:59 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "2360"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Users fetched successfully\"\n            ]\n        }\n    ],\n    \"data\": [\n        {\n            \"_id\": \"67f799bae435e40ec9ac5946\",\n            \"name\": \"Ornab\",\n            \"email\": \"ornab@gmail.com\"\n        },\n        {\n            \"_id\": \"67f79b606b502a2cdcda065f\",\n            \"name\": \"Ornab\",\n            \"email\": \"fahim@gmail.com\"\n        },\n        {\n            \"_id\": \"67f79b93c9fa4ac56d5f48b1\",\n            \"name\": \"Ornab\",\n            \"email\": \"muhtasim.fahim@gmail.com\"\n        },\n        {\n            \"_id\": \"67f7adb41a84e462d190432a\",\n            \"name\": \"Ornab\",\n            \"email\": \"fahim908@gmail.com\"\n        },\n        {\n            \"_id\": \"67faadc9d8597bac39b47f0f\",\n            \"name\": \"Ornab\",\n            \"email\": \"fahim100@gmail.com\"\n        },\n        {\n            \"_id\": \"67faae2eb574b0433bf42eda\",\n            \"name\": \"Ornab\",\n            \"email\": \"fahim101@gmail.com\"\n        },\n        {\n            \"_id\": \"67faae848168b17a48081d47\",\n            \"name\": \"Ornab\",\n            \"email\": \"fahim102@gmail.com\"\n        },\n        {\n            \"_id\": \"67faaf4b8168b17a48081d48\",\n            \"name\": \"Ornab\",\n            \"email\": \"fahim105@gmail.com\"\n        },\n        {\n            \"_id\": \"67faaf7d94404b393ca4dfdd\",\n            \"name\": \"Ornab\",\n            \"email\": \"fahim106@gmail.com\"\n        },\n        {\n            \"_id\": \"67fab0b3e58fb058d5e55032\",\n            \"name\": \"Ornab\",\n            \"email\": \"fahim107@gmail.com\"\n        },\n        {\n            \"_id\": \"67fb5a8cef0e9ba6dde607a8\",\n            \"name\": \"Ornab\",\n            \"email\": \"ornab908@gmail.com\"\n        },\n        {\n            \"_id\": \"67fb5a9eef0e9ba6dde607a9\",\n            \"name\": \"Ornab\",\n            \"email\": \"orfab908@gmail.com\"\n        },\n        {\n            \"_id\": \"67fb5acb109adc1a3bd7c9d7\",\n            \"name\": \"Ornab\",\n            \"email\": \"ordqweab908@gmail.com\"\n        },\n        {\n            \"_id\": \"67fb5b02046b6d6cdf2b21fc\",\n            \"name\": \"Ornab\",\n            \"email\": \"osadfaseab908@gmail.com\"\n        },\n        {\n            \"_id\": \"67fb617049ddc68170197016\",\n            \"name\": \"Ornab\",\n            \"email\": \"osadfwdweeab908@gmail.com\"\n        },\n        {\n            \"_id\": \"67fb618f17e867c6fee6d4e4\",\n            \"name\": \"Ornab\",\n            \"email\": \"d@gmail.com\"\n        },\n        {\n            \"_id\": \"67fb61a9b1864a2eb649ab0b\",\n            \"name\": \"Ornab\",\n            \"email\": \"drt@gmail.com\"\n        },\n        {\n            \"_id\": \"67fb80c24778c770d77cf1a1\",\n            \"name\": \"Ornab\",\n            \"email\": \"fw1@gmail.com\"\n        },\n        {\n            \"_id\": \"67fb80e24778c770d77cf1a4\",\n            \"name\": \"Ornab\",\n            \"email\": \"e3432d@gmail.com\"\n        },\n        {\n            \"_id\": \"67fb857aa42f24dfe23da516\",\n            \"name\": \"Ornab\",\n            \"email\": \"mdmuhtasim.fahim09@gmail.com\"\n        },\n        {\n            \"_id\": \"67fb867a06f7e83da3f2610e\",\n            \"name\": \"Ornab\",\n            \"email\": \"s.fahim09@gmail.com\"\n        },\n        {\n            \"_id\": \"67fb8686913f446715f7f87c\",\n            \"name\": \"Ornab\",\n            \"email\": \"ss.fahim09@gmail.com\"\n        },\n        {\n            \"_id\": \"67fb8695913f446715f7f87f\",\n            \"name\": \"Ornab\",\n            \"email\": \"muhtasimfuadfahim@gmail.com\"\n        },\n        {\n            \"_id\": \"6822f1251c9d387c55c985cb\",\n            \"name\": \"Ornab\",\n            \"email\": \"sdfsfjejf@gmail.com\"\n        },\n        {\n            \"_id\": \"682cbf376b8a51408dac9010\",\n            \"name\": \"Ornab\",\n            \"email\": \"muhtasifnldkgnnfdmfuadfahim@gmail.com\"\n        },\n        {\n            \"_id\": \"682cbf526b8a51408dac9011\",\n            \"name\": \"Ornab\",\n            \"email\": \"muhtasifnldkgfgkfgknnfdmfuadfahim@gmail.com\"\n        },\n        {\n            \"_id\": \"682cbfa02792a0fffb54eebe\",\n            \"name\": \"Ornab\",\n            \"email\": \"tesbsjdhb@gmail.com\"\n        },\n        {\n            \"_id\": \"6852a255701c9b357818ac0e\",\n            \"name\": \"Ornab\",\n            \"email\": \"fdsfefft@gmail.com\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "get user by email",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/v1/user?search=ornab@gmail.com",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"user"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "ornab@gmail.com"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET, POST, PUT, DELETE, OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 05 Oct 2025 09:15:18 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "160"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Users fetched successfully\"\n            ]\n        }\n    ],\n    \"data\": [\n        {\n            \"_id\": \"67f799bae435e40ec9ac5946\",\n            \"name\": \"Ornab\",\n            \"email\": \"ornab@gmail.com\"\n        }\n    ]\n}"
 						}
 					]
-				},
-				{
-					"name": "Register User",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"Ornab\",\n    \"email\": \"tesbsjdhb@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/v1/register",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"v1",
-								"register"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "Register User",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"name\": \"Ornab\",\n    \"email\": \"muhtasimfuadfahim@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/v1/register",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"v1",
-										"register"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "access-control-allow-origin",
-									"value": "*"
-								},
-								{
-									"key": "access-control-allow-methods",
-									"value": "GET, POST, PUT, DELETE, OPTIONS"
-								},
-								{
-									"key": "access-control-allow-headers",
-									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-								},
-								{
-									"key": "access-control-allow-credentials",
-									"value": "true"
-								},
-								{
-									"key": "content-type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Sun, 13 Apr 2025 09:40:37 GMT"
-								},
-								{
-									"key": "Content-Length",
-									"value": "1084"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Registration successful\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"user_info\": {\n            \"_id\": \"67fb8695913f446715f7f87f\",\n            \"name\": \"Ornab\",\n            \"email\": \"muhtasimfuadfahim@gmail.com\"\n        },\n        \"workspace_info\": [\n            {\n                \"_id\": \"67fb8695913f446715f7f880\",\n                \"name\": \"Public Workspace\",\n                \"description\": \"A public workspace for collaboration\",\n                \"is_private\": false,\n                \"shared_teams\": [],\n                \"shared_members\": [],\n                \"user_id\": \"67fb8695913f446715f7f87f\",\n                \"is_default\": true,\n                \"entity_type\": \"space\",\n                \"createdAt\": \"2025-04-13T09:40:37.398Z\",\n                \"updatedAt\": \"2025-04-13T09:40:37.398Z\"\n            },\n            {\n                \"_id\": \"67fb8695913f446715f7f881\",\n                \"name\": \"Private Workspace\",\n                \"description\": \"A private workspace for personal use\",\n                \"is_private\": true,\n                \"shared_teams\": [],\n                \"shared_members\": [],\n                \"user_id\": \"67fb8695913f446715f7f87f\",\n                \"is_default\": true,\n                \"entity_type\": \"space\",\n                \"createdAt\": \"2025-04-13T09:40:37.398Z\",\n                \"updatedAt\": \"2025-04-13T09:40:37.398Z\"\n            }\n        ],\n        \"token\": \"{{vault:json-web-token}}\"\n    }\n}"
-						},
-						{
-							"name": "with workspace flag",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"name\": \"Ornab\",\n    \"email\": \"fdsfefft@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/v1/register",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"v1",
-										"register"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "access-control-allow-origin",
-									"value": "*"
-								},
-								{
-									"key": "access-control-allow-methods",
-									"value": "GET, POST, PUT, DELETE, OPTIONS"
-								},
-								{
-									"key": "access-control-allow-headers",
-									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-								},
-								{
-									"key": "access-control-allow-credentials",
-									"value": "true"
-								},
-								{
-									"key": "content-type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 18 Jun 2025 11:26:13 GMT"
-								},
-								{
-									"key": "Content-Length",
-									"value": "416"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Registration successful\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"user_info\": {\n            \"_id\": \"6852a255701c9b357818ac0e\",\n            \"name\": \"Ornab\",\n            \"email\": \"fdsfefft@gmail.com\",\n            \"workspaces_flag\": false\n        },\n        \"token\": \"{{vault:json-web-token}}\"\n    }\n}"
-						}
-					]
-				},
-				{
-					"name": "Login User",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\": \"fahim908@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/v1/login",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"v1",
-								"login"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "login user",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"email\": \"muhtasim.fahim@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/v1/login",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"v1",
-										"login"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "access-control-allow-origin",
-									"value": "*"
-								},
-								{
-									"key": "access-control-allow-methods",
-									"value": "GET, POST, PUT, DELETE, OPTIONS"
-								},
-								{
-									"key": "access-control-allow-headers",
-									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-								},
-								{
-									"key": "access-control-allow-credentials",
-									"value": "true"
-								},
-								{
-									"key": "content-type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Thu, 10 Apr 2025 10:44:43 GMT"
-								},
-								{
-									"key": "Content-Length",
-									"value": "398"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Login successful\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"user_info\": {\n            \"id\": \"67f79b93c9fa4ac56d5f48b1\",\n            \"name\": \"Ornab\",\n            \"email\": \"muhtasim.fahim@gmail.com\"\n        },\n        \"token\": \"{{vault:json-web-token}}\"\n    }\n}"
-						},
-						{
-							"name": "with workspace flag",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"email\": \"fahim908@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/v1/login",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"v1",
-										"login"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "access-control-allow-origin",
-									"value": "*"
-								},
-								{
-									"key": "access-control-allow-methods",
-									"value": "GET, POST, PUT, DELETE, OPTIONS"
-								},
-								{
-									"key": "access-control-allow-headers",
-									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-								},
-								{
-									"key": "access-control-allow-credentials",
-									"value": "true"
-								},
-								{
-									"key": "content-type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Sun, 15 Jun 2025 08:55:26 GMT"
-								},
-								{
-									"key": "Content-Length",
-									"value": "366"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Login successful\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"user_info\": {\n            \"_id\": \"67f7adb41a84e462d190432a\",\n            \"name\": \"Ornab\",\n            \"email\": \"fahim908@gmail.com\",\n            \"workspaces_flag\": true\n        },\n        \"token\": \"{{vault:json-web-token}}\"\n    }\n}"
-						}
-					]
-				},
-				{
-					"name": "Logout User",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/v1/logout",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"v1",
-								"logout"
-							]
-						}
-					},
-					"response": []
 				}
 			],
 			"description": "The `/me` endpoints let you manage information about the authenticated user."
@@ -1003,7 +791,7 @@
 							},
 							"status": "OK",
 							"code": 200,
-							"_postman_previewlanguage": null,
+							"_postman_previewlanguage": "Text",
 							"header": [
 								{
 									"key": "access-control-allow-origin",
@@ -2144,7 +1932,7 @@
 							},
 							"status": "OK",
 							"code": 200,
-							"_postman_previewlanguage": null,
+							"_postman_previewlanguage": "Text",
 							"header": [
 								{
 									"key": "access-control-allow-origin",
@@ -2465,7 +2253,7 @@
 							},
 							"status": "OK",
 							"code": 200,
-							"_postman_previewlanguage": null,
+							"_postman_previewlanguage": "Text",
 							"header": [
 								{
 									"key": "access-control-allow-origin",
@@ -2805,7 +2593,7 @@
 							},
 							"status": "OK",
 							"code": 200,
-							"_postman_previewlanguage": null,
+							"_postman_previewlanguage": "Text",
 							"header": [
 								{
 									"key": "access-control-allow-origin",
@@ -5617,7 +5405,7 @@
 							},
 							"status": "OK",
 							"code": 200,
-							"_postman_previewlanguage": null,
+							"_postman_previewlanguage": "Text",
 							"header": [
 								{
 									"key": "access-control-allow-origin",
@@ -5678,129 +5466,7 @@
 							},
 							"status": "OK",
 							"code": 200,
-							"_postman_previewlanguage": null,
-							"header": [
-								{
-									"key": "access-control-allow-origin",
-									"value": "*"
-								},
-								{
-									"key": "access-control-allow-methods",
-									"value": "GET, POST, PUT, DELETE, OPTIONS"
-								},
-								{
-									"key": "access-control-allow-headers",
-									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-								},
-								{
-									"key": "access-control-allow-credentials",
-									"value": "true"
-								},
-								{
-									"key": "content-type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Mon, 15 Sep 2025 11:24:05 GMT"
-								},
-								{
-									"key": "Content-Length",
-									"value": "557"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Board created successfully\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"_id\": \"68c7f75513ebe0bfebc0c246\",\n        \"name\": \"My Test Board\",\n        \"description\": \"My board description\",\n        \"custom_meta\": {},\n        \"shared_members\": [\n            \"67f7adb41a84e462d190432a\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_teams\": [\n            \"67f7adb41a84e462d190432a\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"user_id\": \"67f7adb41a84e462d190432a\",\n        \"space_id\": \"\",\n        \"group_id\": \"\",\n        \"folder_id\": \"6727422d201cbaec290637bb\",\n        \"pinned\": false,\n        \"entity_type\": \"board\",\n        \"createdAt\": \"2025-09-15T11:24:05.369Z\",\n        \"updatedAt\": \"2025-09-15T11:24:05.369Z\"\n    }\n}"
-						},
-						{
-							"name": "Create Data Board",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"name\": \"My Test Board\", // mandatory\n    \"description\": \"My board description\", \n    \"user_id\": \"67f7adb41a84e462d190432a\", // mandatory\n    \"is_private\": true,\n    \"shared_teams\": [\n        \"67f7adb41a84e462d190432a\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_members\": [\n        \"67f7adb41a84e462d190432a\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"folder_id\": \"6727422d201cbaec290637bb\" // space_id, group_id\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/v1/board",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"v1",
-										"board"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "",
-							"header": [
-								{
-									"key": "access-control-allow-origin",
-									"value": "*"
-								},
-								{
-									"key": "access-control-allow-methods",
-									"value": "GET, POST, PUT, DELETE, OPTIONS"
-								},
-								{
-									"key": "access-control-allow-headers",
-									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-								},
-								{
-									"key": "access-control-allow-credentials",
-									"value": "true"
-								},
-								{
-									"key": "content-type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Mon, 15 Sep 2025 11:24:05 GMT"
-								},
-								{
-									"key": "Content-Length",
-									"value": "557"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Board created successfully\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"_id\": \"68c7f75513ebe0bfebc0c246\",\n        \"name\": \"My Test Board\",\n        \"description\": \"My board description\",\n        \"custom_meta\": {},\n        \"shared_members\": [\n            \"67f7adb41a84e462d190432a\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"shared_teams\": [\n            \"67f7adb41a84e462d190432a\",\n            \"66e404cf089aef7c495015f4\"\n        ],\n        \"user_id\": \"67f7adb41a84e462d190432a\",\n        \"space_id\": \"\",\n        \"group_id\": \"\",\n        \"folder_id\": \"6727422d201cbaec290637bb\",\n        \"pinned\": false,\n        \"entity_type\": \"board\",\n        \"createdAt\": \"2025-09-15T11:24:05.369Z\",\n        \"updatedAt\": \"2025-09-15T11:24:05.369Z\"\n    }\n}"
-						},
-						{
-							"name": "Create Data Board",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"name\": \"My Test Board\", // mandatory\n    \"description\": \"My board description\", \n    \"user_id\": \"67f7adb41a84e462d190432a\", // mandatory\n    \"is_private\": true,\n    \"shared_teams\": [\n        \"67f7adb41a84e462d190432a\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"shared_members\": [\n        \"67f7adb41a84e462d190432a\",\n        \"66e404cf089aef7c495015f4\"\n    ],\n    \"folder_id\": \"6727422d201cbaec290637bb\" // space_id, group_id\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/v1/board",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"v1",
-										"board"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "",
+							"_postman_previewlanguage": "Text",
 							"header": [
 								{
 									"key": "access-control-allow-origin",
@@ -5893,7 +5559,7 @@
 							},
 							"status": "OK",
 							"code": 200,
-							"_postman_previewlanguage": null,
+							"_postman_previewlanguage": "Text",
 							"header": [
 								{
 									"key": "access-control-allow-origin",
@@ -6018,7 +5684,7 @@
 							},
 							"status": "OK",
 							"code": 200,
-							"_postman_previewlanguage": null,
+							"_postman_previewlanguage": "Text",
 							"header": [
 								{
 									"key": "access-control-allow-origin",
@@ -6051,6 +5717,496 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Board deleted successfully\"\n            ]\n        }\n    ],\n    \"data\": null\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"fahim908@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"fahim908@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/auth/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET, POST, PUT, DELETE, OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 20 Oct 2025 05:25:48 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "366"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Login successful\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"user_info\": {\n            \"_id\": \"67f7adb41a84e462d190432a\",\n            \"name\": \"Ornab\",\n            \"email\": \"fahim908@gmail.com\",\n            \"workspaces_flag\": true\n        },\n        \"token\": \"{{vault:json-web-token}}\"\n    }\n}"
+						},
+						{
+							"name": "with workspace flag",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"fahim908@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET, POST, PUT, DELETE, OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 15 Jun 2025 08:55:26 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "366"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Login successful\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"user_info\": {\n            \"_id\": \"67f7adb41a84e462d190432a\",\n            \"name\": \"Ornab\",\n            \"email\": \"fahim908@gmail.com\",\n            \"workspaces_flag\": true\n        },\n        \"token\": \"{{vault:json-web-token}}\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Ornab\",\n    \"email\": \"tesbsjdhb@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Register",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Ornab\",\n    \"email\": \"fahim1@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/auth/register",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET, POST, PUT, DELETE, OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 20 Oct 2025 05:29:30 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "412"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Registration successful\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"user_info\": {\n            \"_id\": \"68f5c8bb33302da1f9be13c5\",\n            \"name\": \"Ornab\",\n            \"email\": \"fahim1@gmail.com\",\n            \"workspaces_flag\": false\n        },\n        \"token\": \"{{vault:json-web-token}}\"\n    }\n}"
+						},
+						{
+							"name": "with workspace flag",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Ornab\",\n    \"email\": \"fdsfefft@gmail.com\",\n    \"password\": \"Xpeed@123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/register",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"register"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET, POST, PUT, DELETE, OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 18 Jun 2025 11:26:13 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "416"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Registration successful\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"user_info\": {\n            \"_id\": \"6852a255701c9b357818ac0e\",\n            \"name\": \"Ornab\",\n            \"email\": \"fdsfefft@gmail.com\",\n            \"workspaces_flag\": false\n        },\n        \"token\": \"{{vault:json-web-token}}\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Register Copy",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/v1/auth/logout",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"auth",
+										"logout"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET, POST, PUT, DELETE, OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 20 Oct 2025 05:36:36 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "66"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Logout successful\"\n            ]\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Check Auth",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/auth",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"auth"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/v1/auth",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"v1",
+										"auth"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET, POST, PUT, DELETE, OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 20 Oct 2025 06:24:56 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "176"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"success\": [\n                \"Token is valid\"\n            ]\n        }\n    ],\n    \"data\": {\n        \"user_info\": [\n            {\n                \"_id\": \"67f7adb41a84e462d190432a\",\n                \"name\": \"Ornab\"\n            }\n        ],\n        \"expires_at\": \"2025-10-21T05:36:52.202Z\"\n    }\n}"
 						}
 					]
 				}

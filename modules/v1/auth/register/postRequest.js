@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import jwt from 'jsonwebtoken';
 import { registerUserSchema } from './config/validation.js';
-import { formatSuccessMessage } from '../utils/success.js';
-import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
+import { formatSuccessMessage } from '../../utils/success.js';
+import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 // import defaultWorkspaces from './config/defaultWorkspaces.json' assert { type: 'json' };
 
 export default async (request, response) => {
@@ -33,6 +33,17 @@ export default async (request, response) => {
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRES_IN }
         );
+
+        const expiresAt = new Date();
+        expiresAt.setHours(expiresAt.getHours() + 24);
+
+        await global.Auth.destroy({ user_id: newUser._id });
+
+        await global.Auth.create({
+            user_id: newUser._id,
+            token: token,
+            expires_at: expiresAt
+        });
 
         // Create default workspaces for the user using Promise.all
         // const workspacesToCreate = defaultWorkspaces.map(workspace => ({
