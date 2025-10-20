@@ -1,18 +1,16 @@
 import { z } from 'zod';
 import passport from "passport";
 import jwt from 'jsonwebtoken';
-import { loginUserSchema } from './config/validation.js';
-import { formatSuccessMessage } from '../utils/success.js';
-import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
+import { loginUserSchema } from '../config/validation.js';
+import { formatSuccessMessage } from '../../utils/success.js';
+import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 
 export default async (request, response, next) => {
     try {
-        // Get request body - HyperExpress requires manual parsing
         const body = await request.json();
 
         const validatedData = loginUserSchema.parse(body);
 
-        // Set body on request object for Passport
         request.body = validatedData;
 
         passport.authenticate('local', { session: false }, async (err, user, info) => {
@@ -25,17 +23,25 @@ export default async (request, response, next) => {
                 return response.status(400).json(formatErrorMessage("Authentication failed"));
             }
 
-            // Generate JWT token
             const token = jwt.sign(
                 { id: user.id, email: user.email },
                 process.env.JWT_SECRET,
                 { expiresIn: process.env.JWT_EXPIRES_IN }
             );
 
-            // Don't include password in response
+            const expiresAt = new Date();
+            expiresAt.setHours(expiresAt.getHours() + 24);
+
+            await global.Auth.destroy({ user_id: user._id });
+
+            await global.Auth.create({
+                user_id: user._id,
+                token: token,
+                expires_at: expiresAt
+            });
+
             const { password, ...userWithoutPassword } = user;
 
-            // Find workspaces for this user
             const workspaces = await global.Space.find({ user_id: userWithoutPassword._id });
             if (!workspaces || workspaces.length === 0) {
                 userWithoutPassword.workspaces_flag = false;
@@ -49,11 +55,9 @@ export default async (request, response, next) => {
         })(request, response, next);
     } catch (err) {
         if (err instanceof z.ZodError) {
-            // Handle Zod validation errors
             const formattedErrors = formatZodErrors(err.errors);
             response.status(400).json(formatErrorMessage(formattedErrors));
         } else {
-            // Handle other errors
             response.status(400).json(formatErrorMessage(err.message));
         }
     }
