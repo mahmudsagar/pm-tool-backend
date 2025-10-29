@@ -100,19 +100,14 @@ export default async (request, response) => {
 
         // Process and enrich search results
         const results = {
-            folders: folderResults.map(item => ({ ...item, type: 'folder' })),
-            pages: pageResults.map(item => ({ ...item, type: 'page' })),
-            groups: groupResults.map(item => ({ ...item, type: 'group' })),
-            teams: teamResults.map(item => ({ ...item, type: 'team' })),
-            spaces: spaceResults.map(item => ({ ...item, type: 'space' })),
             total: folderResults.length + pageResults.length + groupResults.length + teamResults.length + spaceResults.length,
-            all: [
-                ...folderResults.map(item => ({ ...item, type: 'folder' })),
-                ...pageResults.map(item => ({ ...item, type: 'page' })),
-                ...groupResults.map(item => ({ ...item, type: 'group' })),
-                ...teamResults.map(item => ({ ...item, type: 'team' })),
-                ...spaceResults.map(item => ({ ...item, type: 'space' })),
-            ]
+            all: {
+                folders: folderResults.map(item => ({ ...item, type: 'folder' })),
+                pages: pageResults.map(item => ({ ...item, type: 'page' })),
+                groups: groupResults.map(item => ({ ...item, type: 'group' })),
+                teams: teamResults.map(item => ({ ...item, type: 'team' })),
+                spaces: spaceResults.map(item => ({ ...item, type: 'space' })),
+            }
         };
 
         response.json(formatSuccessMessage('Search results', results));
