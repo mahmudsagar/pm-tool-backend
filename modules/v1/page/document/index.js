@@ -4,75 +4,77 @@ import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
 
 export default async (request, response) => {
-	try {
-		const { id } = request.query;
+    try {
+        const { id } = request.query;
 
-		const validateQuery = getPageMetaSchema.parse({ _id: id });
+        const validateQuery = getPageMetaSchema.parse({ _id: id });
 
-		const pageMetaResult = await global.PageMeta.findOne({ _id: validateQuery._id });
-		if (!pageMetaResult) {
-			return response.status(404).json(formatErrorMessage('Page not found'));
-		}
+        const pageMetaResult = await global.PageMeta.findOne({ _id: validateQuery._id });
+        if (!pageMetaResult) {
+            return response.status(404).json(formatErrorMessage('Page not found'));
+        }
 
-		const pageContentResult = await global.PageContent.findOne({ _id: pageMetaResult.page_content_id });
+        const pageContentResult = await global.PageContent.findOne({ _id: pageMetaResult.page_content_id });
 
-		const mediaAttachments = pageMetaResult.attachments && pageMetaResult.attachments.length > 0
-			? await Promise.all(
-				pageMetaResult.attachments.map(async (attachment) => {
-					return await global.Media.findOne({ _id: attachment });
-				})
-			)
-			: [];
+        const mediaAttachments = pageMetaResult.attachments && pageMetaResult.attachments.length > 0
+            ? await Promise.all(
+                pageMetaResult.attachments?.map(async (attachment) => {
+                    return await global.Media.findOne({ _id: attachment });
+                })
+            )
+            : [];
 
-		const commentsMeta = await global.CommentMeta.find({ page_id: pageMetaResult._id });
-		const commentsWithMeta = await Promise.all(
-			commentsMeta.map(async (comment) => {
-				// Returning user and media attachments of user for each comment
-				const user = await global.User.findOne({ _id: comment.user_id });
-				const userMediaAttachments = await Promise.all(user.attachments.map(async (attachment) => {
-					return await global.Media.findOne({ _id: attachment });
-				}));
+        const commentsMeta = await global.CommentMeta.find({ page_id: pageMetaResult._id });
 
-				// Returning comment content and media attachments of comments for each comment
-				const commentContent = await global.CommentContent.findOne({ _id: comment.associate_id });
-				const mediaAttachments = comment.attachments && comment.attachments.length > 0
-					? await Promise.all(
-						comment.attachments.map(async (attachment) => {
-							return await global.Media.findOne({ _id: attachment });
-						})
-					)
-					: [];
+        const commentsWithMeta = await Promise.all(
 
-				return {
-					...comment, commentContent, mediaAttachments,
-					userInfo: {
-						name: user.full_name,
-						url: userMediaAttachments?.length > 0 ? userMediaAttachments[0]?.url : ''
-					}
-				};
-			})
-		);
+            commentsMeta?.map(async (comment) => {
+                const user = await global.User.findOne({ _id: comment.user_id });
+                const userAttachments = Array.isArray(user.attachments) ? user.attachments : [];
+                const userMediaAttachments = await Promise.all(userAttachments.map(async (attachment) => {
+                    return await global.Media.findOne({ _id: attachment });
+                }));
 
-		if (pageMetaResult.board_id !== "") {
-			const boardData = await global.Board.findOne({ _id: pageMetaResult.board_id });
-			if (boardData) {
-				pageMetaResult.board = boardData;
-			}
-		}
+                const commentContent = await global.CommentContent.findOne({ _id: comment.associate_id });
+                console.log('commentContent', commentContent)
+                const mediaAttachments = comment.attachments && comment.attachments.length > 0
+                    ? await Promise.all(
+                        comment.attachments?.map(async (attachment) => {
+                            return await global.Media.findOne({ _id: attachment });
+                        })
+                    )
+                    : [];
 
-		response.json(formatSuccessMessage("Page data fetched successfully",
-			{
-				...pageMetaResult,
-				pageContent: pageContentResult,
-				mediaAttachments,
-				comments: commentsWithMeta
-			}));
-	} catch (err) {
-		if (err instanceof z.ZodError) {
-			const formattedErrors = formatZodErrors(err.errors);
-			response.status(400).json(formatErrorMessage(formattedErrors));
-		} else {
-			response.status(400).json(formatErrorMessage(err.message));
-		}
-	}
+                return {
+                    ...comment, commentContent, mediaAttachments,
+                    userInfo: {
+                        name: user.full_name,
+                        url: userMediaAttachments?.length > 0 ? userMediaAttachments[0]?.url : ''
+                    }
+                };
+            })
+        );
+
+        if (pageMetaResult.board_id !== "") {
+            const boardData = await global.Board.findOne({ _id: pageMetaResult.board_id });
+            if (boardData) {
+                pageMetaResult.board = boardData;
+            }
+        }
+
+        response.json(formatSuccessMessage("Page data fetched successfully",
+            {
+                ...pageMetaResult,
+                pageContent: pageContentResult,
+                mediaAttachments,
+                comments: commentsWithMeta
+            }));
+    } catch (err) {
+        if (err instanceof z.ZodError) {
+            const formattedErrors = formatZodErrors(err.errors);
+            response.status(400).json(formatErrorMessage(formattedErrors));
+        } else {
+            response.status(400).json(formatErrorMessage(err.message));
+        }
+    }
 };

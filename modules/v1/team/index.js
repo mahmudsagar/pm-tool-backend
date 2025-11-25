@@ -5,29 +5,38 @@ import { formatSuccessMessage } from '../utils/success.js';
 
 export default async (request, response) => {
     try {
-        const { id, user_id } = request.query;
-
-        // Validate the query parameters
-        const validateQuery = getTeamSchema.parse({ _id: id, user_id });
+        const { id, user_id, search } = request.query;
 
         let result;
-        if (validateQuery._id && validateQuery.user_id) {
-            // Fetch data by both _id and user_id
-            result = await global.Team.findOne({ _id: validateQuery._id, user_id: validateQuery.user_id });
+        if (id && user_id) {
+            result = await global.Team.findOne({ _id: id, user_id });
             if (!result) {
                 return response.status(404).json(formatErrorMessage('Team not found for the given _id and user_id'));
             }
-        } else if (validateQuery._id) {
-            // Fetch data by _id
-            result = await global.Team.findOne({ _id: validateQuery._id });
+        } else if (id) {
+            result = await global.Team.findOne({ _id: id });
             if (!result) {
                 return response.status(404).json(formatErrorMessage('Team not found'));
             }
-        } else if (validateQuery.user_id) {
-            // Fetch data by user_id
-            result = await global.Team.find({ user_id: validateQuery.user_id });
+        } else if (user_id) {
+            result = await global.Team.find({ user_id });
             if (result.length === 0) {
                 return response.status(404).json(formatErrorMessage('No teams found for the given user_id'));
+            }
+        } else if (search) {
+            const searchRegex = search;
+
+            result = await global.Team.find({
+                where: {
+                    or: [
+                        { name: { contains: searchRegex } }
+                    ]
+                },
+                select: ['_id', 'name', 'user_id']
+            });
+
+            if (!result || result.length === 0) {
+                return response.status(404).json(formatErrorMessage('No teams found matching the search criteria'));
             }
         }
 
