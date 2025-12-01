@@ -11,6 +11,7 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import { verifyPassword } from './models/user.js';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import jwtValidation from './modules/v1/middlewares/jwtValidation.js';
+import authorizationMiddleware from './modules/v1/middlewares/authorization.js';
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
@@ -167,7 +168,7 @@ async function loadRoutes(directory, baseRoute = '') {
 
                 // Exclude 'register' and 'login' routes from JWT validation
                 const isExcludedRoute = routePath.includes('/register') || routePath.includes('/login');
-                const middlewares = isExcludedRoute ? [] : [jwtValidation];
+                const middlewares = isExcludedRoute ? [] : [jwtValidation, authorizationMiddleware];
 
                 console.log(`Route loaded: ${method.toUpperCase()} ${routePath}`);
                 // console.log(`Middlewares loaded: ${middlewares.map(m => m.name).join(', ')}`);

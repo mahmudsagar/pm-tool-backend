@@ -10,26 +10,27 @@ import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
  * @param {Function} next - The next middleware function.
  */
 export default function jwtValidation(request, response, next) {
-    try {
-        const authHeader = request.headers.authorization;
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return response.status(401).json(formatErrorMessage("No token provided"));
-        }
-
-        const token = authHeader.split(' ')[1];
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        // Attach decoded user info to the request object
-        request.user = decoded;
-        next();
-    } catch (err) {
-        if (err instanceof z.ZodError) {
-            // Handle Zod validation errors
-            const formattedErrors = formatZodErrors(err.errors);
-            response.status(400).json(formatErrorMessage(formattedErrors));
-        } else {
-            // Handle other errors
-            response.status(400).json(formatErrorMessage(err.message));
-        }
+    const authHeader = request.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return response.status(401).json(formatErrorMessage("No token provided"));
     }
+
+    const token = authHeader.split(' ')[1];
+    
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            if (err instanceof z.ZodError) {
+                const formattedErrors = formatZodErrors(err.errors);
+                return response.status(400).json(formatErrorMessage(formattedErrors));
+            } else {
+                return response.status(400).json(formatErrorMessage(err.message));
+            }
+        }
+        
+        request.user = {
+            id: decoded.id,
+            email: decoded.email
+        };
+        next();
+    });
 }

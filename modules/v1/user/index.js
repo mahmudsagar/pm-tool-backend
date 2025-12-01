@@ -39,22 +39,22 @@ export default async (request, response) => {
 
             } else if (validatedParams.search) {
                 const searchRegex = validatedParams.search;
-
+            
                 result = await global.User.find({
                     where: {
                         or: [
                             { name: { contains: searchRegex } },
                             { email: { contains: searchRegex } }
-                        ]
+                        ],
+                        _id: request.user.id
                     },
                     select: ['name', 'email']
                 });
-
+            
                 if (!result || result.length === 0) {
                     return response.status(404).json(formatErrorMessage('No users found matching the search criteria'));
                 }
                 output = result;
-
             }
 
         }
