@@ -25,16 +25,17 @@ export default async (request, response) => {
             }
         } else if (search) {
             const searchRegex = search;
-
+        
             result = await global.Team.find({
                 where: {
                     or: [
-                        { name: { contains: searchRegex } }
+                        { name: { contains: searchRegex }, user_id: request.user.id },
+                        { name: { contains: searchRegex }, shared_members: { contains: request.user.id } }
                     ]
                 },
                 select: ['_id', 'name', 'user_id']
             });
-
+        
             if (!result || result.length === 0) {
                 return response.status(404).json(formatErrorMessage('No teams found matching the search criteria'));
             }
