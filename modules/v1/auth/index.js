@@ -44,7 +44,7 @@ export default async (request, response) => {
         user.workspaces_flag = workspaces && workspaces.length > 0;
 
         return response.json(formatSuccessMessage("Token is valid", {
-            user_info: user,
+            user_info: user[0],
             expires_at: authRecord[0].expires_at
         }));
 

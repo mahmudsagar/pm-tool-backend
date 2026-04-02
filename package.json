@@ -27,7 +27,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express-session": "^1.18.1",
-    "hyper-express": "^6.16.4",
+    "hyper-express": "^6.17.3",
     "hyper-express-session": "^1.1.5",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
