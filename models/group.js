@@ -13,6 +13,7 @@ const Group = Waterline.Collection.extend({
         shared_teams: { type: 'json', defaultsTo: [] },
         shared_members: { type: 'json', defaultsTo: [] },
         user_id: { type: 'string', required: true },
+        workspace_id: { type: 'string' },
         space_id: { type: 'string', required: true },
         entity_type: { type: 'string', defaultsTo: 'group' },
         createdAt: { type: 'ref', autoCreatedAt: true },

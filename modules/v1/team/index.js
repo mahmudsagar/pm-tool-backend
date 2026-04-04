@@ -5,21 +5,27 @@ import { formatSuccessMessage } from '../utils/success.js';
 
 export default async (request, response) => {
     try {
-        const { id, user_id, search } = request.query;
+        const { id, user_id, search, workspace_id } = request.query;
 
         let result;
         if (id && user_id) {
-            result = await global.Team.findOne({ _id: id, user_id });
+            const query = { _id: id, user_id };
+            if (workspace_id) query.workspace_id = workspace_id;
+            result = await global.Team.findOne(query);
             if (!result) {
                 return response.status(404).json(formatErrorMessage('Team not found for the given _id and user_id'));
             }
         } else if (id) {
-            result = await global.Team.findOne({ _id: id });
+            const query = { _id: id };
+            if (workspace_id) query.workspace_id = workspace_id;
+            result = await global.Team.findOne(query);
             if (!result) {
                 return response.status(404).json(formatErrorMessage('Team not found'));
             }
         } else if (user_id) {
-            result = await global.Team.find({ user_id });
+            const query = { user_id };
+            if (workspace_id) query.workspace_id = workspace_id;
+            result = await global.Team.find(query);
             if (result.length === 0) {
                 return response.status(404).json(formatErrorMessage('No teams found for the given user_id'));
             }

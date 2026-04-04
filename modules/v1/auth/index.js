@@ -40,11 +40,18 @@ export default async (request, response) => {
             return response.status(401).json(formatErrorMessage("User not found"));
         }
 
-        const workspaces = await global.Space.find({ user_id: user._id });
-        user.workspaces_flag = workspaces && workspaces.length > 0;
+        const workspaces = await global.Workspace.find({
+            or: [
+                { owner_id: decoded.id },
+                { members: { contains: decoded.id } }
+            ]
+        });
+        const userInfo = user[0];
+        userInfo.workspaces_flag = workspaces && workspaces.length > 0;
 
         return response.json(formatSuccessMessage("Token is valid", {
-            user_info: user[0],
+            user_info: userInfo,
+            workspaces,
             expires_at: authRecord[0].expires_at
         }));
 

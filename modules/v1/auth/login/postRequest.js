@@ -42,15 +42,16 @@ export default async (request, response, next) => {
 
             const { password, ...userWithoutPassword } = user;
 
-            const workspaces = await global.Space.find({ user_id: userWithoutPassword._id });
-            if (!workspaces || workspaces.length === 0) {
-                userWithoutPassword.workspaces_flag = false;
-            } else {
-                userWithoutPassword.workspaces_flag = true;
-            }
+            const workspaces = await global.Workspace.find({
+                or: [
+                    { owner_id: userWithoutPassword._id },
+                    { members: { contains: userWithoutPassword._id } }
+                ]
+            });
+            userWithoutPassword.workspaces_flag = workspaces && workspaces.length > 0;
 
             return response.json(formatSuccessMessage("Login successful",
-                { user_info: userWithoutPassword, token }
+                { user_info: userWithoutPassword, workspaces, token }
             ));
         })(request, response, next);
     } catch (err) {

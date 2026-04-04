@@ -9,6 +9,7 @@ const Team = Waterline.Collection.extend({
         _id: { type: 'string', columnName: '_id', autoMigrations: { autoIncrement: false } },
         name: { type: 'string', required: true },
         user_id: { type: 'string', required: true },
+        workspace_id: { type: 'string' },
         shared_members: { type: 'json', defaultsTo: [] },
         description: { type: 'string' },
         entity_type: { type: 'string', defaultsTo: 'team' },

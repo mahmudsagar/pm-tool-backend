@@ -5,13 +5,14 @@ import { formatSuccessMessage } from '../utils/success.js';
 
 export default async (request, response) => {
     try {
-        const { id, user_id } = request.query;
+        const { id, user_id, workspace_id } = request.query;
 
         const validateQuery = getBoardSchema.parse({ _id: id, user_id });
 
         const query = {};
         if (validateQuery._id) query._id = validateQuery._id;
         if (validateQuery.user_id) query.user_id = validateQuery.user_id;
+        if (workspace_id) query.workspace_id = workspace_id;
 
         let result = await global.Board.find(query);
 

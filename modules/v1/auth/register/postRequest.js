@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import { registerUserSchema } from './config/validation.js';
 import { formatSuccessMessage } from '../../utils/success.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
-// import defaultWorkspaces from './config/defaultWorkspaces.json' assert { type: 'json' };
 
 export default async (request, response) => {
     try {
@@ -45,34 +44,30 @@ export default async (request, response) => {
             expires_at: expiresAt
         });
 
-        // Create default workspaces for the user using Promise.all
-        // const workspacesToCreate = defaultWorkspaces.map(workspace => ({
-        //     ...workspace,
-        //     user_id: newUser._id
-        // }));
-
-        // const workspaces = await Promise.all(
-        //     workspacesToCreate.map(async (workspace) => {
-        //         return await global.Space.create(workspace).fetch();
-        //     })
-        // );
+        // Create default workspace for the new user
+        const defaultWorkspace = await global.Workspace.create({
+            name: 'My Workspace',
+            owner_id: newUser._id,
+            members: [],
+        }).fetch();
 
         // Remove password from response
         const { password: _, ...userWithoutPassword } = newUser;
 
-        // Find workspaces for this user
-        const workspaces = await global.Space.find({ user_id: userWithoutPassword._id });
-        if (!workspaces || workspaces.length === 0) {
-            userWithoutPassword.workspaces_flag = false;
-        } else {
-            userWithoutPassword.workspaces_flag = true;
-        }
+        // Find workspaces for this user (owned or member of)
+        const workspaces = await global.Workspace.find({
+            or: [
+                { owner_id: newUser._id },
+                { members: { contains: newUser._id } }
+            ]
+        });
+        userWithoutPassword.workspaces_flag = workspaces && workspaces.length > 0;
 
         // Send success response
         response.json(formatSuccessMessage("Registration successful",
             {
                 user_info: userWithoutPassword,
-                // workspace_info: workspaces, 
+                workspaces,
                 token
             }));
     } catch (err) {

@@ -5,7 +5,7 @@ import { formatSuccessMessage } from '../utils/success.js';
 
 export default async (request, response) => {
     try {
-        const { id, user_id } = request.query;
+        const { id, user_id, workspace_id } = request.query;
 
         // Validate the query parameters
         const validateQuery = getGroupSchema.parse({ _id: id, user_id });
@@ -13,6 +13,7 @@ export default async (request, response) => {
         const query = {};
         if (validateQuery._id) query._id = validateQuery._id;
         if (validateQuery.user_id) query.user_id = validateQuery.user_id;
+        if (workspace_id) query.workspace_id = workspace_id;
 
         let result = await global.Group.find(query);
 

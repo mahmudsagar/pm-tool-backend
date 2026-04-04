@@ -9,6 +9,9 @@ export const postGroupSchema = z.object({
     user_id: z.string().nonempty("User ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     }),
+    workspace_id: z.string().nonempty("Workspace ID is required").refine(isValidObjectId, {
+        message: "Invalid MongoDB ObjectId",
+    }),
     is_private: z.boolean().optional(),
     shared_teams: z.array(z.string().refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",

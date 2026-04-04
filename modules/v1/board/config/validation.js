@@ -15,6 +15,9 @@ export const postBoardSchema = z.object({
     user_id: z.string().nonempty("User ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     }),
+    workspace_id: z.string().nonempty("Workspace ID is required").refine(isValidObjectId, {
+        message: "Invalid MongoDB ObjectId",
+    }),
     pinned: z.boolean().optional(),
     folder_id: z.string().optional(),
     space_id: z.string().optional(),
