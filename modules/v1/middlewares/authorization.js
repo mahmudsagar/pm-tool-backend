@@ -108,16 +108,25 @@ export default function authorizationMiddleware(request, response, next) {
         return response.status(401).json(formatErrorMessage("User not authenticated"));
     }
 
-    const { id, user_id, space_id, group_id, folder_id, board_id, page_id, parent_id, workspace_id } = request.query;
+    const { id, user_id, space_id, group_id, folder_id, board_id, page_id, parent_id } = request.query;
+    const workspace_id = request.workspaceId;
     const body = request.body || {};
     const method = request.method;
 
-    if (method === 'POST' && !id && !user_id && !space_id && !group_id && !folder_id && !board_id && !page_id && !parent_id && !workspace_id) {
-        return next();
-    }
-
     (async () => {
         try {
+            // Always check workspace access from X-Workspace-ID header
+            if (workspace_id) {
+                const hasWorkspaceAccess = await checkEntityAccess('workspace', workspace_id, userId);
+                if (!hasWorkspaceAccess) {
+                    return response.status(403).json(formatErrorMessage("Access denied"));
+                }
+            }
+
+            if (method === 'POST' && !id && !user_id && !space_id && !group_id && !folder_id && !board_id && !page_id && !parent_id) {
+                return next();
+            }
+
             if (user_id && user_id !== userId) {
                 const hasAccess = await checkUserRelationship(user_id, userId);
                 if (!hasAccess) {
@@ -126,7 +135,6 @@ export default function authorizationMiddleware(request, response, next) {
             }
 
             const entityChecks = [
-                { type: 'workspace', id: workspace_id || body.workspace_id },
                 { type: 'space', id: space_id || body.space_id },
                 { type: 'group', id: group_id || body.group_id },
                 { type: 'folder', id: folder_id || body.folder_id || parent_id || body.parent_id },
@@ -134,7 +142,7 @@ export default function authorizationMiddleware(request, response, next) {
                 { type: 'page', id: page_id || body.page_id },
             ];
             
-            if (id && !space_id && !group_id && !folder_id && !board_id && !page_id && !parent_id && !workspace_id) {
+            if (id && !space_id && !group_id && !folder_id && !board_id && !page_id && !parent_id) {
                 const routePath = request.path || request.url;
                 
                 if (routePath.includes('/workspace')) {

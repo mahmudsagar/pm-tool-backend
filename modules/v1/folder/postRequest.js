@@ -9,7 +9,7 @@ export default async (request, response) => {
 
         const validatedData = postFolderSchema.parse(body);
 
-        let result = await global.Folder.create(validatedData).fetch();
+        let result = await global.Folder.create({ ...validatedData, workspace_id: request.workspaceId }).fetch();
         response.json(formatSuccessMessage("Folder created successfully", result));
     } catch (err) {
         if (err instanceof z.ZodError) {

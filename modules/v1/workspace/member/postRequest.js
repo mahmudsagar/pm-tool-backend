@@ -9,7 +9,7 @@ export default async (request, response) => {
 
         const validatedData = postMemberSchema.parse(body);
 
-        const workspace = await global.Workspace.findOne({ _id: validatedData.workspace_id });
+        const workspace = await global.Workspace.findOne({ _id: request.workspaceId });
         if (!workspace) {
             return response.status(404).json(formatErrorMessage('Workspace not found'));
         }

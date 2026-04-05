@@ -15,9 +15,6 @@ export const postFolderSchema = z.object({
     user_id: z.string().nonempty("User ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     }),
-    workspace_id: z.string().nonempty("Workspace ID is required").refine(isValidObjectId, {
-        message: "Invalid MongoDB ObjectId",
-    }),
     space_id: z.string().optional(),
     group_id: z.string().optional(),
     parent_id: z.string().optional(),

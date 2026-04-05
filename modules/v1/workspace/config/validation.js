@@ -28,9 +28,6 @@ export const deleteWorkspaceSchema = z.object({
 });
 
 export const postMemberSchema = z.object({
-    workspace_id: z.string().nonempty("Workspace ID is required").refine(isValidObjectId, {
-        message: "Invalid MongoDB ObjectId",
-    }),
     email: z.string().email("Invalid email address").optional(),
     user_id: z.string().optional().refine(value => !value || isValidObjectId(value), {
         message: "Invalid MongoDB ObjectId",

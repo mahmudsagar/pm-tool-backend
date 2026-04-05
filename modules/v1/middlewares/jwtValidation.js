@@ -31,6 +31,7 @@ export default function jwtValidation(request, response, next) {
             id: decoded.id,
             email: decoded.email
         };
+        request.workspaceId = request.headers['x-workspace-id'] || null;
         next();
     });
 }

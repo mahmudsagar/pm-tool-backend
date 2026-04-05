@@ -5,7 +5,8 @@ import { formatSuccessMessage } from '../../utils/success.js';
 
 export default async (request, response) => {
     try {
-        const { workspace_id, user_id } = request.query;
+        const { user_id } = request.query;
+        const workspace_id = request.workspaceId;
 
         const validatedParams = deleteMemberSchema.parse({ workspace_id, user_id });
 

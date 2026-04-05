@@ -20,7 +20,7 @@ export default async (request, response) => {
             custom_meta: body.custom_meta,
         });
 
-        let result = await global.Board.create(validatedData).fetch();
+        let result = await global.Board.create({ ...validatedData, workspace_id: request.workspaceId }).fetch();
         response.json(formatSuccessMessage("Board created successfully", result));
     } catch (err) {
         if (err instanceof z.ZodError) {

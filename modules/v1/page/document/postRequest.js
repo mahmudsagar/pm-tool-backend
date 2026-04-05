@@ -31,7 +31,7 @@ export default async (request, response) => {
             page_type: body.page_type,
             last_updated_by: body.user_id,
             entity_type: body.entity_type,
-            inner_comments: body.inner_comments
+            inner_comments: body.inner_comments,
         });
 
         if (body.board_id && body.custom_meta) {
@@ -39,7 +39,7 @@ export default async (request, response) => {
             boardData = await global.Board.update({ _id: body.board_id }, { custom_meta: body.custom_meta }).fetch();
         }
 
-        const pageMetaResult = await global.PageMeta.create(pageMetaData).fetch();
+        const pageMetaResult = await global.PageMeta.create({ ...pageMetaData, workspace_id: request.workspaceId }).fetch();
 
         response.json(formatSuccessMessage("Page content, meta data, and inner comments saved successfully", { ...pageMetaResult, pageContent: pageContentResult, board: boardData?.length > 0 ? boardData[0] : {} }));
     } catch (err) {

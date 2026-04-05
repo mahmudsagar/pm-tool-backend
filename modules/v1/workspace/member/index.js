@@ -3,7 +3,7 @@ import { formatSuccessMessage } from '../../utils/success.js';
 
 export default async (request, response) => {
     try {
-        const { workspace_id } = request.query;
+        const workspace_id = request.workspaceId;
         const userId = request.user.id;
 
         if (!workspace_id) {

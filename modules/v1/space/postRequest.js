@@ -21,7 +21,7 @@ export default async (request, response) => {
             }
         }
 
-        let result = await global.Space.create(validatedData).fetch();
+        let result = await global.Space.create({ ...validatedData, workspace_id: request.workspaceId }).fetch();
         response.json(formatSuccessMessage("Space created successfully", result));
     } catch (err) {
         if (err instanceof z.ZodError) {

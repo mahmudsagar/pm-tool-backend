@@ -5,14 +5,15 @@ import { formatSuccessMessage } from '../utils/success.js';
 
 export default async (request, response) => {
     try {
-        const { id, user_id, workspace_id } = request.query;
+        const { id, user_id } = request.query;
+        const workspaceId = request.workspaceId;
 
         const validateQuery = getFolderSchema.parse({ _id: id, user_id });
 
         const query = {};
         if (validateQuery._id) query._id = validateQuery._id;
         if (validateQuery.user_id) query.user_id = validateQuery.user_id;
-        if (workspace_id) query.workspace_id = workspace_id;
+        if (workspaceId) query.workspace_id = workspaceId;
 
         let result = await global.Folder.find(query);
 

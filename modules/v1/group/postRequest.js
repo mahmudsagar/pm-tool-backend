@@ -11,7 +11,7 @@ export default async (request, response) => {
         const validatedData = postGroupSchema.parse(body);
 
         // Save the validated data to MongoDB
-        let result = await global.Group.create(validatedData).fetch();
+        let result = await global.Group.create({ ...validatedData, workspace_id: request.workspaceId }).fetch();
         response.json(formatSuccessMessage("Group created successfully", result));
     } catch (err) {
         if (err instanceof z.ZodError) {
