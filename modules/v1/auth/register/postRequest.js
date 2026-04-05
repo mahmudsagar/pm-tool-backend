@@ -46,7 +46,7 @@ export default async (request, response) => {
 
         // Create default workspace for the new user
         const defaultWorkspace = await global.Workspace.create({
-            name: 'My Workspace',
+            name: `${name}'s Workspace`,
             owner_id: newUser._id,
             members: [],
         }).fetch();

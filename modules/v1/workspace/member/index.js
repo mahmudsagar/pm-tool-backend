@@ -5,6 +5,7 @@ export default async (request, response) => {
     try {
         const workspace_id = request.workspaceId;
         const userId = request.user.id;
+        const { search } = request.query;
 
         if (!workspace_id) {
             return response.status(400).json(formatErrorMessage('workspace_id is required'));
@@ -33,6 +34,18 @@ export default async (request, response) => {
                     memberUsers.push(userWithoutPassword);
                 }
             }
+        }
+
+        if (search) {
+            const term = search.toLowerCase();
+            const matchesSearch = (u) =>
+                (u.full_name && u.full_name.toLowerCase().includes(term)) ||
+                (u.email && u.email.toLowerCase().includes(term));
+
+            return response.json(formatSuccessMessage("Members fetched successfully", {
+                owner: matchesSearch(ownerWithoutPassword) ? ownerWithoutPassword : null,
+                members: memberUsers.filter(matchesSearch),
+            }));
         }
 
         response.json(formatSuccessMessage("Members fetched successfully", {
