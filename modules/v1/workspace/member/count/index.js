@@ -6,7 +6,7 @@ export default async (request, response) => {
         const workspace_id = request.workspaceId;
         const userId = request.user.id;
 
-        if (workspace_id) {
+        if (workspace_id) {            
             const workspace = await global.Workspace.findOne({ _id: workspace_id });
             if (!workspace) {
                 return response.status(404).json(formatErrorMessage('Workspace not found'));

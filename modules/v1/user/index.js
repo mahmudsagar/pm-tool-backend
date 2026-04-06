@@ -45,10 +45,9 @@ export default async (request, response) => {
                         or: [
                             { name: { contains: searchRegex } },
                             { email: { contains: searchRegex } }
-                        ],
-                        _id: request.user.id
+                        ]
                     },
-                    select: ['name', 'email']
+                    select: ['_id', 'name', 'email']
                 });
             
                 if (!result || result.length === 0) {

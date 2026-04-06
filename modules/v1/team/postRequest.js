@@ -11,7 +11,7 @@ export default async (request, response) => {
         const validatedData = postTeamSchema.parse(body);
 
         // Save the validated data to MongoDB
-        let result = await global.Team.create({ ...validatedData, workspace_id: request.workspaceId }).fetch();
+        let result = await global.Team.create({ ...validatedData, user_id: request.user.id, workspace_id: request.workspaceId }).fetch();
         response.json(formatSuccessMessage("Team created successfully", result));
     } catch (err) {
         if (err instanceof z.ZodError) {

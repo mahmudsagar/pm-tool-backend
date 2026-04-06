@@ -4,9 +4,6 @@ import { z } from 'zod';
 const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
 
 export const postTeamSchema = z.object({
-    user_id: z.string().nonempty("User ID is required").refine(isValidObjectId, {
-        message: "Invalid MongoDB ObjectId",
-    }),
     name: z.string().nonempty("Name is required"),
     description: z.string().optional(),
     shared_members: z.array(z.string().refine(isValidObjectId, {

@@ -8,7 +8,7 @@ export default async (request, response) => {
         const body = await request.json();
 
         const validatedData = postMemberSchema.parse(body);
-
+        console.log('workspace', request.workspaceId);
         const workspace = await global.Workspace.findOne({ _id: request.workspaceId });
         if (!workspace) {
             return response.status(404).json(formatErrorMessage('Workspace not found'));
@@ -46,7 +46,20 @@ export default async (request, response) => {
         const updatedMembers = [...currentMembers, userToAdd._id];
         const result = await global.Workspace.updateOne({ _id: workspace._id }).set({ members: updatedMembers });
 
-        response.json(formatSuccessMessage("Member added successfully", result));
+        // Populate member users (strip passwords)
+        const populatedMembers = await Promise.all(
+            result.members.map(async (memberId) => {
+                const user = await global.User.findOne({ _id: memberId });
+                if (!user) return null;
+                const { password: _p, ...userWithoutPassword } = user;
+                return userWithoutPassword;
+            })
+        );
+
+        response.json(formatSuccessMessage("Member added successfully", {
+            ...result,
+            members: populatedMembers.filter(Boolean),
+        }));
     } catch (err) {
         if (err instanceof z.ZodError) {
             const formattedErrors = formatZodErrors(err.errors);
