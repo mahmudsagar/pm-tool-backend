@@ -118,6 +118,28 @@ const s3Client = new S3Client({
     },
 });
 
+export const buildCommentWithUserInfo = async (commentMeta) => {
+    const user = await global.User.findOne({ _id: commentMeta.user_id });
+    const userMediaAttachments = user && Array.isArray(user.attachments)
+        ? await Promise.all(user.attachments.map(id => global.Media.findOne({ _id: id })))
+        : [];
+    const commentContent = await global.CommentContent.findOne({ _id: commentMeta.associate_id });
+    const mediaAttachments = commentMeta.attachments && commentMeta.attachments.length > 0
+        ? await Promise.all(commentMeta.attachments.map(id => global.Media.findOne({ _id: id })))
+        : [];
+    return {
+        ...commentMeta,
+        userInfo: {
+            _id: user?._id,
+            name: user?.name,
+            email: user?.email,
+            url: userMediaAttachments?.length > 0 ? userMediaAttachments[0]?.url : ''
+        },
+        commentContent,
+        mediaAttachments
+    };
+};
+
 export const deleteAttachments = async (attachments) => {
     for (const attachmentId of attachments) {
         // Find the media by _id

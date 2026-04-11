@@ -98,6 +98,12 @@ export const getCommentMetaSchema = z.object({
     })
 })
 
+export const getCommentsByPageSchema = z.object({
+    page_id: z.string().nonempty("page_id is required").refine(isValidObjectId, {
+        message: "Invalid MongoDB ObjectId",
+    })
+})
+
 export const deleteCommentMetaSchema = z.object({
     _id: z.string().nonempty("ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
