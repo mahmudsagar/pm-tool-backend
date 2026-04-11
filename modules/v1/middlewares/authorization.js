@@ -1,8 +1,8 @@
 import { formatErrorMessage } from '../utils/error.js';
+import { canUserAccessEntity } from '../utils/helper.js';
 
-const checkEntityAccess = async (entityType, entityId, userId) => {
+const checkEntityAccess = async (entityType, entityId, userId, workspaceId = null) => {
     let entity;
-    console.log('e', entityType, entityId, userId);
     
     switch (entityType) {
         case 'space':
@@ -34,70 +34,20 @@ const checkEntityAccess = async (entityType, entityId, userId) => {
             return false;
     }
 
-    if (!entity) {
-        console.log(`Entity not found: ${entityType} with id: ${entityId}`);
-        return false;
-    }
+    if (!entity) return false;
 
-    console.log(`Checking access for ${entityType} ${entityId}:`, { 
-        entity_user_id: entity.user_id, 
-        request_user_id: userId,
-        shared_members: entity.shared_members,
-        shared_teams: entity.shared_teams 
-    });
+    // Use shared access helper (owner, explicit sharing, or public workspace-wide)
+    const hasAccess = await canUserAccessEntity(entity, userId, workspaceId);
+    if (hasAccess) return true;
 
-    if (entity.user_id === userId) {
-        console.log('Access granted: User is owner');
-        return true;
-    }
+    // Recurse up the parent chain
+    if (entity.space_id) return await checkEntityAccess('space', entity.space_id, userId, workspaceId);
+    if (entity.group_id) return await checkEntityAccess('group', entity.group_id, userId, workspaceId);
+    if (entity.folder_id) return await checkEntityAccess('folder', entity.folder_id, userId, workspaceId);
+    if (entity.board_id) return await checkEntityAccess('board', entity.board_id, userId, workspaceId);
+    if (entity.parent_id) return await checkEntityAccess('folder', entity.parent_id, userId, workspaceId);
+    if (entity.page_id) return await checkEntityAccess('page', entity.page_id, userId, workspaceId);
 
-    if (entity.shared_members && entity.shared_members.includes(userId)) {
-        console.log('Access granted: User in shared_members');
-        return true;
-    }
-
-    if (entity.shared_teams && entity.shared_teams.length > 0) {
-        const userTeams = await global.Team.find({ 
-            _id: { in: entity.shared_teams }
-        });
-        
-        console.log('Found teams:', userTeams.length);
-        
-        for (const team of userTeams) {
-            if (team.user_id === userId || 
-                (team.shared_members && team.shared_members.includes(userId))) {
-                console.log('Access granted: User in shared team');
-                return true;
-            }
-        }
-    }
-
-    if (entity.space_id) {
-        console.log('Checking parent space:', entity.space_id);
-        return await checkEntityAccess('space', entity.space_id, userId);
-    }
-    if (entity.group_id) {
-        console.log('Checking parent group:', entity.group_id);
-        return await checkEntityAccess('group', entity.group_id, userId);
-    }
-    if (entity.folder_id) {
-        console.log('Checking parent folder:', entity.folder_id);
-        return await checkEntityAccess('folder', entity.folder_id, userId);
-    }
-    if (entity.board_id) {
-        console.log('Checking parent board:', entity.board_id);
-        return await checkEntityAccess('board', entity.board_id, userId);
-    }
-    if (entity.parent_id) {
-        console.log('Checking parent folder:', entity.parent_id);
-        return await checkEntityAccess('folder', entity.parent_id, userId);
-    }
-    if (entity.page_id) {
-        console.log('Checking parent page:', entity.page_id);
-        return await checkEntityAccess('page', entity.page_id, userId);
-    }
-
-    console.log('Access denied: No matching criteria');
     return false;
 };
 
@@ -170,7 +120,7 @@ export default function authorizationMiddleware(request, response, next) {
 
             for (const check of entityChecks) {
                 if (check.id) {
-                    const hasAccess = await checkEntityAccess(check.type, check.id, userId);
+                    const hasAccess = await checkEntityAccess(check.type, check.id, userId, workspace_id);
                     if (!hasAccess) {
                         return response.status(403).json(formatErrorMessage("Access denied to this resource"));
                     }

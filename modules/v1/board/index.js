@@ -2,20 +2,26 @@ import { z } from 'zod';
 import { getBoardSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 import { formatSuccessMessage } from '../utils/success.js';
+import { canUserAccessEntity } from '../utils/helper.js';
 
 export default async (request, response) => {
     try {
         const { id, user_id } = request.query;
         const workspaceId = request.workspaceId;
+        const userId = request.user.id;
 
         const validateQuery = getBoardSchema.parse({ _id: id, user_id });
 
-        const query = {};
-        if (validateQuery._id) query._id = validateQuery._id;
-        if (validateQuery.user_id) query.user_id = validateQuery.user_id;
-        if (workspaceId) query.workspace_id = workspaceId;
-
-        let result = await global.Board.find(query);
+        let result;
+        if (validateQuery._id) {
+            result = await global.Board.find({ _id: validateQuery._id, workspace_id: workspaceId });
+        } else {
+            const allBoards = await global.Board.find({ workspace_id: workspaceId });
+            const accessible = await Promise.all(
+                allBoards.map(async (board) => (await canUserAccessEntity(board, userId, workspaceId)) ? board : null)
+            );
+            result = accessible.filter(Boolean);
+        }
 
         if (!result || (Array.isArray(result) && result.length === 0)) {
             const error = validateQuery._id && validateQuery.user_id ?

@@ -2,20 +2,27 @@ import { z } from 'zod';
 import { getFolderSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 import { formatSuccessMessage } from '../utils/success.js';
+import { canUserAccessEntity } from '../utils/helper.js';
 
 export default async (request, response) => {
     try {
         const { id, user_id } = request.query;
         const workspaceId = request.workspaceId;
+        const userId = request.user.id;
 
         const validateQuery = getFolderSchema.parse({ _id: id, user_id });
 
-        const query = {};
-        if (validateQuery._id) query._id = validateQuery._id;
-        if (validateQuery.user_id) query.user_id = validateQuery.user_id;
-        if (workspaceId) query.workspace_id = workspaceId;
-
-        let result = await global.Folder.find(query);
+        let result;
+        if (validateQuery._id) {
+            result = await global.Folder.find({ _id: validateQuery._id, workspace_id: workspaceId });
+        } else {
+            // Only top-level folders (no parent_id)
+            const allFolders = await global.Folder.find({ workspace_id: workspaceId, parent_id: '' });
+            const accessible = await Promise.all(
+                allFolders.map(async (folder) => (await canUserAccessEntity(folder, userId, workspaceId)) ? folder : null)
+            );
+            result = accessible.filter(Boolean);
+        }
 
         if (!result || (Array.isArray(result) && result.length === 0)) {
             const error = validateQuery._id && validateQuery.user_id ?

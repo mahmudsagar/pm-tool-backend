@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { postGroupSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 import { formatSuccessMessage } from '../utils/success.js';
+import { validateChildSharing } from '../utils/helper.js';
 
 export default async (request, response) => {
     try {
@@ -9,6 +10,11 @@ export default async (request, response) => {
 
         // Validate the request body using Zod
         const validatedData = postGroupSchema.parse(body);
+
+        // Enforce parent sharing constraints
+        if (validatedData.space_id) {
+            await validateChildSharing('space', validatedData.space_id, validatedData.shared_members, validatedData.shared_teams);
+        }
 
         // Save the validated data to MongoDB
         let result = await global.Group.create({ ...validatedData, workspace_id: request.workspaceId }).fetch();

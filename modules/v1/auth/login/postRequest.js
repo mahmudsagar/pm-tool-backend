@@ -50,8 +50,13 @@ export default async (request, response, next) => {
             });
             userWithoutPassword.workspaces_flag = workspaces && workspaces.length > 0;
 
+            const workspacesWithRole = workspaces.map(ws => ({
+                ...ws,
+                role: ws.owner_id === userWithoutPassword._id ? 'owner' : 'member'
+            }));
+
             return response.json(formatSuccessMessage("Login successful",
-                { user_info: userWithoutPassword, workspaces, token }
+                { user_info: userWithoutPassword, workspaces: workspacesWithRole, token }
             ));
         })(request, response, next);
     } catch (err) {

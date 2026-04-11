@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { postPageMetaSchema, postPageContentSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
+import { validateChildSharing } from '../../utils/helper.js';
 
 export default async (request, response) => {
     try {
@@ -37,6 +38,13 @@ export default async (request, response) => {
         if (body.board_id && body.custom_meta) {
             // update the board custom meta with the page custom meta
             boardData = await global.Board.update({ _id: body.board_id }, { custom_meta: body.custom_meta }).fetch();
+        }
+
+        // Enforce parent sharing constraints
+        const parentType = pageMetaData.board_id ? 'board' : pageMetaData.folder_id ? 'folder' : pageMetaData.space_id ? 'space' : pageMetaData.group_id ? 'group' : null;
+        const parentId = pageMetaData.board_id || pageMetaData.folder_id || pageMetaData.space_id || pageMetaData.group_id;
+        if (parentType && parentId) {
+            await validateChildSharing(parentType, parentId, pageMetaData.shared_members, pageMetaData.shared_teams);
         }
 
         const pageMetaResult = await global.PageMeta.create({ ...pageMetaData, workspace_id: request.workspaceId }).fetch();

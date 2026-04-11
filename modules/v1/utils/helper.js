@@ -1,5 +1,113 @@
 import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
 
+/**
+ * Check if a user can access an entity based on ownership, sharing, and workspace membership.
+ *
+ * Access rules:
+ *  - Owner always has access
+ *  - If entity has explicit shared_members or shared_teams → only those have access
+ *  - If entity is public (is_private !== true) with NO sharing restrictions → all workspace members have access
+ */
+export const canUserAccessEntity = async (entity, userId, workspaceId = null) => {
+    if (!entity) return false;
+
+    // Entity must belong to the current workspace context
+    if (workspaceId && entity.workspace_id && entity.workspace_id !== workspaceId) return false;
+
+    // Owner always has access
+    if (entity.user_id === userId) return true;
+
+    const hasSharedMembers = entity.shared_members && entity.shared_members.length > 0;
+    const hasSharedTeams = entity.shared_teams && entity.shared_teams.length > 0;
+    const isPrivate = entity.is_private === true;
+
+    // Explicitly shared to specific members/teams — user must also be in this workspace
+    if (hasSharedMembers || hasSharedTeams) {
+        // Confirm user is a member of the entity's workspace
+        const workspace = await global.Workspace.findOne({ _id: entity.workspace_id });
+        if (!workspace || (workspace.owner_id !== userId && !(workspace.members && workspace.members.includes(userId)))) {
+            return false;
+        }
+
+        if (hasSharedMembers && entity.shared_members.includes(userId)) return true;
+
+        if (hasSharedTeams) {
+            const userTeams = await global.Team.find({ workspace_id: entity.workspace_id });
+            for (const team of userTeams) {
+                if (entity.shared_teams.includes(team._id) &&
+                    (team.user_id === userId || (team.shared_members && team.shared_members.includes(userId)))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // Public with no sharing restrictions → all workspace members have access
+    if (!isPrivate && entity.workspace_id) {
+        const workspace = await global.Workspace.findOne({ _id: entity.workspace_id });
+        if (workspace && (workspace.owner_id === userId || (workspace.members && workspace.members.includes(userId)))) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+/**
+ * Get the effective allowed members/teams set from a parent entity.
+ * Returns null if there are no restrictions (open to all workspace members).
+ * Returns { members: [...], teams: [...] } if restricted.
+ */
+export const getParentSharingRestrictions = async (parentType, parentId) => {
+    if (!parentId) return null;
+
+    let parent;
+    if (parentType === 'space') parent = await global.Space.findOne({ _id: parentId });
+    else if (parentType === 'group') parent = await global.Group.findOne({ _id: parentId });
+    else if (parentType === 'folder') parent = await global.Folder.findOne({ _id: parentId });
+    else if (parentType === 'board') parent = await global.Board.findOne({ _id: parentId });
+
+    if (!parent) return null;
+
+    const hasRestrictions =
+        (parent.shared_members && parent.shared_members.length > 0) ||
+        (parent.shared_teams && parent.shared_teams.length > 0) ||
+        parent.is_private === true;
+
+    if (!hasRestrictions) return null;
+
+    return {
+        owner: parent.user_id,
+        members: parent.shared_members || [],
+        teams: parent.shared_teams || [],
+        is_private: parent.is_private,
+    };
+};
+
+/**
+ * Validate that a child entity's sharing does not exceed the parent's restrictions.
+ * Throws an error string if validation fails.
+ */
+export const validateChildSharing = async (parentType, parentId, childSharedMembers = [], childSharedTeams = []) => {
+    const restrictions = await getParentSharingRestrictions(parentType, parentId);
+    if (!restrictions) return; // No parent restrictions — anything is allowed
+
+    const allowedMembers = new Set([restrictions.owner, ...restrictions.members]);
+    for (const memberId of childSharedMembers) {
+        if (!allowedMembers.has(memberId)) {
+            throw new Error(`Cannot share with member ${memberId}: they are not in the parent ${parentType}'s allowed members`);
+        }
+    }
+
+    const allowedTeams = new Set(restrictions.teams);
+    for (const teamId of childSharedTeams) {
+        if (!allowedTeams.has(teamId)) {
+            throw new Error(`Cannot share with team ${teamId}: it is not in the parent ${parentType}'s allowed teams`);
+        }
+    }
+};
+
 // Configure S3 client for R2
 const s3Client = new S3Client({
     region: 'auto',

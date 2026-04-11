@@ -2,21 +2,27 @@ import { z } from 'zod';
 import { getGroupSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 import { formatSuccessMessage } from '../utils/success.js';
+import { canUserAccessEntity } from '../utils/helper.js';
 
 export default async (request, response) => {
     try {
         const { id, user_id } = request.query;
         const workspaceId = request.workspaceId;
+        const userId = request.user.id;
 
         // Validate the query parameters
         const validateQuery = getGroupSchema.parse({ _id: id, user_id });
 
-        const query = {};
-        if (validateQuery._id) query._id = validateQuery._id;
-        if (validateQuery.user_id) query.user_id = validateQuery.user_id;
-        if (workspaceId) query.workspace_id = workspaceId;
-
-        let result = await global.Group.find(query);
+        let result;
+        if (validateQuery._id) {
+            result = await global.Group.find({ _id: validateQuery._id, workspace_id: workspaceId });
+        } else {
+            const allGroups = await global.Group.find({ workspace_id: workspaceId });
+            const accessible = await Promise.all(
+                allGroups.map(async (group) => (await canUserAccessEntity(group, userId, workspaceId)) ? group : null)
+            );
+            result = accessible.filter(Boolean);
+        }
 
         if (!result || (Array.isArray(result) && result.length === 0)) {
             const error = validateQuery._id && validateQuery.user_id ?

@@ -8,6 +8,8 @@ export default async (request, response) => {
         const { id, user_id, search } = request.query;
         const workspaceId = request.workspaceId;
 
+        const userId = request.user.id;
+
         let result;
         if (id && user_id) {
             const query = { _id: id, user_id };
@@ -29,6 +31,19 @@ export default async (request, response) => {
             result = await global.Team.find(query);
             if (result.length === 0) {
                 return response.status(404).json(formatErrorMessage('No teams found for the given user_id'));
+            }
+        } else if (!search && workspaceId) {
+            // Return all teams in the workspace that the user owns or is a member of
+            const allTeams = await global.Team.find({ workspace_id: workspaceId });
+            result = allTeams.filter(team =>
+                team.user_id === userId ||
+                (team.shared_members && team.shared_members.includes(userId))
+            ).map(team => {
+                const isMember = team.user_id !== userId;
+                return { ...team, role: isMember ? 'member' : 'owner' };
+            });
+            if (result.length === 0) {
+                return response.status(404).json(formatErrorMessage('No teams found in this workspace'));
             }
         } else if (search) {
             const searchRegex = search;

@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { putGroupSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 import { formatSuccessMessage } from '../utils/success.js';
+import { validateChildSharing } from '../utils/helper.js';
 
 export default async (request, response) => {
     try {
@@ -14,6 +15,14 @@ export default async (request, response) => {
         const existingGroup = await global.Group.findOne({ _id: validatedData._id });
         if (!existingGroup) {
             return response.status(404).json(formatErrorMessage('Group not found'));
+        }
+
+        // Enforce parent sharing constraints if sharing is being changed
+        if (validatedData.shared_members || validatedData.shared_teams) {
+            const parentId = existingGroup.space_id;
+            if (parentId) {
+                await validateChildSharing('space', parentId, validatedData.shared_members ?? existingGroup.shared_members, validatedData.shared_teams ?? existingGroup.shared_teams);
+            }
         }
 
         // Save the validated data to MongoDB
