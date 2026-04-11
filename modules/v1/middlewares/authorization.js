@@ -115,6 +115,14 @@ export default function authorizationMiddleware(request, response, next) {
 
     (async () => {
         try {
+            const routePath = request.path || request.url;
+            const isWorkspaceRoute = routePath.includes('/workspace');
+
+            // Require workspace header for all entity routes
+            if (!isWorkspaceRoute && !workspace_id) {
+                return response.status(400).json(formatErrorMessage('X-Workspace-ID header is required'));
+            }
+
             // Always check workspace access from X-Workspace-ID header
             if (workspace_id) {
                 const hasWorkspaceAccess = await checkEntityAccess('workspace', workspace_id, userId);
