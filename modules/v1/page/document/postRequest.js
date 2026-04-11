@@ -3,6 +3,7 @@ import { postPageMetaSchema, postPageContentSchema } from './config/validation.j
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
 import { validateChildSharing } from '../../utils/helper.js';
+import { createHistoryEntry } from '../../utils/history.js';
 
 export default async (request, response) => {
     try {
@@ -48,6 +49,21 @@ export default async (request, response) => {
         }
 
         const pageMetaResult = await global.PageMeta.create({ ...pageMetaData, workspace_id: request.workspaceId }).fetch();
+
+        // Record initial creation history
+        try {
+            await createHistoryEntry({
+                pageId: pageMetaResult._id,
+                pageContentId: pageContentResult._id,
+                userId: body.user_id,
+                action: 'created',
+                contentSnapshot: pageContentData.content || null,
+                metaSnapshot: { title: pageMetaData.title, page_type: pageMetaData.page_type },
+                changes: {},
+            });
+        } catch (historyErr) {
+            console.error('Failed to record creation history:', historyErr.message);
+        }
 
         response.json(formatSuccessMessage("Page content, meta data, and inner comments saved successfully", { ...pageMetaResult, pageContent: pageContentResult, board: boardData?.length > 0 ? boardData[0] : {} }));
     } catch (err) {

@@ -3,6 +3,7 @@ import { putPageMetaSchema, putPageContentSchema } from './config/validation.js'
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
 import { buildCommentWithUserInfo } from '../../utils/helper.js';
+import { createHistoryEntry, detectMetaChanges, resolveAction } from '../../utils/history.js';
 
 export default async (request, response) => {
     try {
@@ -16,6 +17,18 @@ export default async (request, response) => {
         let mediaAttachments = [];
         let boardData = {};
         let pageContentResult, pageMetaResult;
+
+        // Capture snapshots BEFORE any updates for history comparison
+        let previousMeta = null;
+        let previousContent = null;
+        try {
+            previousMeta = await global.PageMeta.findOne({ _id });
+            if (previousMeta) {
+                previousContent = await global.PageContent.findOne({ _id: previousMeta.page_content_id });
+            }
+        } catch (_) {
+            // Snapshot capture failure should not block the update
+        }
 
         const pageMetaData = putPageMetaSchema.parse({
             _id,
@@ -75,6 +88,67 @@ export default async (request, response) => {
                     return await global.Media.findOne({ reference_id: pageMetaResult._id });
                 })
             );
+        }
+
+        // --- Record history ---
+        try {
+            if (previousMeta) {
+                const userId = request.user?._id || request.user?.id || rest.last_updated_by || previousMeta.user_id;
+                const trackedFields = ['title', 'custom_meta', 'shared_members', 'shared_teams', 'pinned', 'page_type'];
+                const metaChanges = detectMetaChanges(previousMeta, pageMetaResult, trackedFields);
+                const hasContentChange = rest.content && previousContent &&
+                    JSON.stringify(previousContent.content) !== JSON.stringify(rest.content);
+
+                if (hasContentChange || Object.keys(metaChanges).length > 0) {
+                    const action = resolveAction(metaChanges, hasContentChange);
+
+                    let contentChangeDetail = null;
+                    if (hasContentChange) {
+                        const pageType = previousMeta.page_type;
+                        const snap = previousContent.content;
+                        if (pageType === 'whiteboard') {
+                            const count = (snap?.elements || []).length;
+                            contentChangeDetail = `${count} element${count !== 1 ? 's' : ''} on whiteboard`;
+                        } else if (pageType === 'sheet') {
+                            const sheets = Object.values(snap?.sheets || snap || {});
+                            const sheetCount = sheets.length;
+                            contentChangeDetail = `${sheetCount} sheet${sheetCount !== 1 ? 's' : ''}`;
+                        } else if (pageType === 'document') {
+                            const extractText = (node) => {
+                                if (!node) return '';
+                                if (node.text) return node.text;
+                                if (Array.isArray(node.children)) return node.children.map(extractText).join(' ');
+                                return '';
+                            };
+                            try {
+                                // Lexical stores content as a JSON string — parse it before traversal
+                                const parsed = typeof snap === 'string' ? JSON.parse(snap) : snap;
+                                const root = parsed?.root || parsed;
+                                const text = extractText(root).replace(/\s+/g, ' ').trim();
+                                const wordCount = text ? text.split(/\s+/).filter(Boolean).length : 0;
+                                contentChangeDetail = { words: wordCount, preview: text.slice(0, 120) || null, text: text || null };
+                            } catch (_) {
+                                contentChangeDetail = { words: 0, preview: null, text: null };
+                            }
+                        }
+                    }
+
+                    await createHistoryEntry({
+                        pageId: _id,
+                        pageContentId: pageMetaResult.page_content_id,
+                        userId,
+                        action,
+                        contentSnapshot: hasContentChange ? previousContent.content : null,
+                        metaSnapshot: Object.keys(metaChanges).length > 0
+                            ? Object.fromEntries(trackedFields.filter(f => previousMeta[f] !== undefined).map(f => [f, previousMeta[f]]))
+                            : null,
+                        changes: { ...metaChanges, ...(hasContentChange ? { content: { updated: true, description: contentChangeDetail } } : {}) },
+                    });
+                }
+            }
+        } catch (historyErr) {
+            // History recording should not block the update response
+            console.error('Failed to record history:', historyErr.message);
         }
 
 

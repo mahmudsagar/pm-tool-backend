@@ -1,0 +1,26 @@
+{
+    // Page History - stores version snapshots for documents, sheets, and whiteboards
+    "identity": "page_history",
+    "datastore": "default",
+    "primaryKey": "_id",
+    "attributes": {
+        "_id": { "type": "string", "required": true },
+        // Reference to the page (PageMeta._id)
+        "page_id": { "type": "string", "required": true },
+        // Reference to the page content record
+        "page_content_id": { "type": "string", "required": true },
+        // Who made this change
+        "user_id": { "type": "string", "required": true },
+        // Incrementing version number per page
+        "version": { "type": "number", "required": true },
+        // Type of change: created | content_updated | meta_updated | title_updated | custom_meta_updated | sharing_updated | restored
+        "action": { "type": "string", "required": true },
+        // Full content snapshot at this version (for rollback)
+        "content_snapshot": { "type": "json" },
+        // Snapshot of meta fields at this version
+        "meta_snapshot": { "type": "json" },
+        // Detailed changes: { field: { from, to } }
+        "changes": { "type": "json" },
+        "created_at": { "type": "ref", "columnType": "datetime" }
+    }
+}
