@@ -6,7 +6,12 @@ import { buildCommentWithUserInfo } from '../../utils/helper.js';
 
 export default async (request, response) => {
     try {
-        const { id: _id, ...rest } = await request.json();
+        const { id: _id, content: contentWrapper, ...topLevel } = await request.json();
+
+        // Support both flat payload and nested `content` wrapper
+        const rest = contentWrapper && typeof contentWrapper === 'object' && !Array.isArray(contentWrapper)
+            ? { ...topLevel, ...contentWrapper }
+            : { ...topLevel, content: contentWrapper };
 
         let mediaAttachments = [];
         let boardData = {};
