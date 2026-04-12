@@ -36,9 +36,14 @@ export default async (request, response) => {
             inner_comments: body.inner_comments,
         });
 
-        if (body.board_id && body.custom_meta) {
-            // update the board custom meta with the page custom meta
-            boardData = await global.Board.update({ _id: body.board_id }, { custom_meta: body.custom_meta }).fetch();
+        if (body.board_id && body.custom_meta?.fields) {
+            // Only update the board's field definitions, not task-specific values
+            const currentBoard = await global.Board.findOne({ _id: body.board_id });
+            if (currentBoard) {
+                boardData = await global.Board.update({ _id: body.board_id }, {
+                    custom_meta: { fields: body.custom_meta.fields }
+                }).fetch();
+            }
         }
 
         // Enforce parent sharing constraints

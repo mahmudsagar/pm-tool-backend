@@ -6,6 +6,7 @@ const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
 export const postBoardSchema = z.object({
     name: z.string().nonempty("Name is required"),
     description: z.string().optional(),
+    is_private: z.boolean().optional(),
     shared_members: z.array(z.string().refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     })).optional(),
@@ -56,6 +57,7 @@ export const putBoardSchema = z.object({
     }),
     name: z.string().optional(),
     description: z.string().optional(),
+    is_private: z.boolean().optional(),
     shared_members: z.array(z.string().refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     })).optional(),

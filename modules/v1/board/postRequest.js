@@ -11,6 +11,7 @@ export default async (request, response) => {
         const validatedData = postBoardSchema.parse({
             name: body.name,
             description: body.description,
+            is_private: body.is_private,
             shared_members: body.shared_members,
             shared_teams: body.shared_teams,
             user_id: body.user_id,

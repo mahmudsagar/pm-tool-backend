@@ -12,6 +12,7 @@ const Board = Waterline.Collection.extend({
         custom_meta: { type: 'json', defaultsTo: {} },
         shared_members: { type: 'json', defaultsTo: [] },
         shared_teams: { type: 'json', defaultsTo: [] },
+        is_private: { type: 'boolean', defaultsTo: false },
         user_id: { type: 'string', required: true },
         workspace_id: { type: 'string' },
         space_id: { type: 'string' },
