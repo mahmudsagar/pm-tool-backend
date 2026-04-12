@@ -162,12 +162,40 @@ export default async (request, response) => {
             })
         );
 
-        if (rest.board_id && rest.custom_meta) {
-            // update the board custom meta with the page custom meta
-            boardData = await global.Board.update({ _id: rest.board_id }, { custom_meta: rest.custom_meta }).fetch();
+        if (rest.board_id) {
+            if (rest.custom_meta?.fields) {
+                // A task is reporting an updated field schema (e.g. a new field was added).
+                // Merge incoming fields into the board's existing schema by field name so that:
+                // - Fields added via board settings are preserved even if an older task sends
+                //   a stale fields array.
+                // - New fields added on a task are promoted to the board for all tasks to share.
+                // We NEVER touch board-level values here.
+                const existingBoard = await global.Board.findOne({ _id: rest.board_id });
+                const existingFields = existingBoard?.custom_meta?.fields || [];
+                const incomingFields = rest.custom_meta.fields;
+
+                // Build a map keyed by field name; incoming fields win on conflict
+                const fieldMap = {};
+                existingFields.forEach(f => { fieldMap[f.name] = f; });
+                incomingFields.forEach(f => { fieldMap[f.name] = f; });
+
+                const updatedBoardMeta = {
+                    ...(existingBoard?.custom_meta || {}),
+                    fields: Object.values(fieldMap),
+                };
+                const boardResult = await global.Board.update(
+                    { _id: rest.board_id },
+                    { custom_meta: updatedBoardMeta }
+                ).fetch();
+                boardData = boardResult || [];
+            } else {
+                // No field schema change — just fetch the board for the response.
+                const boardResult = await global.Board.find({ _id: rest.board_id });
+                boardData = boardResult || [];
+            }
         }
 
-        response.json(formatSuccessMessage("Page updated successfully", { ...pageMetaResult, mediaAttachments, pageContent: pageContentResult, comments: commentsWithMeta, board: boardData?.length > 0 ? boardData[0] : {} }));
+        response.json(formatSuccessMessage("Page updated successfully", { ...pageMetaResult, mediaAttachments, pageContent: pageContentResult, comments: commentsWithMeta, board: Array.isArray(boardData) && boardData.length > 0 ? boardData[0] : {} }));
     } catch (err) {
         if (err instanceof z.ZodError) {
             const formattedErrors = formatZodErrors(err.errors);
