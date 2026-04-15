@@ -57,7 +57,7 @@ export default async (request, response) => {
             {
                 ...commentMetaResult, commentContent: commentContentResult,
                 userInfo: {
-                    name: user.full_name,
+                    name: user.name,
                     url: userMediaAttachments?.length > 0 ? userMediaAttachments[0]?.url : ''
                 }
             }));

@@ -36,9 +36,8 @@ export default async (request, response) => {
 
                 await global.CommentMeta.destroy({ _id: commentMeta._id });
 
-                const commentContentResult = await global.CommentContent.destroyOne({ _id: commentMeta.associate_id });
-                if (!commentContentResult) {
-                    return response.status(404).json(formatErrorMessage('Comment content not found'));
+                if (commentMeta.associate_id) {
+                    await global.CommentContent.destroyOne({ _id: commentMeta.associate_id });
                 }
 
                 // Delete child comments
@@ -51,7 +50,9 @@ export default async (request, response) => {
 
                         await global.CommentMeta.destroy({ _id: childCommentMeta._id });
 
-                        await global.CommentContent.destroyOne({ _id: childCommentMeta.associate_id });
+                        if (childCommentMeta.associate_id) {
+                            await global.CommentContent.destroyOne({ _id: childCommentMeta.associate_id });
+                        }
                     }
                 }
             }
