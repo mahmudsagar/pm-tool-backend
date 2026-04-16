@@ -34,6 +34,7 @@
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "qs": "^6.15.1",
     "sails-disk": "^2.1.2",
     "sails-mongo": "^2.1.1",
     "uuid": "^10.0.0",

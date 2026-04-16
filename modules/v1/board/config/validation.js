@@ -51,6 +51,23 @@ export const postBoardSchema = z.object({
     path: ["folder_id", "space_id", "group_id"]
 });
 
+const savedViewFilterSchema = z.object({
+    field: z.string(),
+    operator: z.enum(['is', 'is_not', 'contains', 'is_empty', 'is_not_empty']),
+    value: z.any().optional(),
+});
+
+const savedViewSortSchema = z.object({
+    field: z.string(),
+    direction: z.enum(['asc', 'desc']),
+});
+
+const savedViewSchema = z.object({
+    sorts: z.array(savedViewSortSchema).optional(),
+    filters: z.array(savedViewFilterSchema).optional(),
+    search: z.string().optional(),
+}).nullable();
+
 export const putBoardSchema = z.object({
     _id: z.string().nonempty("ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
@@ -69,19 +86,19 @@ export const putBoardSchema = z.object({
     space_id: z.string().optional(),
     group_id: z.string().optional(),
     custom_meta: z.object({}).passthrough().optional(),
+    saved_view: savedViewSchema.optional(),
 }).refine(data => {
     const { folder_id, space_id, group_id } = data;
     const keys = [folder_id, space_id, group_id];
     const presentKeys = keys.filter(key => key !== undefined && key !== '');
-    if (presentKeys.length === 0) {
-        return false; // One of folder_id, board_id, space_id, or group_id must be present
-    }
+    // When updating metadata like saved_view, parent fields may not be re-sent
+    if (presentKeys.length === 0) return true;
     if (presentKeys.length > 1) {
-        return false; // Only one of folder_id, board_id, space_id, or group_id must be present
+        return false; // Only one of folder_id, space_id, or group_id may be present
     }
     return true;
 }, {
-    message: "One of folder_id, space_id, or group_id must be present, and only one can be present",
+    message: "Only one of folder_id, space_id, or group_id can be present at a time",
     path: ["folder_id", "space_id", "group_id"]
 }).refine(data => {
     if (data.folder_id && !isValidObjectId(data.folder_id)) {
