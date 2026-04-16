@@ -33,6 +33,7 @@ export const postPageMetaSchema = z.object({
     }),
     folder_id: z.string().optional(),
     board_id: z.string().optional(),
+    parent_id: z.string().optional(),
     space_id: z.string().optional(),
     group_id: z.string().optional(),
     page_content_id: z.string().nonempty("Page content ID is required").refine(isValidObjectId, {

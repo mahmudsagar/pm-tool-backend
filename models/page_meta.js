@@ -12,6 +12,7 @@ const PageMeta = Waterline.Collection.extend({
         workspace_id: { type: 'string' },
         folder_id: { type: 'string' },
         board_id: { type: 'string' },
+        parent_id: { type: 'string' },
         space_id: { type: 'string' },
         group_id: { type: 'string' },
         page_content_id: { type: 'string', required: true },

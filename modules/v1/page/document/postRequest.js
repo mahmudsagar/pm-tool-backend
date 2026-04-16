@@ -23,6 +23,7 @@ export default async (request, response) => {
             user_id: body.user_id,
             folder_id: body.folder_id,
             board_id: body.board_id,
+            parent_id: body.parent_id,
             space_id: body.space_id,
             group_id: body.group_id,
             page_content_id: pageContentResult._id,

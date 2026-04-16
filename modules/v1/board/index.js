@@ -109,7 +109,15 @@ export default async (request, response) => {
             if (hasView) {
                 pageMetas = applyView(pageMetas, viewParams);
             }
-            board.documents = pageMetas;
+            // Separate top-level tasks from subtasks
+            const topLevel = pageMetas.filter(p => !p.parent_id);
+            const subtaskMap = {};
+            pageMetas.filter(p => p.parent_id).forEach(sub => {
+                if (!subtaskMap[sub.parent_id]) subtaskMap[sub.parent_id] = [];
+                subtaskMap[sub.parent_id].push(sub);
+            });
+            topLevel.forEach(t => { t.subtasks = subtaskMap[t._id] || []; });
+            board.documents = topLevel;
         }
         response.json(formatSuccessMessage("Boards fetched successfully", result));
     } catch (err) {
