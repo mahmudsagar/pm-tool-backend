@@ -37,14 +37,28 @@ export default async (request, response) => {
             inner_comments: body.inner_comments,
         });
 
-        if (body.board_id && body.custom_meta?.fields) {
-            // Only update the board's field definitions, not task-specific values
+        if (body.board_id && body.custom_meta?.fields?.length > 0) {
+            // Only update the board's field definitions when the incoming list has entries,
+            // and only add new fields — never overwrite with a shorter/empty list.
             const currentBoard = await global.Board.findOne({ _id: body.board_id });
             if (currentBoard) {
-                boardData = await global.Board.update({ _id: body.board_id }, {
-                    custom_meta: { fields: body.custom_meta.fields }
-                }).fetch();
+                const existingFields = currentBoard.custom_meta?.fields || [];
+                const incomingFields = body.custom_meta.fields;
+                // Merge: keep all existing fields and append any genuinely new ones
+                const existingNames = new Set(existingFields.map(f => f.name));
+                const newFields = incomingFields.filter(f => !existingNames.has(f.name));
+                if (newFields.length > 0) {
+                    boardData = await global.Board.update({ _id: body.board_id }, {
+                        custom_meta: { ...currentBoard.custom_meta, fields: [...existingFields, ...newFields] }
+                    }).fetch();
+                } else {
+                    boardData = [currentBoard];
+                }
             }
+        } else if (body.board_id) {
+            // No fields provided (e.g. subtask creation) — just fetch board for the response
+            const currentBoard = await global.Board.findOne({ _id: body.board_id });
+            if (currentBoard) boardData = [currentBoard];
         }
 
         // Enforce parent sharing constraints

@@ -43,6 +43,10 @@ export default async (request, response) => {
             }
         }
 
+        // Attach subtasks (child tasks) for this document
+        const subtasks = await global.PageMeta.find({ parent_id: pageMetaResult._id }).sort('createdAt ASC');
+        pageMetaResult.subtasks = subtasks;
+
         response.json(formatSuccessMessage("Page data fetched successfully",
             {
                 ...pageMetaResult,
