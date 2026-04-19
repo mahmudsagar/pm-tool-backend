@@ -23,14 +23,22 @@ export default async (request, response) => {
         // Get owner info
         const owner = await global.User.findOne({ _id: workspace.owner_id });
         const { password: _op, ...ownerWithoutPassword } = owner;
+        ownerWithoutPassword.workspace_role = 'owner';
 
-        // Get member info
+        // Get member info with roles
+        const memberRoles = workspace.member_roles || [];
+        const getRoleForUser = (userId) => {
+            const entry = memberRoles.find(r => r.user_id === userId);
+            return entry ? entry.role : 'member';
+        };
+
         const memberUsers = [];
         if (workspace.members && workspace.members.length > 0) {
             for (const memberId of workspace.members) {
                 const user = await global.User.findOne({ _id: memberId });
                 if (user) {
                     const { password: _p, ...userWithoutPassword } = user;
+                    userWithoutPassword.workspace_role = getRoleForUser(memberId);
                     memberUsers.push(userWithoutPassword);
                 }
             }
@@ -39,7 +47,7 @@ export default async (request, response) => {
         if (search) {
             const term = search.toLowerCase();
             const matchesSearch = (u) =>
-                (u.full_name && u.full_name.toLowerCase().includes(term)) ||
+                (u.name && u.name.toLowerCase().includes(term)) ||
                 (u.email && u.email.toLowerCase().includes(term));
 
             return response.json(formatSuccessMessage("Members fetched successfully", {

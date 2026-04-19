@@ -12,3 +12,14 @@ export const getUserSchema = z.object({
     message: "Either _id or search query must be provided",
     path: ["_id", "search"]
 });
+
+export const putUserSchema = z.object({
+    name: z.string().min(1).max(100).optional(),
+    phone: z.string().max(20).optional(),
+    avatar: z.string().optional(),
+});
+
+export const changePasswordSchema = z.object({
+    current_password: z.string().min(1, "Current password is required"),
+    new_password: z.string().min(8, "New password must be at least 8 characters"),
+});

@@ -9,9 +9,17 @@ const Space = Waterline.Collection.extend({
         _id: { type: 'string', columnName: '_id', autoMigrations: { autoIncrement: false } },
         name: { type: 'string', required: true },
         description: { type: 'string' },
+        color: { type: 'string' },
+        icon: { type: 'string' },
+        default_view: { type: 'string', defaultsTo: 'table' },
+        space_lead: { type: 'string' },
+        working_start_date: { type: 'ref' },
+        working_end_date: { type: 'ref' },
         is_private: { type: 'boolean', required: true },
         shared_teams: { type: 'json', defaultsTo: [] },
+        // shared_teams format: [{ team_id, role: 'manager'|'contributor'|'viewer' }]
         shared_members: { type: 'json', defaultsTo: [] },
+        // shared_members format can be string[] (legacy) or [{ user_id, role: 'manager'|'contributor'|'viewer' }]
         user_id: { type: 'string', required: true },
         workspace_id: { type: 'string' },
         is_default: { type: 'boolean', required: true },

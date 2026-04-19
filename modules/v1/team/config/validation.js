@@ -8,7 +8,10 @@ export const postTeamSchema = z.object({
     description: z.string().optional(),
     shared_members: z.array(z.string().refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
-    })).optional()
+    })).optional(),
+    team_lead: z.string().optional().refine(value => !value || isValidObjectId(value), {
+        message: "Invalid MongoDB ObjectId",
+    }),
 });
 
 export const putTeamSchema = z.object({
@@ -19,7 +22,10 @@ export const putTeamSchema = z.object({
     description: z.string().optional(),
     shared_members: z.array(z.string().refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
-    })).optional()
+    })).optional(),
+    team_lead: z.string().nullable().optional().refine(value => value === null || value === undefined || isValidObjectId(value), {
+        message: "Invalid MongoDB ObjectId",
+    }),
 });
 
 export const getTeamSchema = z.object({

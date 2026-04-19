@@ -14,8 +14,11 @@ export default async (request, response) => {
             return response.status(404).json(formatErrorMessage('Workspace not found'));
         }
 
-        if (workspace.owner_id !== request.user.id) {
-            return response.status(403).json(formatErrorMessage('Only the workspace owner can add members'));
+        // Allow admins to add members too
+        const memberRole = (workspace.member_roles || []).find(r => r.user_id === request.user.id);
+        const isAdmin = workspace.owner_id === request.user.id || (memberRole && memberRole.role === 'admin');
+        if (!isAdmin) {
+            return response.status(403).json(formatErrorMessage('Only workspace owner or admins can add members'));
         }
 
         // Find the user to add
@@ -44,7 +47,16 @@ export default async (request, response) => {
         }
 
         const updatedMembers = [...currentMembers, userToAdd._id];
-        const result = await global.Workspace.updateOne({ _id: workspace._id }).set({ members: updatedMembers });
+        
+        // Add role to member_roles
+        const currentRoles = workspace.member_roles || [];
+        const role = validatedData.role || 'member';
+        const updatedRoles = [...currentRoles.filter(r => r.user_id !== userToAdd._id), { user_id: userToAdd._id, role }];
+        
+        const result = await global.Workspace.updateOne({ _id: workspace._id }).set({ 
+            members: updatedMembers,
+            member_roles: updatedRoles,
+        });
 
         // Populate member users (strip passwords)
         const populatedMembers = await Promise.all(

@@ -14,13 +14,22 @@ export default async (request, response) => {
             return response.status(404).json(formatErrorMessage('Workspace not found'));
         }
 
-        if (workspace.owner_id !== request.user.id) {
-            return response.status(403).json(formatErrorMessage('Only the workspace owner can update this workspace'));
+        // Allow admins to update workspace too
+        const memberRole = (workspace.member_roles || []).find(r => r.user_id === request.user.id);
+        const isAdmin = workspace.owner_id === request.user.id || (memberRole && memberRole.role === 'admin');
+        if (!isAdmin) {
+            return response.status(403).json(formatErrorMessage('Only workspace owner or admins can update this workspace'));
         }
 
         const updateData = {};
         if (validatedData.name !== undefined) updateData.name = validatedData.name;
         if (validatedData.description !== undefined) updateData.description = validatedData.description;
+        if (validatedData.logo !== undefined) updateData.logo = validatedData.logo;
+        if (validatedData.timezone !== undefined) updateData.timezone = validatedData.timezone;
+        if (validatedData.date_format !== undefined) updateData.date_format = validatedData.date_format;
+        if (validatedData.first_day_of_week !== undefined) updateData.first_day_of_week = validatedData.first_day_of_week;
+        if (validatedData.working_days !== undefined) updateData.working_days = validatedData.working_days;
+        if (validatedData.billing_plan !== undefined) updateData.billing_plan = validatedData.billing_plan;
 
         const result = await global.Workspace.updateOne({ _id: validatedData._id }).set(updateData);
 

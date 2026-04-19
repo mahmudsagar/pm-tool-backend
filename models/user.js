@@ -10,7 +10,9 @@ const User = Waterline.Collection.extend({
         _id: { type: 'string', columnName: '_id', autoMigrations: { autoIncrement: false } },
         name: { type: 'string', required: true },
         email: { type: 'string', required: true },
-        password: { type: 'string', required: true }
+        password: { type: 'string', required: true },
+        phone: { type: 'string' },
+        avatar: { type: 'string' },
     },
 
     // Add indexes at the model level instead of on individual attributes
