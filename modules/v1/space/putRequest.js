@@ -22,7 +22,10 @@ export default async (request, response) => {
 
         const validatedData = putSpaceSchema.parse({ _id, ...rest });
 
-        let result = await global.Space.update({ _id: validatedData._id }, validatedData).fetch();
+        // Strip _id from update values — Waterline/MongoDB cannot update the primary key
+        const { _id: _stripped, ...updateValues } = validatedData;
+
+        let result = await global.Space.update({ _id }, updateValues).fetch();
         if (result.length > 0) result = result[0];
         response.json(formatSuccessMessage("Space updated successfully", result));
     } catch (err) {

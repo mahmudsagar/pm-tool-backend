@@ -102,8 +102,14 @@ export default async (request, response) => {
             user.attachments = user.attachments || [];
             user.attachments.push(result._id);
             await global.User.updateOne({ _id: reference_id }).set({ attachments: user.attachments });
+        } else if (reference_for === 'space') {
+            const space = await global.Space.findOne({ _id: reference_id });
+            if (!space) {
+                throw new Error('Space not found');
+            }
+            await global.Space.updateOne({ _id: reference_id }).set({ icon: result.url });
         } else {
-            throw new Error('Invalid reference_for value. Allowed values are page and comment.');
+            throw new Error('Invalid reference_for value. Allowed values are page, comment, user, and space.');
         }
 
         response.json(formatSuccessMessage('Media created successfully', result));

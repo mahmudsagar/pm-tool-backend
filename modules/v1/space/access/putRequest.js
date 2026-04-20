@@ -92,6 +92,10 @@ export default async (request, response) => {
 
         const result = await global.Space.updateOne({ _id: id }).set(updateData);
 
+        if (!result) {
+            return response.status(404).json(formatErrorMessage('Space not found during update'));
+        }
+
         // Build response with effective permissions info
         const warnings = [];
         

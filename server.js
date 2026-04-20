@@ -23,24 +23,17 @@ const PORT = process.env.PORT || 3001;
 // Configure CORS for all routes
 // Replace your current CORS handling with this
 
-// Set up CORS - specific for frontend on port 5173
-webserver.options('*', (req, res) => {
-    // Specific origin instead of wildcard for better security
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Workspace-ID');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.status(204).send();
-});
-
 // Global middleware for CORS
 webserver.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
+    const origin = req.headers['origin'];
+    if (origin) {
+        res.header('Access-Control-Allow-Origin', origin);
+    }
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Workspace-ID');
     res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Vary', 'Origin');
 
-    // Handle actual OPTIONS requests
     if (req.method === 'OPTIONS') {
         return res.status(204).send();
     }
