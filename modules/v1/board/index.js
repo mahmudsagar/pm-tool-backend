@@ -6,45 +6,75 @@ import { formatSuccessMessage } from '../utils/success.js';
 import { canUserAccessEntity } from '../utils/helper.js';
 
 /**
- * Apply in-memory filters, sorts and search to an array of PageMeta documents.
+ * Check if a document matches a filter condition.
+ */
+function matchesFilter(doc, { field, operator, value }) {
+    const CORE_FIELDS = new Set(['title', 'user_id', 'createdAt', 'updatedAt', 'page_type', 'entity_type']);
+    const cellVal = CORE_FIELDS.has(field)
+        ? doc[field]
+        : doc.custom_meta?.values?.[field];
+    const cell = cellVal !== undefined && cellVal !== null ? String(cellVal) : '';
+    const val  = value !== undefined && value !== null ? String(value) : '';
+    
+    switch (operator) {
+        case 'is':          return cell === val;
+        case 'is_not':      return cell !== val;
+        case 'contains':    return cell.toLowerCase().includes(val.toLowerCase());
+        case 'is_empty':    return cell === '';
+        case 'is_not_empty':return cell !== '';
+        default:            return true;
+    }
+}
+
+/**
+ * Apply in-memory filters, sorts and search to a hierarchy of documents (with subtasks).
  * filters: Array<{ field, operator, value }>
  * sorts:   Array<{ field, direction: 'asc'|'desc' }>
  * search:  string  (matches title)
+ * 
+ * IMPORTANT: Each document (parent and subtask) is filtered independently.
+ * Only show items that directly match the criteria.
  */
-function applyView(docs, { filters = [], sorts = [], search = '' } = {}) {
-    let items = [...docs];
-
-    // Search
-    if (search && search.trim()) {
+function applyView(topLevelDocs, { filters = [], sorts = [], search = '' } = {}) {
+    const CORE_FIELDS = new Set(['title', 'user_id', 'createdAt', 'updatedAt', 'page_type', 'entity_type']);
+    
+    // Helper: check if a document matches search
+    function matchesSearch(doc) {
+        if (!search || !search.trim()) return true;
         const q = search.toLowerCase();
-        items = items.filter(doc =>
-            (doc.title || '').toLowerCase().includes(q) ||
-            (doc.summary || '').toLowerCase().includes(q)
-        );
+        return (doc.title || '').toLowerCase().includes(q) ||
+               (doc.summary || '').toLowerCase().includes(q);
     }
 
-    // Filters — custom_meta values live in doc.custom_meta.values[field]
-    // Core fields (title, user_id …) are top-level
-    const CORE_FIELDS = new Set(['title', 'user_id', 'createdAt', 'updatedAt', 'page_type', 'entity_type']);
-    filters.forEach(({ field, operator, value }) => {
-        items = items.filter(doc => {
-            const cellVal = CORE_FIELDS.has(field)
-                ? doc[field]
-                : doc.custom_meta?.values?.[field];
-            const cell = cellVal !== undefined && cellVal !== null ? String(cellVal) : '';
-            const val  = value !== undefined && value !== null ? String(value) : '';
-            switch (operator) {
-                case 'is':          return cell === val;
-                case 'is_not':      return cell !== val;
-                case 'contains':    return cell.toLowerCase().includes(val.toLowerCase());
-                case 'is_empty':    return cell === '';
-                case 'is_not_empty':return cell !== '';
-                default:            return true;
-            }
-        });
-    });
+    // Helper: check if a document matches all filters
+    function matchesAllFilters(doc) {
+        if (filters.length === 0) return true;
+        return filters.every(f => matchesFilter(doc, f));
+    }
 
-    // Sorts
+    let items = [];
+
+    // Process each parent and its subtasks independently
+    for (const parent of topLevelDocs) {
+        const parentMatches = matchesSearch(parent) && matchesAllFilters(parent);
+        const subtasks = parent.subtasks || [];
+        const matchingSubtasks = subtasks.filter(sub => 
+            matchesSearch(sub) && matchesAllFilters(sub)
+        );
+
+        // If parent matches, add it with filtered subtasks
+        if (parentMatches) {
+            items.push({
+                ...parent,
+                subtasks: matchingSubtasks
+            });
+        } else if (matchingSubtasks.length > 0) {
+            // If only subtasks match, add them as independent items (not nested under parent)
+            items.push(...matchingSubtasks);
+        }
+    }
+
+    // Step 2: Sort
     if (sorts.length) {
         items.sort((a, b) => {
             for (const { field, direction } of sorts) {
@@ -106,10 +136,8 @@ export default async (request, response) => {
 
         for (const board of result) {
             let pageMetas = await global.PageMeta.find({ board_id: board._id }).sort('createdAt ASC');
-            if (hasView) {
-                pageMetas = applyView(pageMetas, viewParams);
-            }
-            // Separate top-level tasks from subtasks
+            
+            // Separate top-level tasks from subtasks FIRST (before filtering)
             const topLevel = pageMetas.filter(p => !p.parent_id);
             const subtaskMap = {};
             pageMetas.filter(p => p.parent_id).forEach(sub => {
@@ -117,7 +145,14 @@ export default async (request, response) => {
                 subtaskMap[sub.parent_id].push(sub);
             });
             topLevel.forEach(t => { t.subtasks = subtaskMap[t._id] || []; });
-            board.documents = topLevel;
+            
+            // NOW apply filters/sorts/search to the organized hierarchy
+            // This ensures parents whose subtasks match are kept
+            let documents = topLevel;
+            if (hasView) {
+                documents = applyView(documents, viewParams);
+            }
+            board.documents = documents;
         }
         response.json(formatSuccessMessage("Boards fetched successfully", result));
     } catch (err) {
