@@ -15,6 +15,7 @@ import Media from './media.js';
 import Board from './board.js';
 import Workspace from './workspace.js';
 import PageHistory from './page_history.js';
+import Notification from './notification.js';
 
 // Register models
 waterline.registerModel(Auth);
@@ -33,6 +34,7 @@ waterline.registerModel(Media);
 waterline.registerModel(Board);
 waterline.registerModel(Workspace);
 waterline.registerModel(PageHistory);
+waterline.registerModel(Notification);
 
 // Register other models as needed
 const initializeWaterline = async () => {
@@ -60,6 +62,7 @@ const initializeWaterline = async () => {
             global.Board = ontology.collections.board;
             global.Workspace = ontology.collections.workspace;
             global.PageHistory = ontology.collections.page_history;
+            global.Notification = ontology.collections.notification;
             resolve(ontology);
         });
     });

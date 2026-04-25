@@ -3,6 +3,7 @@ import { deletePageMetaSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
 import { deleteAttachments } from '../../utils/helper.js';
+import { createNotification } from '../../utils/notificationService.js';
 
 export default async (request, response) => {
     try {
@@ -58,6 +59,24 @@ export default async (request, response) => {
             }
         } else {
             return response.status(400).json(formatErrorMessage('Page ID must be provided'));
+        }
+
+        // Send notification for deletion
+        if (pageMeta) {
+            try {
+                await createNotification({
+                    workspaceId: request.workspaceId,
+                    entity: pageMeta,
+                    entityType: pageMeta.page_type || 'page',
+                    action: 'delete',
+                    currentUserId: request.user.id,
+                    metadata: {
+                        actor_name: request.user.name || 'User'
+                    }
+                });
+            } catch (notifErr) {
+                console.error('Failed to create notification:', notifErr.message);
+            }
         }
 
         response.json(formatSuccessMessage('Page deleted successfully', null));

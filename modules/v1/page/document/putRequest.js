@@ -4,6 +4,7 @@ import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
 import { buildCommentWithUserInfo } from '../../utils/helper.js';
 import { createHistoryEntry, detectMetaChanges, resolveAction } from '../../utils/history.js';
+import { createNotification } from '../../utils/notificationService.js';
 
 export default async (request, response) => {
     try {
@@ -193,6 +194,23 @@ export default async (request, response) => {
                 const boardResult = await global.Board.find({ _id: rest.board_id });
                 boardData = boardResult || [];
             }
+        }
+
+        // Send notification
+        try {
+            await createNotification({
+                workspaceId: request.workspaceId,
+                entity: pageMetaResult,
+                entityType: pageMetaData.page_type || 'page',
+                action: 'update',
+                currentUserId: request.user.id,
+                metadata: {
+                    actor_name: request.user.name || 'User',
+                    changes: Object.keys(rest).filter(k => rest[k] !== undefined)
+                }
+            });
+        } catch (notifErr) {
+            console.error('Failed to create notification:', notifErr.message);
         }
 
         response.json(formatSuccessMessage("Page updated successfully", { ...pageMetaResult, mediaAttachments, pageContent: pageContentResult, comments: commentsWithMeta, board: Array.isArray(boardData) && boardData.length > 0 ? boardData[0] : {} }));

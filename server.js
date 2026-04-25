@@ -3,6 +3,9 @@ import fs from 'fs';
 import path from 'path';
 import { pathToFileURL } from 'url';
 import dotenv from 'dotenv';
+import http from 'http';
+import { initializeWebSocket } from './modules/v1/utils/websocketService.js';
+
 const webserver = new HyperExpress.Server();
 import initializeWaterline from './models/index.js';
 import cors from 'cors';
@@ -190,17 +193,29 @@ async function startServer() {
     try {
         console.log('Starting the server...', PORT);
         await initializeWaterline();
+        
+        // Create HTTP server for Socket.io
+        const httpServer = http.createServer();
+        const wsPort = process.env.WS_PORT || 3002;
+        
+        // Initialize WebSocket
+        initializeWebSocket(httpServer);
+        
+        // Start HTTP server for WebSocket
+        httpServer.listen(wsPort, () => {
+            console.log(`WebSocket server is listening on port ${wsPort}`);
+        });
+        
+        // Start HyperExpress server
         await webserver.listen(parseInt(PORT), () => {
             console.log(`Server is listening on port ${PORT}`);
         });
-        // console.log('Server is listening on port 3000');
     } catch (error) {
         console.error('Failed to start the server:', error);
-        // Handle specific error codes if necessary
         if (error.code === 'ERR_UNHANDLED_REJECTION') {
             console.error('Possible reasons: Invalid host or busy port.');
         }
-        process.exit(1); // Exit the process with a failure code
+        process.exit(1);
     }
 }
 

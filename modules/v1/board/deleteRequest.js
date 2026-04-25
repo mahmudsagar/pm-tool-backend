@@ -3,6 +3,7 @@ import { deleteBoardSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 import { formatSuccessMessage } from '../utils/success.js';
 import { deleteBoardAndChildren } from '../utils/helper.js';
+import { createNotification } from '../utils/notificationService.js';
 
 export default async (request, response) => {
     try {
@@ -11,7 +12,24 @@ export default async (request, response) => {
         const validatedParams = deleteBoardSchema.parse({ _id });
 
         if (validatedParams._id) {
+            // Fetch board before deletion for notification
+            const boardToDelete = await global.Board.findOne({ _id: validatedParams._id });
+            
             await deleteBoardAndChildren(validatedParams._id);
+            
+            // Send notification
+            if (boardToDelete) {
+                await createNotification({
+                    workspaceId: request.workspaceId,
+                    entity: boardToDelete,
+                    entityType: 'board',
+                    action: 'delete',
+                    currentUserId: request.user.id,
+                    metadata: {
+                        actor_name: request.user.name || 'User'
+                    }
+                });
+            }
         } else {
             return response.status(400).json(formatErrorMessage('Board ID must be provided'));
         }

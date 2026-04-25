@@ -3,6 +3,7 @@ import { putFolderSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 import { formatSuccessMessage } from '../utils/success.js';
 import { validateChildSharing } from '../utils/helper.js';
+import { createNotification } from '../utils/notificationService.js';
 
 export default async (request, response) => {
     try {
@@ -24,6 +25,20 @@ export default async (request, response) => {
 
         let result = await global.Folder.update({ _id: validatedData._id }, validatedData).fetch();
         if (result.length > 0) result = result[0];
+        
+        // Send notification
+        await createNotification({
+            workspaceId: request.workspaceId,
+            entity: result,
+            entityType: 'folder',
+            action: 'update',
+            currentUserId: request.user.id,
+            metadata: {
+                actor_name: request.user.name || 'User',
+                changes: Object.keys(rest).filter(k => rest[k] !== undefined)
+            }
+        });
+
         response.json(formatSuccessMessage("Folder updated successfully", result));
     } catch (err) {
         if (err instanceof z.ZodError) {

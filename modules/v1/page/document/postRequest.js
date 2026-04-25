@@ -4,6 +4,7 @@ import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
 import { validateChildSharing } from '../../utils/helper.js';
 import { createHistoryEntry } from '../../utils/history.js';
+import { createNotification } from '../../utils/notificationService.js';
 
 export default async (request, response) => {
     try {
@@ -83,6 +84,22 @@ export default async (request, response) => {
             });
         } catch (historyErr) {
             console.error('Failed to record creation history:', historyErr.message);
+        }
+
+        // Send notification
+        try {
+            await createNotification({
+                workspaceId: request.workspaceId,
+                entity: pageMetaResult,
+                entityType: pageMetaData.page_type || 'page',
+                action: 'create',
+                currentUserId: request.user.id,
+                metadata: {
+                    actor_name: request.user.name || 'User'
+                }
+            });
+        } catch (notifErr) {
+            console.error('Failed to create notification:', notifErr.message);
         }
 
         response.json(formatSuccessMessage("Page content, meta data, and inner comments saved successfully", { ...pageMetaResult, pageContent: pageContentResult, board: boardData?.length > 0 ? boardData[0] : {} }));
