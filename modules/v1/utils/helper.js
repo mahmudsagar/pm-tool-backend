@@ -21,6 +21,14 @@ export const canUserAccessEntity = async (entity, userId, workspaceId = null) =>
     const hasSharedTeams = entity.shared_teams && entity.shared_teams.length > 0;
     const isPrivate = entity.is_private === true;
 
+    // Public spaces with no restrictions → all workspace members have access
+    if (!isPrivate && (!hasSharedMembers && !hasSharedTeams) && entity.workspace_id) {
+        const workspace = await global.Workspace.findOne({ _id: entity.workspace_id });
+        if (workspace && (workspace.owner_id === userId || (workspace.members && workspace.members.includes(userId)))) {
+            return true;
+        }
+    }
+
     // Explicitly shared to specific members/teams — user must also be in this workspace
     if (hasSharedMembers || hasSharedTeams) {
         // Confirm user is a member of the entity's workspace
@@ -29,12 +37,22 @@ export const canUserAccessEntity = async (entity, userId, workspaceId = null) =>
             return false;
         }
 
-        if (hasSharedMembers && entity.shared_members.includes(userId)) return true;
+        if (hasSharedMembers) {
+            // Handle both legacy (object with user_id/role) and new (string array) formats
+            const isMemberShared = entity.shared_members.some(member =>
+                typeof member === 'string' ? member === userId : member.user_id === userId
+            );
+            if (isMemberShared) return true;
+        }
 
         if (hasSharedTeams) {
             const userTeams = await global.Team.find({ workspace_id: entity.workspace_id });
             for (const team of userTeams) {
-                if (entity.shared_teams.includes(team._id) &&
+                // Handle both legacy (object with team_id/role) and new (string array) formats
+                const isTeamShared = entity.shared_teams.some(t =>
+                    typeof t === 'string' ? t === team._id : t.team_id === team._id
+                );
+                if (isTeamShared &&
                     (team.user_id === userId || (team.shared_members && team.shared_members.includes(userId)))) {
                     return true;
                 }
@@ -106,6 +124,86 @@ export const validateChildSharing = async (parentType, parentId, childSharedMemb
             throw new Error(`Cannot share with team ${teamId}: it is not in the parent ${parentType}'s allowed teams`);
         }
     }
+};
+
+/**
+ * Get a user's role in an entity (separate from access control)
+ * @param {Object} entity - The entity (space, board, etc.)
+ * @param {string} userId - The user ID
+ * @returns {string|null} Role ('manager', 'contributor', 'viewer') or null if not assigned
+ */
+export const getUserRoleInEntity = (entity, userId) => {
+    // Check owner always has implicit manager role
+    if (entity.user_id === userId) return 'manager';
+    
+    // Check member_roles field (new format)
+    if (entity.member_roles && entity.member_roles[userId]) {
+        return entity.member_roles[userId];
+    }
+    
+    // Fallback: check legacy shared_members format [{ user_id, role }]
+    if (entity.shared_members && Array.isArray(entity.shared_members)) {
+        const member = entity.shared_members.find(m => typeof m === 'object' && m.user_id === userId);
+        if (member) return member.role;
+    }
+    
+    return null;
+};
+
+/**
+ * Normalize sharing data: separate access (user/team IDs) from roles
+ * Converts old format [{ user_id, role }] to new format where:
+ * - shared_members: [user_id, ...] (just IDs)
+ * - member_roles: { user_id: role, ... }
+ */
+export const normalizeEntitySharing = (entity) => {
+    const normalized = { ...entity };
+    
+    // Normalize shared_members
+    if (entity.shared_members && Array.isArray(entity.shared_members)) {
+        const memberIds = [];
+        const memberRoles = entity.member_roles ? { ...entity.member_roles } : {};
+        
+        for (const member of entity.shared_members) {
+            if (typeof member === 'string') {
+                // Already in new format (just ID)
+                memberIds.push(member);
+            } else if (typeof member === 'object' && member.user_id) {
+                // Old format: { user_id, role }
+                memberIds.push(member.user_id);
+                if (member.role) {
+                    memberRoles[member.user_id] = member.role;
+                }
+            }
+        }
+        
+        normalized.shared_members = memberIds;
+        normalized.member_roles = memberRoles;
+    }
+    
+    // Normalize shared_teams
+    if (entity.shared_teams && Array.isArray(entity.shared_teams)) {
+        const teamIds = [];
+        const teamRoles = entity.team_roles ? { ...entity.team_roles } : {};
+        
+        for (const team of entity.shared_teams) {
+            if (typeof team === 'string') {
+                // Already in new format (just ID)
+                teamIds.push(team);
+            } else if (typeof team === 'object' && team.team_id) {
+                // Old format: { team_id, role }
+                teamIds.push(team.team_id);
+                if (team.role) {
+                    teamRoles[team.team_id] = team.role;
+                }
+            }
+        }
+        
+        normalized.shared_teams = teamIds;
+        normalized.team_roles = teamRoles;
+    }
+    
+    return normalized;
 };
 
 // Configure S3 client for R2

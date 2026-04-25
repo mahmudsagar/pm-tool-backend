@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { putSpaceAccessSchema } from '../config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
+import { getUserRoleInEntity } from '../../utils/helper.js';
 
 // Role priority for resolving conflicts (higher = more permissive)
 const ROLE_PRIORITY = { manager: 3, contributor: 2, viewer: 1 };
@@ -24,15 +25,8 @@ export default async (request, response) => {
 
         // Check if user is space owner or has Manager role
         const isOwner = space.user_id === userId;
-        let isManager = false;
-        if (!isOwner && Array.isArray(space.shared_members)) {
-            const memberEntry = space.shared_members.find(m => 
-                (typeof m === 'string' ? m : m.user_id) === userId
-            );
-            if (memberEntry && typeof memberEntry === 'object' && memberEntry.role === 'manager') {
-                isManager = true;
-            }
-        }
+        const userRole = getUserRoleInEntity(space, userId);
+        const isManager = userRole === 'manager';
 
         // Also check workspace admin
         const workspace = await global.Workspace.findOne({ _id: workspaceId });
@@ -46,48 +40,67 @@ export default async (request, response) => {
         const validatedData = putSpaceAccessSchema.parse(body);
 
         const updateData = {};
+        const memberRoles = { ...space.member_roles };  // Preserve existing roles
+        const teamRoles = { ...space.team_roles };      // Preserve existing roles
         
         if (validatedData.shared_teams !== undefined) {
-            // Validate all team_ids exist
+            // Validate all team_ids exist and extract roles
+            const teamIds = [];
             for (const teamAccess of validatedData.shared_teams) {
                 const team = await global.Team.findOne({ _id: teamAccess.team_id });
                 if (!team) {
                     return response.status(404).json(formatErrorMessage(`Team ${teamAccess.team_id} not found`));
                 }
+                
                 // Check guest ceiling: if team lead is a guest, they can't be manager
-                if (workspace) {
-                    const teamObj = await global.Team.findOne({ _id: teamAccess.team_id });
-                    if (teamObj?.team_lead) {
-                        const leadRole = (workspace.member_roles || []).find(r => r.user_id === teamObj.team_lead);
-                        if (leadRole?.role === 'guest' && teamAccess.role === 'manager') {
-                            return response.status(400).json(formatErrorMessage(
-                                `Team "${teamObj.name}" lead is a Guest at workspace level and cannot be given Manager role`
-                            ));
-                        }
+                if (workspace && teamAccess.role === 'manager') {
+                    const leadRole = (workspace.member_roles || {})[team.team_lead];
+                    if (leadRole === 'guest') {
+                        return response.status(400).json(formatErrorMessage(
+                            `Team "${team.name}" lead is a Guest at workspace level and cannot be given Manager role`
+                        ));
                     }
                 }
+                
+                teamIds.push(teamAccess.team_id);
+                teamRoles[teamAccess.team_id] = teamAccess.role;  // Store role separately
             }
-            updateData.shared_teams = validatedData.shared_teams;
+            updateData.shared_teams = teamIds;
         }
 
         if (validatedData.shared_members !== undefined) {
-            // Validate all user_ids exist and are workspace members
+            // Validate all user_ids exist and extract roles
+            const memberIds = [];
             for (const memberAccess of validatedData.shared_members) {
                 const user = await global.User.findOne({ _id: memberAccess.user_id });
                 if (!user) {
                     return response.status(404).json(formatErrorMessage(`User ${memberAccess.user_id} not found`));
                 }
+                
                 // Check guest ceiling
-                if (workspace) {
-                    const memberWsRole = (workspace.member_roles || []).find(r => r.user_id === memberAccess.user_id);
-                    if (memberWsRole?.role === 'guest' && memberAccess.role === 'manager') {
+                if (workspace && memberAccess.role === 'manager') {
+                    const memberWsRole = (workspace.member_roles || {})[memberAccess.user_id];
+                    if (memberWsRole === 'guest') {
                         return response.status(400).json(formatErrorMessage(
                             `User is a Guest at workspace level and cannot be given Manager role on a space`
                         ));
                     }
                 }
+                
+                memberIds.push(memberAccess.user_id);
+                memberRoles[memberAccess.user_id] = memberAccess.role;  // Store role separately
             }
-            updateData.shared_members = validatedData.shared_members;
+            updateData.shared_members = memberIds;
+        }
+
+        // Always update roles if we updated access
+        if (Object.keys(updateData).length > 0) {
+            if (validatedData.shared_teams !== undefined) {
+                updateData.team_roles = teamRoles;
+            }
+            if (validatedData.shared_members !== undefined) {
+                updateData.member_roles = memberRoles;
+            }
         }
 
         const result = await global.Space.updateOne({ _id: id }).set(updateData);
@@ -96,51 +109,16 @@ export default async (request, response) => {
             return response.status(404).json(formatErrorMessage('Space not found during update'));
         }
 
-        // Build response with effective permissions info
+        // Build response with updated space
         const warnings = [];
         
-        // Check if any member has access via both team and individual with different roles
-        if (result.shared_teams && result.shared_members) {
-            const teamMembers = {};
-            for (const teamAccess of result.shared_teams) {
-                const team = await global.Team.findOne({ _id: teamAccess.team_id });
-                if (team) {
-                    for (const memberId of (team.shared_members || [])) {
-                        if (!teamMembers[memberId] || ROLE_PRIORITY[teamAccess.role] > ROLE_PRIORITY[teamMembers[memberId]]) {
-                            teamMembers[memberId] = teamAccess.role;
-                        }
-                    }
-                    // Include team owner
-                    if (!teamMembers[team.user_id] || ROLE_PRIORITY[teamAccess.role] > ROLE_PRIORITY[teamMembers[team.user_id]]) {
-                        teamMembers[team.user_id] = teamAccess.role;
-                    }
-                }
-            }
-
-            for (const memberAccess of result.shared_members) {
-                const uid = typeof memberAccess === 'string' ? memberAccess : memberAccess.user_id;
-                if (teamMembers[uid]) {
-                    const teamRole = teamMembers[uid];
-                    const individualRole = typeof memberAccess === 'object' ? memberAccess.role : 'contributor';
-                    if (teamRole !== individualRole) {
-                        const effectiveRole = ROLE_PRIORITY[individualRole] >= ROLE_PRIORITY[teamRole] ? individualRole : teamRole;
-                        warnings.push({
-                            user_id: uid,
-                            message: `Also in team with ${teamRole} role. Individual ${individualRole} role takes precedence. Effective: ${effectiveRole}`,
-                        });
-                    }
-                }
-            }
-        }
-
         // Check if space has no manager
-        const hasManager = (result.shared_members || []).some(m => typeof m === 'object' && m.role === 'manager') ||
-            result.user_id === userId;
+        const hasManager = (result.shared_members && result.shared_members.length > 0) || isOwner;
         if (!hasManager) {
             warnings.push({ message: 'Space has no Manager. Consider assigning one.' });
         }
 
-        response.json(formatSuccessMessage("Space access updated successfully", { ...result, warnings }));
+        response.json(formatSuccessMessage("Space access updated successfully", { space: result, warnings }));
     } catch (err) {
         if (err instanceof z.ZodError) {
             const formattedErrors = formatZodErrors(err.errors);
