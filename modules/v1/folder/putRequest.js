@@ -7,7 +7,7 @@ import { createNotification } from '../utils/notificationService.js';
 
 export default async (request, response) => {
     try {
-        const { id: _id, ...rest } = await request.json();
+        const { id: _id, ...rest } = request.body;
 
         const validatedData = putFolderSchema.parse({ _id, ...rest });
 

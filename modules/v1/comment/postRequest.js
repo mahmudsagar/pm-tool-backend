@@ -5,7 +5,7 @@ import { formatSuccessMessage } from '../utils/success.js';
 
 export default async (request, response) => {
     try {
-        const body = await request.json();
+        const body = request.body;
 
         let commentContentResult = {};
         if (body.content && Object.keys(body.content).length > 0) {

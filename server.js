@@ -1,4 +1,4 @@
-import HyperExpress from 'hyper-express';
+import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { pathToFileURL } from 'url';
@@ -6,7 +6,8 @@ import dotenv from 'dotenv';
 import http from 'http';
 import { initializeWebSocket } from './modules/v1/utils/websocketService.js';
 
-const webserver = new HyperExpress.Server();
+const app = express();
+const httpServer = http.createServer(app);
 import initializeWaterline from './models/index.js';
 import cors from 'cors';
 import passport from 'passport';
@@ -26,8 +27,12 @@ const PORT = process.env.PORT || 3001;
 // Configure CORS for all routes
 // Replace your current CORS handling with this
 
+// Body parsing middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // Global middleware for CORS
-webserver.use((req, res, next) => {
+app.use((req, res, next) => {
     const origin = req.headers['origin'];
     if (origin) {
         res.header('Access-Control-Allow-Origin', origin);
@@ -102,8 +107,8 @@ passport.deserializeUser(async (id, done) => {
 });
 
 // Initialize passport middleware - AFTER session middleware
-webserver.use(passport.initialize());
-// webserver.use(passport.session());
+app.use(passport.initialize());
+// app.use(passport.session());
 
 async function loadRoutes(directory, baseRoute = '') {
     const filesAndFolders = fs.readdirSync(directory, { withFileTypes: true });
@@ -172,16 +177,16 @@ async function loadRoutes(directory, baseRoute = '') {
                 // Create the route with middleware and handler
                 switch (method) {
                     case 'get':
-                        webserver.get(routePath, ...middlewares, handler);
+                        app.get(routePath, ...middlewares, handler);
                         break;
                     case 'post':
-                        webserver.post(routePath, ...middlewares, handler);
+                        app.post(routePath, ...middlewares, handler);
                         break;
                     case 'put':
-                        webserver.put(routePath, ...middlewares, handler);
+                        app.put(routePath, ...middlewares, handler);
                         break;
                     case 'delete':
-                        webserver.delete(routePath, ...middlewares, handler);
+                        app.delete(routePath, ...middlewares, handler);
                         break;
                 }
             }
@@ -194,33 +199,21 @@ async function startServer() {
         console.log('Starting the server...', PORT);
         await initializeWaterline();
         
-        // Create HTTP server for Socket.io
-        const httpServer = http.createServer();
-        const wsPort = process.env.WS_PORT || 3002;
-        
-        // Initialize WebSocket
+        // Initialize WebSocket on the same http server as the REST API
         initializeWebSocket(httpServer);
         
-        // Start HTTP server for WebSocket
-        httpServer.listen(wsPort, () => {
-            console.log(`WebSocket server is listening on port ${wsPort}`);
-        });
-        
-        // Start HyperExpress server
-        await webserver.listen(parseInt(PORT), () => {
-            console.log(`Server is listening on port ${PORT}`);
+        // Single server listening on one port for both REST API and WebSocket
+        httpServer.listen(parseInt(PORT), () => {
+            console.log(`Server (REST + WebSocket) is listening on port ${PORT}`);
         });
     } catch (error) {
         console.error('Failed to start the server:', error);
-        if (error.code === 'ERR_UNHANDLED_REJECTION') {
-            console.error('Possible reasons: Invalid host or busy port.');
-        }
         process.exit(1);
     }
 }
 
 // Serve the index.html file for the base URL '/'
-webserver.get('/', (req, res) => {
+app.get('/', (req, res) => {
     const indexPath = path.join(__dirname, 'matrix', 'index.html');
     res.type('text/html').sendFile(indexPath);
 });

@@ -8,7 +8,7 @@ const ROLE_PRIORITY = { manager: 3, contributor: 2, viewer: 1 };
 
 export default async (request, response) => {
     try {
-        const body = await request.json();
+        const body = request.body;
         const { id } = request.query;
         const userId = request.user.id;
         const workspaceId = request.workspaceId;

@@ -9,7 +9,7 @@ import { createNotification } from '../../utils/notificationService.js';
 export default async (request, response) => {
     try {
         let boardData = {};
-        const body = await request.json();
+        const body = request.body;
 
         const pageContentData = postPageContentSchema.parse({
             user_id: body.user_id,

@@ -8,7 +8,7 @@ import { createNotification } from '../../utils/notificationService.js';
 
 export default async (request, response) => {
     try {
-        const { id: _id, content: contentWrapper, ...topLevel } = await request.json();
+        const { id: _id, content: contentWrapper, ...topLevel } = request.body;
 
         // Support both flat payload and nested `content` wrapper
         const rest = contentWrapper && typeof contentWrapper === 'object' && !Array.isArray(contentWrapper)

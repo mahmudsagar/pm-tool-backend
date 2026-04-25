@@ -6,7 +6,7 @@ import { createHistoryEntry } from '../../utils/history.js';
 
 export default async (request, response) => {
     try {
-        const body = await request.json();
+        const body = request.body;
         const { page_id, history_id } = rollbackSchema.parse(body);
 
         // Fetch the target history entry

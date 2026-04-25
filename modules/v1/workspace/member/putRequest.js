@@ -5,7 +5,7 @@ import { formatSuccessMessage } from '../../utils/success.js';
 
 export default async (request, response) => {
     try {
-        const body = await request.json();
+        const body = request.body;
         const workspace_id = request.workspaceId;
 
         const validatedData = putMemberRoleSchema.parse(body);

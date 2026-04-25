@@ -6,7 +6,7 @@ import { validateChildSharing } from '../utils/helper.js';
 
 export default async (request, response) => {
     try {
-        const { id: _id, ...rest } = await request.json();
+        const { id: _id, ...rest } = request.body;
 
         // Validate the request body using Zod
         const validatedData = putGroupSchema.parse({ _id, ...rest });

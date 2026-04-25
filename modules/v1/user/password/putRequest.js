@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt';
 
 export default async (request, response) => {
     try {
-        const body = await request.json();
+        const body = request.body;
         const userId = request.user.id;
 
         const validatedData = changePasswordSchema.parse(body);

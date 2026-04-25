@@ -5,7 +5,7 @@ import { formatSuccessMessage } from '../utils/success.js';
 
 export default async (request, response) => {
     try {
-        const body = await request.json();
+        const body = request.body;
 
         // Validate the request body using Zod
         const validatedData = postTeamSchema.parse(body);

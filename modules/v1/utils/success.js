@@ -11,3 +11,17 @@ export const formatSuccessMessage = (message, data) => {
         data: data
     };
 };
+
+export const formatErrorMessage = (message, data) => {
+    return {
+        status: 'error',
+        message: [
+            {
+                error: [
+                    message
+                ]
+            }
+        ],
+        data: data
+    };
+};

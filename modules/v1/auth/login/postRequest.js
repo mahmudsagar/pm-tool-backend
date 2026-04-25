@@ -7,7 +7,7 @@ import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 
 export default async (request, response, next) => {
     try {
-        const body = await request.json();
+        const body = request.body;
 
         const validatedData = loginUserSchema.parse(body);
 
