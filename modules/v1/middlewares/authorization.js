@@ -2,6 +2,14 @@ import { formatErrorMessage } from '../utils/error.js';
 import { canUserAccessEntity } from '../utils/helper.js';
 
 const checkEntityAccess = async (entityType, entityId, userId, workspaceId = null) => {
+    const normalizeId = (value) => {
+        if (value === null || value === undefined) return '';
+        if (typeof value === 'object') return String(value._id || value.id || value.user_id || value.team_id || '');
+        return String(value);
+    };
+    const includesId = (arr = [], target) =>
+        Array.isArray(arr) && arr.some((entry) => normalizeId(entry) === normalizeId(target));
+
     let entity;
     
     switch (entityType) {
@@ -29,7 +37,7 @@ const checkEntityAccess = async (entityType, entityId, userId, workspaceId = nul
         case 'workspace':
             entity = await global.Workspace.findOne({ _id: entityId });
             if (!entity) return false;
-            return entity.owner_id === userId || (entity.members && entity.members.includes(userId));
+            return normalizeId(entity.owner_id) === normalizeId(userId) || includesId(entity.members, userId);
         default:
             return false;
     }

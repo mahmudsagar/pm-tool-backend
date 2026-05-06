@@ -10,12 +10,22 @@ import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
  */
 export const canUserAccessEntity = async (entity, userId, workspaceId = null) => {
     if (!entity) return false;
+    const uid = String(userId || '');
+    const normalizeId = (value) => {
+        if (value === null || value === undefined) return '';
+        if (typeof value === 'object') {
+            return String(value.user_id || value.team_id || value._id || value.id || '');
+        }
+        return String(value);
+    };
+    const includesUser = (arr = [], targetUserId) =>
+        Array.isArray(arr) && arr.some((entry) => normalizeId(entry) === String(targetUserId));
 
     // Entity must belong to the current workspace context
     if (workspaceId && entity.workspace_id && entity.workspace_id !== workspaceId) return false;
 
     // Owner always has access
-    if (entity.user_id === userId) return true;
+    if (String(entity.user_id || '') === uid) return true;
 
     const hasSharedMembers = entity.shared_members && entity.shared_members.length > 0;
     const hasSharedTeams = entity.shared_teams && entity.shared_teams.length > 0;
@@ -24,7 +34,7 @@ export const canUserAccessEntity = async (entity, userId, workspaceId = null) =>
     // Public spaces with no restrictions → all workspace members have access
     if (!isPrivate && (!hasSharedMembers && !hasSharedTeams) && entity.workspace_id) {
         const workspace = await global.Workspace.findOne({ _id: entity.workspace_id });
-        if (workspace && (workspace.owner_id === userId || (workspace.members && workspace.members.includes(userId)))) {
+        if (workspace && (String(workspace.owner_id || '') === uid || includesUser(workspace.members, uid))) {
             return true;
         }
     }
@@ -33,14 +43,14 @@ export const canUserAccessEntity = async (entity, userId, workspaceId = null) =>
     if (hasSharedMembers || hasSharedTeams) {
         // Confirm user is a member of the entity's workspace
         const workspace = await global.Workspace.findOne({ _id: entity.workspace_id });
-        if (!workspace || (workspace.owner_id !== userId && !(workspace.members && workspace.members.includes(userId)))) {
+        if (!workspace || (String(workspace.owner_id || '') !== uid && !includesUser(workspace.members, uid))) {
             return false;
         }
 
         if (hasSharedMembers) {
             // Handle both legacy (object with user_id/role) and new (string array) formats
             const isMemberShared = entity.shared_members.some(member =>
-                typeof member === 'string' ? member === userId : member.user_id === userId
+                normalizeId(member) === uid
             );
             if (isMemberShared) return true;
         }
@@ -50,10 +60,10 @@ export const canUserAccessEntity = async (entity, userId, workspaceId = null) =>
             for (const team of userTeams) {
                 // Handle both legacy (object with team_id/role) and new (string array) formats
                 const isTeamShared = entity.shared_teams.some(t =>
-                    typeof t === 'string' ? t === team._id : t.team_id === team._id
+                    normalizeId(t) === String(team._id || '')
                 );
                 if (isTeamShared &&
-                    (team.user_id === userId || (team.shared_members && team.shared_members.includes(userId)))) {
+                    (String(team.user_id || '') === uid || includesUser(team.shared_members, uid))) {
                     return true;
                 }
             }
@@ -64,7 +74,7 @@ export const canUserAccessEntity = async (entity, userId, workspaceId = null) =>
     // Public with no sharing restrictions → all workspace members have access
     if (!isPrivate && entity.workspace_id) {
         const workspace = await global.Workspace.findOne({ _id: entity.workspace_id });
-        if (workspace && (workspace.owner_id === userId || (workspace.members && workspace.members.includes(userId)))) {
+        if (workspace && (String(workspace.owner_id || '') === uid || includesUser(workspace.members, uid))) {
             return true;
         }
     }
