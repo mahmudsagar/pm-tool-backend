@@ -21,6 +21,7 @@ export const postBoardSchema = z.object({
     space_id: z.string().optional(),
     group_id: z.string().optional(),
     custom_meta: z.object({}).passthrough().optional(),
+    automations: z.object({}).passthrough().optional(),
 }).refine(data => {
     const { folder_id, space_id, group_id } = data;
     const keys = [folder_id, space_id, group_id];
@@ -68,6 +69,32 @@ const savedViewSchema = z.object({
     search: z.string().optional(),
 }).nullable();
 
+const automationRuleSchema = z.object({
+    id: z.string().optional(),
+    enabled: z.boolean().optional(),
+    trigger: z.object({
+        field: z.string(),
+        operator: z.enum(['equals', 'not_equals']).optional(),
+        value: z.any().optional(),
+    }).optional(),
+    action: z.object({
+        type: z.enum(['assign', 'set_status', 'set_priority', 'add_tag', 'set_start_date_offset']),
+        value: z.any().optional(),
+    }).optional(),
+});
+
+const automationsSchema = z.object({
+    status: z.boolean().optional(),
+    dates: z.boolean().optional(),
+    assignment: z.boolean().optional(),
+    priority: z.boolean().optional(),
+    typeBased: z.boolean().optional(),
+    dependency: z.boolean().optional(),
+    notifications: z.boolean().optional(),
+    recurring: z.boolean().optional(),
+    workflowRules: z.array(automationRuleSchema).optional(),
+}).passthrough().nullable();
+
 export const putBoardSchema = z.object({
     _id: z.string().nonempty("ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
@@ -87,6 +114,7 @@ export const putBoardSchema = z.object({
     group_id: z.string().optional(),
     custom_meta: z.object({}).passthrough().optional(),
     saved_view: savedViewSchema.optional(),
+    automations: automationsSchema.optional(),
 }).refine(data => {
     const { folder_id, space_id, group_id } = data;
     const keys = [folder_id, space_id, group_id];

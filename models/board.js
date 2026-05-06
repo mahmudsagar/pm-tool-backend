@@ -20,6 +20,7 @@ const Board = Waterline.Collection.extend({
         folder_id: { type: 'string' },
         pinned: { type: 'boolean', defaultsTo: false },
         saved_view: { type: 'json', defaultsTo: null },
+        automations: { type: 'json', defaultsTo: null },
         entity_type: { type: 'string', defaultsTo: 'board' },
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },
