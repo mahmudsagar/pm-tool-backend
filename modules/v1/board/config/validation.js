@@ -67,6 +67,8 @@ const savedViewSchema = z.object({
     sorts: z.array(savedViewSortSchema).optional(),
     filters: z.array(savedViewFilterSchema).optional(),
     search: z.string().optional(),
+    /** Tab order on the board Data page (table, kanban, timeline, calendar) */
+    layout_tabs_order: z.array(z.string()).optional(),
 }).nullable();
 
 const automationRuleSchema = z.object({
