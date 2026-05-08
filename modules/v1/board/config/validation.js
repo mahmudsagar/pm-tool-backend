@@ -3,6 +3,26 @@ import { z } from 'zod';
 // Custom validation function for MongoDB ObjectId
 const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
 
+const savedViewFilterSchema = z.object({
+    field: z.string(),
+    operator: z.enum(['is', 'is_not', 'contains', 'is_empty', 'is_not_empty']),
+    value: z.any().optional(),
+});
+
+const savedViewSortSchema = z.object({
+    field: z.string(),
+    direction: z.enum(['asc', 'desc']),
+});
+
+const savedViewSchema = z.object({
+    sorts: z.array(savedViewSortSchema).optional(),
+    filters: z.array(savedViewFilterSchema).optional(),
+    search: z.string().optional(),
+    /** Tab order on the board Data page (table, kanban, timeline, calendar, scrum, …) */
+    layout_tabs_order: z.array(z.string()).optional(),
+    scrum: z.object({}).passthrough().optional(),
+}).passthrough().nullable();
+
 export const postBoardSchema = z.object({
     name: z.string().nonempty("Name is required"),
     description: z.string().optional(),
@@ -22,6 +42,8 @@ export const postBoardSchema = z.object({
     group_id: z.string().optional(),
     custom_meta: z.object({}).passthrough().optional(),
     automations: z.object({}).passthrough().optional(),
+    /** Initial tab layout / scrum settings when creating a board */
+    saved_view: savedViewSchema.optional(),
 }).refine(data => {
     const { folder_id, space_id, group_id } = data;
     const keys = [folder_id, space_id, group_id];
@@ -51,25 +73,6 @@ export const postBoardSchema = z.object({
     message: "Invalid MongoDB ObjectId",
     path: ["folder_id", "space_id", "group_id"]
 });
-
-const savedViewFilterSchema = z.object({
-    field: z.string(),
-    operator: z.enum(['is', 'is_not', 'contains', 'is_empty', 'is_not_empty']),
-    value: z.any().optional(),
-});
-
-const savedViewSortSchema = z.object({
-    field: z.string(),
-    direction: z.enum(['asc', 'desc']),
-});
-
-const savedViewSchema = z.object({
-    sorts: z.array(savedViewSortSchema).optional(),
-    filters: z.array(savedViewFilterSchema).optional(),
-    search: z.string().optional(),
-    /** Tab order on the board Data page (table, kanban, timeline, calendar) */
-    layout_tabs_order: z.array(z.string()).optional(),
-}).nullable();
 
 const automationRuleSchema = z.object({
     id: z.string().optional(),

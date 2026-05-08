@@ -21,6 +21,8 @@ export default async (request, response) => {
             space_id: body.space_id,
             group_id: body.group_id,
             custom_meta: body.custom_meta,
+            automations: body.automations,
+            saved_view: body.saved_view,
         });
 
         // Enforce parent sharing constraints
