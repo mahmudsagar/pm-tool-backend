@@ -168,7 +168,9 @@ async function loadRoutes(directory, baseRoute = '') {
                 const handler = (await import(pathToFileURL(fullPath).href)).default;
 
                 // Exclude 'register' and 'login' routes from JWT validation
-                const isExcludedRoute = routePath.includes('/register') || routePath.includes('/login');
+                const isExcludedRoute = routePath.includes('/register')
+                    || routePath.includes('/login')
+                    || routePath.includes('/webhook');
                 const middlewares = isExcludedRoute ? [] : [jwtValidation, authorizationMiddleware];
 
                 console.log(`Route loaded: ${method.toUpperCase()} ${routePath}`);
