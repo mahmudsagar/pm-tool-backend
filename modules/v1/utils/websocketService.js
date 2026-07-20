@@ -4,6 +4,7 @@
  */
 
 import { Server as SocketIOServer } from 'socket.io';
+import { socketCorsOrigin } from './corsOrigins.js';
 
 let io = null;
 const userConnections = new Map(); // Map of userId -> Set of socketIds
@@ -17,7 +18,7 @@ const userConnections = new Map(); // Map of userId -> Set of socketIds
 export function initializeWebSocket(httpServer, options = {}) {
     io = new SocketIOServer(httpServer, {
         cors: {
-            origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+            origin: socketCorsOrigin,
             credentials: true
         },
         ...options
