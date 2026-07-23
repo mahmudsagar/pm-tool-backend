@@ -12,10 +12,13 @@ import initializeWaterline from './models/index.js';
 import cors from 'cors';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { Strategy as GitHubStrategy } from 'passport-github2';
 import { verifyPassword } from './models/user.js';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import jwtValidation from './modules/v1/middlewares/jwtValidation.js';
 import authorizationMiddleware from './modules/v1/middlewares/authorization.js';
+import { findOrCreateOAuthUser } from './modules/v1/auth/utils/issueAuthResponse.js';
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
@@ -59,6 +62,12 @@ passport.use(
                     return done(null, false, { message: 'Incorrect email.' });
                 }
 
+                if (!user.password) {
+                    return done(null, false, {
+                        message: 'This account uses social login. Please sign in with Google or GitHub.'
+                    });
+                }
+
                 // Verify password using the verifyPassword function
                 const isValidPassword = await verifyPassword(user, password);
                 if (!isValidPassword) {
@@ -72,6 +81,63 @@ passport.use(
         }
     )
 );
+
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+    passport.use(
+        new GoogleStrategy(
+            {
+                clientID: process.env.GOOGLE_CLIENT_ID,
+                clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+                callbackURL: process.env.GOOGLE_CALLBACK_URL,
+            },
+            async (_accessToken, _refreshToken, profile, done) => {
+                try {
+                    const email = profile.emails?.[0]?.value;
+                    const user = await findOrCreateOAuthUser({
+                        provider: 'google',
+                        providerId: profile.id,
+                        email,
+                        name: profile.displayName || email?.split('@')[0],
+                        avatar: profile.photos?.[0]?.value,
+                    });
+                    return done(null, user);
+                } catch (error) {
+                    return done(error);
+                }
+            }
+        )
+    );
+}
+
+if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
+    passport.use(
+        new GitHubStrategy(
+            {
+                clientID: process.env.GITHUB_CLIENT_ID,
+                clientSecret: process.env.GITHUB_CLIENT_SECRET,
+                callbackURL: process.env.GITHUB_CALLBACK_URL,
+                scope: ['user:email'],
+            },
+            async (_accessToken, _refreshToken, profile, done) => {
+                try {
+                    const email =
+                        profile.emails?.find((e) => e.primary)?.value ||
+                        profile.emails?.[0]?.value;
+                    const user = await findOrCreateOAuthUser({
+                        provider: 'github',
+                        providerId: String(profile.id),
+                        email,
+                        name: profile.displayName || profile.username || email?.split('@')[0],
+                        avatar: profile.photos?.[0]?.value,
+                    });
+                    return done(null, user);
+                } catch (error) {
+                    return done(error);
+                }
+            }
+        )
+    );
+}
 
 // Configure JWT strategy
 const jwtOptions = {
@@ -167,10 +233,13 @@ async function loadRoutes(directory, baseRoute = '') {
 
                 const handler = (await import(pathToFileURL(fullPath).href)).default;
 
-                // Exclude 'register' and 'login' routes from JWT validation
+                // Exclude public auth and webhook routes from JWT validation
                 const isExcludedRoute = routePath.includes('/register')
                     || routePath.includes('/login')
-                    || routePath.includes('/webhook');
+                    || routePath.includes('/webhook')
+                    || routePath.includes('/auth/google')
+                    || routePath.includes('/auth/github')
+                    || routePath === '/v1/auth';
                 const middlewares = isExcludedRoute ? [] : [jwtValidation, authorizationMiddleware];
 
                 console.log(`Route loaded: ${method.toUpperCase()} ${routePath}`);
