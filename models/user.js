@@ -13,6 +13,7 @@ const User = Waterline.Collection.extend({
         password: { type: 'string', required: true },
         phone: { type: 'string' },
         avatar: { type: 'string' },
+        attachments: { type: 'json', defaultsTo: [] },
     },
 
     // Add indexes at the model level instead of on individual attributes

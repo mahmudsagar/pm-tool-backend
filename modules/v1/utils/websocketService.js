@@ -84,6 +84,19 @@ export function initializeWebSocket(httpServer, options = {}) {
         socket.on('ping', () => {
             socket.emit('pong');
         });
+
+        // Join conversation room for real-time chat
+        socket.on('conversation:join', (conversationId) => {
+            if (conversationId) {
+                socket.join(`conversation:${conversationId}`);
+            }
+        });
+
+        socket.on('conversation:leave', (conversationId) => {
+            if (conversationId) {
+                socket.leave(`conversation:${conversationId}`);
+            }
+        });
     });
 
     return io;
@@ -185,4 +198,26 @@ export function getConnectedUsersInWorkspace(workspaceId) {
         return isUserOnline(userId);
     });
     return connectedUsers;
+}
+
+/**
+ * Send a chat message to all members of a conversation
+ * @param {Array<string>} memberIds - Conversation member user IDs
+ * @param {string} workspaceId - Workspace ID
+ * @param {Object} message - Enriched message object
+ */
+export function sendChatMessageToConversation(memberIds, workspaceId, message) {
+    if (!io) return;
+
+    const payload = {
+        type: 'chat:message',
+        data: message,
+        timestamp: new Date().toISOString(),
+    };
+
+    memberIds.forEach(userId => {
+        io.to(`user:${userId}`).emit('chat:message', payload);
+    });
+
+    io.to(`conversation:${message.conversation_id}`).emit('chat:message', payload);
 }

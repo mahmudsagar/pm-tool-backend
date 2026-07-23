@@ -1,0 +1,123 @@
+/**
+ * Chat helper utilities — access control, member resolution, DM lookup
+ */
+
+export async function getSpaceMemberIds(spaceId) {
+    const space = await global.Space.findOne({ _id: spaceId });
+    if (!space) return [];
+
+    const memberIds = new Set();
+    if (space.user_id) memberIds.add(space.user_id);
+
+    for (const memberAccess of (space.shared_members || [])) {
+        const memberId = typeof memberAccess === 'string' ? memberAccess : memberAccess.user_id;
+        if (memberId) memberIds.add(memberId);
+    }
+
+    for (const teamAccess of (space.shared_teams || [])) {
+        const teamId = typeof teamAccess === 'string' ? teamAccess : teamAccess.team_id;
+        const team = await global.Team.findOne({ _id: teamId });
+        if (!team) continue;
+        if (team.user_id) memberIds.add(team.user_id);
+        for (const m of (team.shared_members || [])) {
+            memberIds.add(m);
+        }
+    }
+
+    return Array.from(memberIds);
+}
+
+export function isConversationMember(conversation, userId) {
+    return (conversation.members || []).includes(userId);
+}
+
+export async function enrichConversation(conversation, currentUserId) {
+    const members = await Promise.all(
+        (conversation.members || []).map(async (memberId) => {
+            const user = await global.User.findOne({ _id: memberId });
+            if (!user) return null;
+            const { password: _, ...userInfo } = user;
+            let avatarUrl = user.avatar || '';
+            if (!avatarUrl && user.attachments?.length > 0) {
+                const media = await global.Media.findOne({ _id: user.attachments[0] });
+                avatarUrl = media?.url || '';
+            }
+            return { ...userInfo, avatarUrl };
+        })
+    );
+
+    let spaceInfo = null;
+    if (conversation.space_id) {
+        const space = await global.Space.findOne({ _id: conversation.space_id });
+        if (space) {
+            spaceInfo = { _id: space._id, name: space.name, icon: space.icon, color: space.color };
+        }
+    }
+
+    let displayName = conversation.name;
+    if (conversation.type === 'dm') {
+        const other = members.filter(Boolean).find(m => m._id !== currentUserId);
+        displayName = other?.name || 'Direct Message';
+    }
+
+    return {
+        ...conversation,
+        displayName,
+        memberDetails: members.filter(Boolean),
+        spaceInfo,
+    };
+}
+
+export async function enrichMessage(message) {
+    const user = await global.User.findOne({ _id: message.sender_id });
+    let avatarUrl = user?.avatar || '';
+    if (!avatarUrl && user?.attachments?.length > 0) {
+        const media = await global.Media.findOne({ _id: user.attachments[0] });
+        avatarUrl = media?.url || '';
+    }
+
+    const mediaAttachments = await Promise.all(
+        (message.attachments || []).map(async (mediaId) => {
+            return await global.Media.findOne({ _id: mediaId });
+        })
+    );
+
+    const entityRefs = await Promise.all(
+        (message.entity_refs || []).map(async (ref) => {
+            if (ref.title && ref.url) return ref;
+            const page = await global.PageMeta.findOne({ _id: ref.id });
+            if (!page) return ref;
+            const board = page.board_id ? await global.Board.findOne({ _id: page.board_id }) : null;
+            const isScrum = board?.custom_meta?.board_kind === 'scrum';
+            return {
+                ...ref,
+                title: ref.title || page.title,
+                url: ref.url || `/document/${page._id}`,
+                board_id: ref.board_id || page.board_id,
+                board_name: ref.board_name || board?.name || '',
+                status: ref.status || page.custom_meta?.values?.status || '',
+                board_kind: isScrum ? 'scrum' : 'board',
+                board_url: board ? (isScrum ? `/scrum/${board._id}` : `/board/${board._id}`) : '',
+            };
+        })
+    );
+
+    return {
+        ...message,
+        senderInfo: user ? { _id: user._id, name: user.name, avatarUrl } : null,
+        mediaAttachments: mediaAttachments.filter(Boolean),
+        entity_refs: entityRefs.filter(Boolean),
+    };
+}
+
+export async function findExistingDM(workspaceId, userId1, userId2) {
+    const conversations = await global.Conversation.find({
+        workspace_id: workspaceId,
+        type: 'dm',
+    });
+
+    return conversations.find(c => {
+        const members = c.members || [];
+        return members.includes(userId1) && members.includes(userId2) && members.length === 2;
+    }) || null;
+}

@@ -151,6 +151,54 @@ export async function createNotification(params) {
 }
 
 /**
+ * Create notifications for an explicit list of recipients (e.g. chat mentions)
+ */
+export async function createDirectNotifications({
+    workspaceId,
+    recipientIds = [],
+    actorId,
+    action,
+    entityType,
+    entityId,
+    entityName,
+    message,
+    metadata = {},
+}) {
+    try {
+        const uniqueRecipients = [...new Set(recipientIds)].filter(
+            (id) => id && id !== actorId
+        );
+        if (uniqueRecipients.length === 0) return;
+
+        const notifications = uniqueRecipients.map((recipientId) => ({
+            workspace_id: workspaceId,
+            recipient_id: recipientId,
+            actor_id: actorId,
+            action,
+            entity_type: entityType,
+            entity_id: entityId,
+            entity_name: entityName || 'Chat',
+            message: message || `${action} in chat`,
+            metadata,
+        }));
+
+        const createdNotifications = await global.Notification.createEach(notifications);
+
+        try {
+            if (createdNotifications?.length) {
+                createdNotifications.forEach((notification) => {
+                    sendNotificationsToUsers([notification.recipient_id], workspaceId, notification);
+                });
+            }
+        } catch (wsErr) {
+            console.error(`Error sending WebSocket notifications:`, wsErr.message);
+        }
+    } catch (err) {
+        console.error(`Error creating direct notifications:`, err.message);
+    }
+}
+
+/**
  * Generate default notification message based on action
  * @param {string} action - Action type
  * @param {string} entityType - Entity type
@@ -188,6 +236,27 @@ export async function markNotificationAsRead(notificationId) {
         return notification;
     } catch (err) {
         console.error(`Error marking notification as read:`, err.message);
+        throw err;
+    }
+}
+
+/**
+ * Mark all unread notifications as read for a user in a workspace
+ * @param {string} workspaceId - Workspace ID
+ * @param {string} userId - User ID
+ * @returns {Promise<{ updated: number }>}
+ */
+export async function markAllNotificationsAsRead(workspaceId, userId) {
+    try {
+        const result = await global.Notification.update({
+            workspace_id: workspaceId,
+            recipient_id: userId,
+            is_read: false,
+        }).set({ is_read: true, read_at: new Date() }).fetch();
+
+        return { updated: Array.isArray(result) ? result.length : 0 };
+    } catch (err) {
+        console.error(`Error marking all notifications as read:`, err.message);
         throw err;
     }
 }

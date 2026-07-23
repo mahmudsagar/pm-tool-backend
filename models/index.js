@@ -18,6 +18,8 @@ import PageHistory from './page_history.js';
 import Notification from './notification.js';
 import TestCoverageSnapshot from './test_coverage_snapshot.js';
 import HealthVisibility from './health_visibility.js';
+import Conversation from './conversation.js';
+import Message from './message.js';
 
 // Register models
 waterline.registerModel(Auth);
@@ -39,6 +41,8 @@ waterline.registerModel(PageHistory);
 waterline.registerModel(Notification);
 waterline.registerModel(TestCoverageSnapshot);
 waterline.registerModel(HealthVisibility);
+waterline.registerModel(Conversation);
+waterline.registerModel(Message);
 
 // Register other models as needed
 const initializeWaterline = async () => {
@@ -69,6 +73,8 @@ const initializeWaterline = async () => {
             global.Notification = ontology.collections.notification;
             global.TestCoverageSnapshot = ontology.collections.test_coverage_snapshot;
             global.HealthVisibility = ontology.collections.health_visibility;
+            global.Conversation = ontology.collections.conversation;
+            global.Message = ontology.collections.message;
             resolve(ontology);
         });
     });

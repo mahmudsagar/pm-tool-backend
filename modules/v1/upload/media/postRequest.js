@@ -9,16 +9,21 @@ import { formatSuccessMessage } from '../../utils/success.js';
 const storage = multer.memoryStorage();
 const upload = multer({
     storage,
-    limits: { fileSize: 1 * 1024 * 1024 }, // 1 MB limit
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB limit
     fileFilter: (req, file, cb) => {
-        const filetypes = /jpeg|jpg|png/;
+        const isChat = req.body?.reference_for === 'message' || req.body?.media_type === 'chat_attachment';
+        const filetypes = isChat
+            ? /jpeg|jpg|png|gif|webp|pdf|mp4|webm|mp3|wav/
+            : /jpeg|jpg|png/;
         const mimetype = filetypes.test(file.mimetype);
         const extname = filetypes.test(file.originalname.toLowerCase());
 
         if (mimetype && extname) {
             return cb(null, true);
         } else {
-            cb(new Error('File type not supported. Only jpg, jpeg, and png are allowed.'));
+            cb(new Error(isChat
+                ? 'File type not supported for chat attachments.'
+                : 'File type not supported. Only jpg, jpeg, and png are allowed.'));
         }
     }
 }).single('file');
@@ -101,15 +106,26 @@ export default async (request, response) => {
 
             user.attachments = user.attachments || [];
             user.attachments.push(result._id);
-            await global.User.updateOne({ _id: reference_id }).set({ attachments: user.attachments });
+            await global.User.updateOne({ _id: reference_id }).set({
+                attachments: user.attachments,
+                avatar: result.url,
+            });
         } else if (reference_for === 'space') {
             const space = await global.Space.findOne({ _id: reference_id });
             if (!space) {
                 throw new Error('Space not found');
             }
             await global.Space.updateOne({ _id: reference_id }).set({ icon: result.url });
+        } else if (reference_for === 'message') {
+            const message = await global.Message.findOne({ _id: reference_id });
+            if (!message) {
+                throw new Error('Message not found');
+            }
+            message.attachments = message.attachments || [];
+            message.attachments.push(result._id);
+            await global.Message.updateOne({ _id: reference_id }).set({ attachments: message.attachments });
         } else {
-            throw new Error('Invalid reference_for value. Allowed values are page, comment, user, and space.');
+            throw new Error('Invalid reference_for value. Allowed values are page, comment, user, space, and message.');
         }
 
         response.json(formatSuccessMessage('Media created successfully', result));

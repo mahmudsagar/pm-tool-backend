@@ -34,8 +34,8 @@ export default async (request, response) => {
         }
 
         // except pass
-        const user = await global.User.find({ email: decoded.email }).select('name');
-        if (!user) {
+        const users = await global.User.find({ email: decoded.email });
+        if (!users || users.length === 0) {
             await global.Auth.destroyOne({ _id: authRecord[0]._id });
             return response.status(401).json(formatErrorMessage("User not found"));
         }
@@ -46,7 +46,7 @@ export default async (request, response) => {
                 { members: { contains: decoded.id } }
             ]
         });
-        const userInfo = user[0];
+        const { password: _, ...userInfo } = users[0];
         userInfo.workspaces_flag = workspaces && workspaces.length > 0;
 
         return response.json(formatSuccessMessage("Token is valid", {

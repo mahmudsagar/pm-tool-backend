@@ -7,11 +7,11 @@ export const postMediaSchema = z.object({
     reference_id: z.string().nonempty("Reference ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     }),
-    reference_for: z.enum(['page', 'comment', 'user', 'space'], {
-        errorMap: () => ({ message: 'Invalid reference_for value. Allowed values are page, comment, user, and space.' })
+    reference_for: z.enum(['page', 'comment', 'user', 'space', 'message'], {
+        errorMap: () => ({ message: 'Invalid reference_for value. Allowed values are page, comment, user, space, and message.' })
     }),
-    media_type: z.enum(['cover_photo', 'icon', 'comment_attachment'], {
-        errorMap: () => ({ message: 'Invalid media type. Allowed types are cover_photo, comment_attachment and icon.' })
+    media_type: z.enum(['cover_photo', 'icon', 'comment_attachment', 'chat_attachment'], {
+        errorMap: () => ({ message: 'Invalid media type. Allowed types are cover_photo, comment_attachment, icon, and chat_attachment.' })
     }),
     caption: z.string().optional(),
     description: z.string().optional(),
@@ -25,11 +25,11 @@ export const putMediaSchema = z.object({
     reference_id: z.string().optional().refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
     }),
-    reference_for: z.enum(['page', 'comment', 'user', 'space'], {
-        errorMap: () => ({ message: 'Invalid reference_for value. Allowed values are page, comment, user, and space.' })
+    reference_for: z.enum(['page', 'comment', 'user', 'space', 'message'], {
+        errorMap: () => ({ message: 'Invalid reference_for value. Allowed values are page, comment, user, space, and message.' })
     }).optional(),
-    media_type: z.enum(['cover_photo', 'icon', 'comment_attachment'], {
-        errorMap: () => ({ message: 'Invalid media type. Allowed types are cover_photo, comment_attachment and icon.' })
+    media_type: z.enum(['cover_photo', 'icon', 'comment_attachment', 'chat_attachment'], {
+        errorMap: () => ({ message: 'Invalid media type. Allowed types are cover_photo, comment_attachment, icon, and chat_attachment.' })
     }).optional(),
     caption: z.string().optional(),
     description: z.string().optional(),
