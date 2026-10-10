@@ -20,6 +20,9 @@ import TestCoverageSnapshot from './test_coverage_snapshot.js';
 import HealthVisibility from './health_visibility.js';
 import Conversation from './conversation.js';
 import Message from './message.js';
+import Favorite from './favorite.js';
+import RecentItem from './recent_item.js';
+import TrashItem from './trash_item.js';
 
 // Register models
 waterline.registerModel(Auth);
@@ -43,6 +46,20 @@ waterline.registerModel(TestCoverageSnapshot);
 waterline.registerModel(HealthVisibility);
 waterline.registerModel(Conversation);
 waterline.registerModel(Message);
+waterline.registerModel(Favorite);
+waterline.registerModel(RecentItem);
+waterline.registerModel(TrashItem);
+
+// Native compound indexes Waterline cannot express (best effort, idempotent).
+const ensureIndexes = async () => {
+    const db = dbConfig.adapters.mongo.datastores?.default?.manager;
+    if (!db || typeof db.collection !== 'function') return;
+    await db.collection('favorite').createIndex({ user_id: 1, entity_type: 1, entity_id: 1 }, { unique: true });
+    await db.collection('favorite').createIndex({ user_id: 1, workspace_id: 1, created_at: -1 });
+    await db.collection('recent_item').createIndex({ user_id: 1, entity_type: 1, entity_id: 1 }, { unique: true });
+    await db.collection('recent_item').createIndex({ user_id: 1, workspace_id: 1, viewed_at: -1 });
+    await db.collection('trash_item').createIndex({ workspace_id: 1, deleted_at: -1 });
+};
 
 // Register other models as needed
 const initializeWaterline = async () => {
@@ -75,6 +92,10 @@ const initializeWaterline = async () => {
             global.HealthVisibility = ontology.collections.health_visibility;
             global.Conversation = ontology.collections.conversation;
             global.Message = ontology.collections.message;
+            global.Favorite = ontology.collections.favorite;
+            global.RecentItem = ontology.collections.recent_item;
+            global.TrashItem = ontology.collections.trash_item;
+            ensureIndexes().catch((indexErr) => console.error('Failed to ensure indexes:', indexErr.message));
             resolve(ontology);
         });
     });

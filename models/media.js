@@ -13,6 +13,10 @@ const Media = Waterline.Collection.extend({
         caption: { type: 'string', defaultsTo: '' },
         description: { type: 'string', defaultsTo: '' },
         meta_data: { type: 'json', defaultsTo: {} },
+        // Storage accounting (rows created before these existed count as 0 bytes)
+        size: { type: 'number', defaultsTo: 0 },
+        mime_type: { type: 'string', defaultsTo: '' },
+        workspace_id: { type: 'string', defaultsTo: '' },
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },
     },
