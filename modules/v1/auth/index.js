@@ -28,8 +28,8 @@ export default async (request, response) => {
         }
 
         const now = new Date();
-        if (new Date(authRecord.expires_at) <= now) {
-            await global.Auth.destroyOne({ _id: authRecord._id });
+        if (new Date(authRecord[0].expires_at) <= now) {
+            await global.Auth.destroyOne({ _id: authRecord[0]._id });
             return response.status(401).json(formatErrorMessage("Token has expired"));
         }
 
