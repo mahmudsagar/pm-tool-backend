@@ -73,6 +73,10 @@ export default async (request, response) => {
         const mediaData = {
             ...validatedData,
             url: `${process.env.R2_URL}/${fileName}`,
+            // Storage accounting (user avatars are not counted against a workspace)
+            size: file.size || (file.buffer ? file.buffer.length : 0),
+            mime_type: file.mimetype || '',
+            workspace_id: validatedData.reference_for === 'user' ? '' : (request.workspaceId || ''),
         };
 
         let result = await global.Media.create(mediaData).fetch();

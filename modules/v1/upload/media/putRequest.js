@@ -101,6 +101,10 @@ export default async (request, response) => {
             ...validatedData,
             url: newUrl,
         };
+        if (file) {
+            updatedMediaData.size = file.size || (file.buffer ? file.buffer.length : 0);
+            updatedMediaData.mime_type = file.mimetype || '';
+        }
 
         const result = await global.Media.updateOne({ _id: validatedData._id }).set(updatedMediaData);
         if (!result) {
