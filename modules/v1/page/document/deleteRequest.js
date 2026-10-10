@@ -4,6 +4,7 @@ import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
 import { deleteAttachments } from '../../utils/helper.js';
 import { createNotification } from '../../utils/notificationService.js';
+import { snapshotPage, createTrashItem } from '../../utils/trash.js';
 
 export default async (request, response) => {
     try {
@@ -11,14 +12,28 @@ export default async (request, response) => {
 
         const validatedParams = deletePageMetaSchema.parse({ _id });
 
+        // Declared here (not inside the if) so the notification below can see it.
+        let pageMeta = null;
+        // Media files stay in storage until the trash item is purged.
+        const deleteOptions = { keepFiles: true };
+
         if (validatedParams._id) {
-            const pageMeta = await global.PageMeta.findOne({ _id: validatedParams._id });
+            pageMeta = await global.PageMeta.findOne({ _id: validatedParams._id });
             if (!pageMeta) {
                 return response.status(404).json(formatErrorMessage('PageMeta not found'));
             }
 
+            // Snapshot everything removed below so it can be restored from trash
+            await createTrashItem({
+                entityType: 'page',
+                entityId: pageMeta._id,
+                snapshot: await snapshotPage(pageMeta._id),
+                userId: request.user.id,
+                workspaceId: request.workspaceId,
+            });
+
             if (pageMeta.attachments && pageMeta.attachments.length > 0) {
-                await deleteAttachments(pageMeta.attachments);
+                await deleteAttachments(pageMeta.attachments, deleteOptions);
             }
 
             await global.PageMeta.destroy({ _id: validatedParams._id });
@@ -32,7 +47,7 @@ export default async (request, response) => {
             const commentsMeta = await global.CommentMeta.find({ page_id: validatedParams._id });
             for (const commentMeta of commentsMeta) {
                 if (commentMeta.attachments && commentMeta.attachments.length > 0) {
-                    await deleteAttachments(commentMeta.attachments);
+                    await deleteAttachments(commentMeta.attachments, deleteOptions);
                 }
 
                 await global.CommentMeta.destroy({ _id: commentMeta._id });
@@ -46,7 +61,7 @@ export default async (request, response) => {
                     const childCommentsMeta = await global.CommentMeta.find({ parent_id: commentMeta._id });
                     for (const childCommentMeta of childCommentsMeta) {
                         if (childCommentMeta.attachments && childCommentMeta.attachments.length > 0) {
-                            await deleteAttachments(childCommentMeta.attachments);
+                            await deleteAttachments(childCommentMeta.attachments, deleteOptions);
                         }
 
                         await global.CommentMeta.destroy({ _id: childCommentMeta._id });

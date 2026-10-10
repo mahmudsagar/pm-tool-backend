@@ -3,6 +3,7 @@ import { deleteGroupSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 import { formatSuccessMessage } from '../utils/success.js';
 import { deleteGroupFolderAndChildren } from '../utils/helper.js';
+import { snapshotGroup, createTrashItem } from '../utils/trash.js';
 
 export default async (request, response) => {
     try {
@@ -11,7 +12,17 @@ export default async (request, response) => {
         const validatedParams = deleteGroupSchema.parse({ _id });
 
         if (validatedParams._id) {
-            await deleteGroupFolderAndChildren(validatedParams._id); // Assuming similar structure for group
+            // Snapshot everything the cascade (and the final Group.destroyOne) removes for the trash
+            const snapshot = await snapshotGroup(validatedParams._id);
+            await createTrashItem({
+                entityType: 'group',
+                entityId: validatedParams._id,
+                snapshot,
+                userId: request.user.id,
+                workspaceId: request.workspaceId,
+            });
+
+            await deleteGroupFolderAndChildren(validatedParams._id, { keepFiles: true }); // Assuming similar structure for group
         } else {
             return response.status(400).json(formatErrorMessage('Group ID must be provided'));
         }

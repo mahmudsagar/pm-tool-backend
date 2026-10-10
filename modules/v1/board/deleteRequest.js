@@ -4,6 +4,7 @@ import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 import { formatSuccessMessage } from '../utils/success.js';
 import { deleteBoardAndChildren } from '../utils/helper.js';
 import { createNotification } from '../utils/notificationService.js';
+import { snapshotBoard, createTrashItem } from '../utils/trash.js';
 
 export default async (request, response) => {
     try {
@@ -15,7 +16,18 @@ export default async (request, response) => {
             // Fetch board before deletion for notification
             const boardToDelete = await global.Board.findOne({ _id: validatedParams._id });
             
-            await deleteBoardAndChildren(validatedParams._id);
+            // Snapshot everything the cascade removes so it can be restored from trash
+            if (boardToDelete) {
+                await createTrashItem({
+                    entityType: 'board',
+                    entityId: validatedParams._id,
+                    snapshot: await snapshotBoard(validatedParams._id),
+                    userId: request.user.id,
+                    workspaceId: request.workspaceId,
+                });
+            }
+
+            await deleteBoardAndChildren(validatedParams._id, { keepFiles: true });
             
             // Send notification
             if (boardToDelete) {

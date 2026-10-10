@@ -3,6 +3,7 @@ import { deleteSpaceSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 import { formatSuccessMessage } from '../utils/success.js';
 import { createNotification } from '../utils/notificationService.js';
+import { snapshotSpace, createTrashItem } from '../utils/trash.js';
 
 export default async (request, response) => {
     try {
@@ -15,6 +16,17 @@ export default async (request, response) => {
             const space = await global.Space.findOne({ _id: validatedParams._id });
             if (space.is_default) {
                 return response.status(400).json(formatErrorMessage('Default spaces cannot be deleted'));
+            }
+
+            // Snapshot the row being removed so it can be restored from trash
+            if (space) {
+                await createTrashItem({
+                    entityType: 'space',
+                    entityId: space._id,
+                    snapshot: await snapshotSpace(space),
+                    userId: request.user.id,
+                    workspaceId: request.workspaceId,
+                });
             }
 
             result = await global.Space.destroyOne({ _id: validatedParams._id });
@@ -41,6 +53,16 @@ export default async (request, response) => {
 
             if (nonDefaultSpaces.length === 0) {
                 return response.status(404).json(formatErrorMessage('No non-default spaces found for the given user_id'));
+            }
+
+            for (const space of nonDefaultSpaces) {
+                await createTrashItem({
+                    entityType: 'space',
+                    entityId: space._id,
+                    snapshot: await snapshotSpace(space),
+                    userId: request.user.id,
+                    workspaceId: request.workspaceId || space.workspace_id,
+                });
             }
 
             result = await global.Space.destroy({ user_id: validatedParams.user_id, is_default: false });

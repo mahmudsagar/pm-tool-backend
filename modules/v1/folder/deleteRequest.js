@@ -4,6 +4,7 @@ import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 import { formatSuccessMessage } from '../utils/success.js';
 import { deleteFolderAndChildren } from '../utils/helper.js';
 import { createNotification } from '../utils/notificationService.js';
+import { snapshotFolder, createTrashItem } from '../utils/trash.js';
 
 export default async (request, response) => {
     try {
@@ -15,7 +16,18 @@ export default async (request, response) => {
             // Fetch folder before deletion for notification
             const folderToDelete = await global.Folder.findOne({ _id: validatedParams._id });
             
-            await deleteFolderAndChildren(validatedParams._id);
+            // Snapshot everything the cascade removes so it can be restored from trash
+            if (folderToDelete) {
+                await createTrashItem({
+                    entityType: 'folder',
+                    entityId: validatedParams._id,
+                    snapshot: await snapshotFolder(validatedParams._id),
+                    userId: request.user.id,
+                    workspaceId: request.workspaceId,
+                });
+            }
+
+            await deleteFolderAndChildren(validatedParams._id, { keepFiles: true });
             
             // Send notification
             if (folderToDelete) {
