@@ -1,7 +1,7 @@
 import { formatErrorMessage } from '../utils/error.js';
 import { canUserAccessEntity } from '../utils/helper.js';
 
-const checkEntityAccess = async (entityType, entityId, userId, workspaceId = null) => {
+export const checkEntityAccess = async (entityType, entityId, userId, workspaceId = null) => {
     const normalizeId = (value) => {
         if (value === null || value === undefined) return '';
         if (typeof value === 'object') return String(value._id || value.id || value.user_id || value.team_id || '');
