@@ -3,6 +3,7 @@ import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { deleteMediaSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
+import { evaluateStorageAlerts } from '../../utils/storage.js';
 
 // Configure S3 client for R2
 const s3Client = new S3Client({
@@ -76,6 +77,8 @@ export default async (request, response) => {
         } else {
             throw new Error('Invalid reference_for value. Allowed values are page and comment.');
         }
+
+        if (media.workspace_id) await evaluateStorageAlerts(media.workspace_id); // reset thresholds
 
         response.json(formatSuccessMessage('Media deleted successfully', null));
     } catch (err) {

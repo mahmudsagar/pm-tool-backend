@@ -32,6 +32,16 @@ const Workspace = Waterline.Collection.extend({
         // { allow_member_public_create?: boolean, default_space_id?: string|null }
         space_policies: { type: 'json', defaultsTo: {} },
         archived_at: { type: 'ref' },
+        // Storage quota in bytes; null = unlimited. Rows created before quotas lack the field and
+        // count as the 5 GiB default (see modules/v1/utils/storage.js).
+        storage_quota_bytes: { type: 'ref', defaultsTo: 5 * 1024 * 1024 * 1024 },
+        // Usage alert thresholds (80 / 95) already notified; cleared when usage drops below.
+        storage_alerts_sent: { type: 'json', defaultsTo: [] },
+        // [{ domain, token, status: 'pending'|'verified'|'failed', auto_join, role: 'member'|'guest',
+        //    added_by, added_at, verified_at, last_checked_at, last_error }] (see utils/domains.js)
+        domains: { type: 'json', defaultsTo: [] },
+        // Users removed by an admin: domain auto-join does not add them back (cleared on re-add).
+        auto_join_excluded: { type: 'json', defaultsTo: [] },
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },
     },

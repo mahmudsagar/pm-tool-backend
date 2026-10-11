@@ -64,6 +64,8 @@ export const putWorkspaceSchema = z.object({
     features: workspaceFeaturesSchema.optional(),
     auto_archive_days: z.number().int().min(0).max(365).optional(),
     space_policies: spacePoliciesSchema.optional(),
+    // Owner only; null = unlimited. Validated by storageQuotaSchema (declared below).
+    storage_quota_bytes: z.any().optional(),
 });
 
 export const getWorkspaceSchema = z.object({
@@ -127,4 +129,40 @@ export const postInvitationSchema = z.object({
 
 export const invitationIdSchema = z.object({
     id: z.string().nonempty('Invitation ID is required').refine(isValidObjectId, { message: "Invalid MongoDB ObjectId" }),
+});
+
+// --- Phase 7: audit log, storage quota, domains -----------------------------------------------
+
+const isoDate = z.string().refine((v) => !Number.isNaN(Date.parse(v)), { message: 'Invalid ISO date' });
+
+export const auditFiltersSchema = z.object({
+    action: z.string().trim().max(100).optional(),
+    actor_id: z.string().refine(isValidObjectId, { message: 'Invalid MongoDB ObjectId' }).optional(),
+    target_id: z.string().trim().max(128).optional(),
+    from: isoDate.optional(),
+    to: isoDate.optional(),
+    q: z.string().trim().max(200).optional(),
+});
+
+export const auditQuerySchema = auditFiltersSchema.extend({
+    cursor: z.string().refine(isValidObjectId, { message: 'Invalid cursor' }).optional(),
+    limit: z.coerce.number().int().min(1, 'limit must be 1..100').max(100, 'limit must be 1..100').default(50),
+});
+
+export const MIB = 1024 * 1024;
+export const GIB = 1024 * MIB;
+export const TIB = 1024 * GIB;
+export const DEFAULT_STORAGE_QUOTA_BYTES = 5 * GIB;
+export const storageQuotaSchema = z.number().int()
+    .min(100 * MIB, 'storage_quota_bytes must be at least 100 MiB')
+    .max(TIB, 'storage_quota_bytes must be at most 1 TiB')
+    .nullable();
+
+export const domainBodySchema = z.object({
+    domain: z.string({ required_error: 'domain is required' }).trim().min(1, 'domain is required').max(300),
+});
+
+export const putDomainSchema = domainBodySchema.extend({
+    auto_join: z.boolean().optional(),
+    role: z.enum(['member', 'guest'], { message: 'role must be member or guest' }).optional(),
 });

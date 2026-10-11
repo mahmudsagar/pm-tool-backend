@@ -4,6 +4,7 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client
 import { putMediaSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
+import { checkStorageQuota, sendStorageLimit, evaluateStorageAlerts } from '../../utils/storage.js';
 
 // Configure multer for file uploads
 const storage = multer.memoryStorage();
@@ -72,7 +73,15 @@ export default async (request, response) => {
         const file = request.file;
         let newUrl = media?.url;
 
+        const storageWorkspaceId = media.workspace_id || '';
         if (file) {
+            // Quota: the replacement counts net of the file it replaces, checked before storing
+            const fileSize = file.size || (file.buffer ? file.buffer.length : 0);
+            const quotaCheck = await checkStorageQuota(storageWorkspaceId, fileSize, Number(media.size) || 0);
+            if (!quotaCheck.ok) {
+                return sendStorageLimit(response, formatErrorMessage, quotaCheck);
+            }
+
             // Delete the previous file from R2
             const urlParts = media?.url.split('/');
             const fileName = urlParts[urlParts.length - 1];
@@ -110,6 +119,8 @@ export default async (request, response) => {
         if (!result) {
             return response.status(404).json(formatErrorMessage('Media not found'));
         }
+
+        if (file && storageWorkspaceId) await evaluateStorageAlerts(storageWorkspaceId);
 
         response.json(formatSuccessMessage('Media updated successfully', result));
     } catch (err) {

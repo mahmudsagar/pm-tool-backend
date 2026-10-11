@@ -5,6 +5,8 @@ import { postMediaSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
 import { isWorkspaceAdmin } from '../../utils/workspaceAccess.js';
+import { checkStorageQuota, sendStorageLimit, evaluateStorageAlerts } from '../../utils/storage.js';
+import { recordAudit } from '../../utils/audit.js';
 
 // Configure multer for file uploads
 const storage = multer.memoryStorage();
@@ -74,6 +76,20 @@ export default async (request, response) => {
             return response.status(400).json(formatErrorMessage('File is required'));
         }
 
+        // Workspace the file is accounted to (user avatars are not counted against a workspace)
+        const storageWorkspaceId = validatedData.reference_for === 'user'
+            ? ''
+            : validatedData.reference_for === 'workspace'
+                ? validatedData.reference_id
+                : (request.workspaceId || '');
+        const fileSize = file.size || (file.buffer ? file.buffer.length : 0);
+
+        // Quota: checked before anything is stored (multer keeps the file in memory)
+        const quotaCheck = await checkStorageQuota(storageWorkspaceId, fileSize);
+        if (!quotaCheck.ok) {
+            return sendStorageLimit(response, formatErrorMessage, quotaCheck);
+        }
+
         // Upload file to R2
         const fileName = `${Date.now()}_${file.originalname}`;
         const uploadParams = {
@@ -89,13 +105,9 @@ export default async (request, response) => {
             ...validatedData,
             url: `${process.env.R2_URL}/${fileName}`,
             // Storage accounting (user avatars are not counted against a workspace)
-            size: file.size || (file.buffer ? file.buffer.length : 0),
+            size: fileSize,
             mime_type: file.mimetype || '',
-            workspace_id: validatedData.reference_for === 'user'
-                ? ''
-                : validatedData.reference_for === 'workspace'
-                    ? validatedData.reference_id
-                    : (request.workspaceId || ''),
+            workspace_id: storageWorkspaceId,
         };
 
         let result = await global.Media.create(mediaData).fetch();
@@ -149,9 +161,18 @@ export default async (request, response) => {
             await global.Message.updateOne({ _id: reference_id }).set({ attachments: message.attachments });
         } else if (reference_for === 'workspace') {
             await global.Workspace.updateOne({ _id: reference_id }).set({ logo: result.url });
+            await recordAudit(request, {
+                workspace_id: reference_id,
+                action: 'workspace.logo_changed',
+                target_type: 'workspace',
+                target_id: reference_id,
+                metadata: { media_id: String(result._id), size: fileSize, mime_type: file.mimetype || '' },
+            });
         } else {
             throw new Error('Invalid reference_for value. Allowed values are page, comment, user, space, message, and workspace.');
         }
+
+        if (storageWorkspaceId) await evaluateStorageAlerts(storageWorkspaceId);
 
         response.json(formatSuccessMessage('Media created successfully', result));
     } catch (err) {
