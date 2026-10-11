@@ -74,6 +74,8 @@ const ensureIndexes = async () => {
     await db.collection('task_event').createIndex({ board_id: 1, at: 1 });
     await db.collection('task_event').createIndex({ task_id: 1, at: 1 });
     await db.collection('sprint').createIndex({ board_id: 1, start_date: 1, createdAt: 1 });
+    await db.collection('message').createIndex({ conversation_id: 1, parent_message_id: 1, createdAt: -1 });
+    await db.collection('message').createIndex({ parent_message_id: 1, createdAt: 1 });
 };
 
 // Register other models as needed

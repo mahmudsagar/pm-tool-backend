@@ -82,7 +82,36 @@ export async function enrichConversation(conversation, currentUserId) {
     };
 }
 
-export async function enrichMessage(message) {
+/** Display name without loading every member (DM → the other member's name). */
+export async function conversationDisplayName(conversation, currentUserId) {
+    if (conversation.type !== 'dm') return conversation.name || '';
+    const otherId = (conversation.members || []).find((m) => m !== currentUserId);
+    const other = otherId ? await global.User.findOne({ _id: otherId }) : null;
+    return other?.name || 'Direct Message';
+}
+
+/** Fills the phase-6 message fields for legacy rows and blanks deleted messages. */
+export function normalizeMessage(message) {
+    const deleted = !!message.deleted_at;
+    return {
+        ...message,
+        parent_message_id: message.parent_message_id || null,
+        reply_count: message.reply_count || 0,
+        last_reply_at: message.last_reply_at || null,
+        reply_user_ids: Array.isArray(message.reply_user_ids) ? message.reply_user_ids : [],
+        reactions: deleted ? [] : (Array.isArray(message.reactions) ? message.reactions : []),
+        edited_at: message.edited_at || null,
+        deleted_at: message.deleted_at || null,
+        deleted_by: message.deleted_by || null,
+        pinned: !deleted && message.pinned === true,
+        pinned_by: message.pinned_by || null,
+        pinned_at: message.pinned_at || null,
+        ...(deleted ? { body: '', content: '', mentions: [], attachments: [], entity_refs: [] } : {}),
+    };
+}
+
+export async function enrichMessage(rawMessage) {
+    const message = normalizeMessage(rawMessage);
     const user = await global.User.findOne({ _id: message.sender_id });
     let avatarUrl = user?.avatar || '';
     if (!avatarUrl && user?.attachments?.length > 0) {

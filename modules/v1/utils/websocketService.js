@@ -435,3 +435,30 @@ export function sendChatMessageToConversation(memberIds, workspaceId, message) {
 
     io.to(`conversation:${message.conversation_id}`).emit('chat:message', payload);
 }
+
+/**
+ * Emit `event` once per socket to the conversation room and the members' user rooms
+ * (socket.io de-duplicates sockets that are in several of the target rooms).
+ */
+export function emitToConversation(conversationId, memberIds, event, payload, { extraUserIds = [] } = {}) {
+    if (!io) return;
+    const rooms = [
+        `conversation:${conversationId}`,
+        ...[...new Set([...(memberIds || []), ...extraUserIds])].map((id) => `user:${id}`),
+    ];
+    io.to(rooms).emit(event, payload);
+}
+
+/** Emit `event` to every socket of one user. */
+export function emitToUser(userId, event, payload) {
+    if (!io) return;
+    io.to(`user:${userId}`).emit(event, payload);
+}
+
+/** Make every socket of these users leave the conversation room (after they are removed). */
+export function removeUsersFromConversationRoom(conversationId, userIds) {
+    if (!io) return;
+    for (const userId of userIds || []) {
+        io.in(`user:${userId}`).socketsLeave(`conversation:${conversationId}`);
+    }
+}
