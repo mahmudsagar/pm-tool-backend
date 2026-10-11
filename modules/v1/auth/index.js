@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import { formatSuccessMessage } from '../utils/success.js';
 import { formatErrorMessage } from '../utils/error.js';
 import { touchLastSeen } from '../utils/workspaceAccess.js';
+import { acceptPendingInvitationsForUser } from '../utils/invitations.js';
 
 export default async (request, response) => {
     try {
@@ -42,6 +43,7 @@ export default async (request, response) => {
         }
 
         touchLastSeen(decoded.id);
+        await acceptPendingInvitationsForUser(users[0]);
 
         const workspaces = await global.Workspace.find({
             or: [

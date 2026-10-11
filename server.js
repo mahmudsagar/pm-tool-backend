@@ -239,7 +239,8 @@ async function loadRoutes(directory, baseRoute = '') {
                     || routePath.includes('/webhook')
                     || routePath.includes('/auth/google')
                     || routePath.includes('/auth/github')
-                    || routePath === '/v1/auth';
+                    || routePath === '/v1/auth'
+                    || routePath === '/v1/invitation'; // public invite-link lookup (GET only file)
                 const middlewares = isExcludedRoute ? [] : [jwtValidation, authorizationMiddleware];
 
                 console.log(`Route loaded: ${method.toUpperCase()} ${routePath}`);

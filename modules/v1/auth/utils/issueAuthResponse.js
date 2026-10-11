@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { acceptPendingInvitationsForUser } from '../../utils/invitations.js';
 
 /**
  * Issue a JWT, store it in Auth, and return the same payload shape as login/register.
@@ -20,6 +21,9 @@ export async function issueAuthForUser(user) {
         token,
         expires_at: expiresAt
     });
+
+    // Resolve pending invitations first so the invited workspaces are part of `workspaces`
+    await acceptPendingInvitationsForUser(user);
 
     const { password: _, ...userWithoutPassword } = user;
 
@@ -56,6 +60,7 @@ export async function findOrCreateOAuthUser({ provider, providerId, email, name,
 
     let user = await global.User.findOne({ [providerField]: providerId });
     if (user) {
+        await acceptPendingInvitationsForUser(user);
         return user;
     }
 
@@ -66,7 +71,9 @@ export async function findOrCreateOAuthUser({ provider, providerId, email, name,
             updates.avatar = avatar;
         }
         await global.User.updateOne({ _id: user._id }).set(updates);
-        return global.User.findOne({ _id: user._id });
+        const linked = await global.User.findOne({ _id: user._id });
+        await acceptPendingInvitationsForUser(linked);
+        return linked;
     }
 
     const createPayload = {
@@ -86,6 +93,7 @@ export async function findOrCreateOAuthUser({ provider, providerId, email, name,
         members: [],
     });
 
+    await acceptPendingInvitationsForUser(newUser);
     return newUser;
 }
 
