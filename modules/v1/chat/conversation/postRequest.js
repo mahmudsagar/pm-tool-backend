@@ -5,7 +5,8 @@ import { formatSuccessMessage } from '../../utils/success.js';
 import {
     enrichConversation,
     findExistingDM,
-    getSpaceMemberIds,
+    channelAccessUserIds,
+    resolveConversationAccess,
 } from '../utils/chatHelper.js';
 
 export default async (request, response) => {
@@ -49,7 +50,12 @@ export default async (request, response) => {
                 return response.status(404).json(formatErrorMessage('Space not found'));
             }
 
-            const spaceMembers = await getSpaceMemberIds(body.space_id);
+            // Channel members follow live space access (kept in sync on every read).
+            const workspace = await global.Workspace.findOne({ _id: workspaceId });
+            const spaceMembers = await channelAccessUserIds({ space_id: body.space_id, workspace_id: workspaceId }, workspace);
+            if (!spaceMembers.includes(userId)) {
+                return response.status(404).json(formatErrorMessage('Space not found'));
+            }
             const channelName = body.name || `${space.name} Channel`;
 
             const existingChannel = await global.Conversation.findOne({
@@ -59,7 +65,9 @@ export default async (request, response) => {
             });
 
             if (existingChannel) {
-                const enriched = await enrichConversation(existingChannel, userId);
+                const synced = await resolveConversationAccess(existingChannel, userId, { workspace });
+                if (!synced) return response.status(404).json(formatErrorMessage('Space not found'));
+                const enriched = await enrichConversation(synced, userId, { workspace });
                 return response.json(formatSuccessMessage('Space channel already exists', enriched));
             }
 

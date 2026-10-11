@@ -5,6 +5,8 @@ import {
     isWorkspaceMember, isWorkspaceOwner, isMemberSuspended, getMemberEntry,
 } from '../../utils/workspaceAccess.js';
 import { collection } from '../../utils/boardTasks.js';
+import { canUserAccessEntity } from '../../utils/helper.js';
+import { removeUsersFromConversationRoom } from '../../utils/websocketService.js';
 
 export async function getSpaceMemberIds(spaceId) {
     const space = await global.Space.findOne({ _id: spaceId });
@@ -35,17 +37,67 @@ export function isConversationMember(conversation, userId) {
     return (conversation.members || []).includes(userId);
 }
 
+const isActiveWorkspaceMember = (workspace, userId) =>
+    !!workspace && isWorkspaceMember(workspace, userId) && !isMemberSuspended(workspace, userId);
+
 /**
- * Same rule as GET /v1/chat/conversation?id= (member of the conversation) plus an active,
- * non-suspended membership of the conversation's workspace (what the HTTP middleware enforces).
- * Returns the conversation or null.
+ * Users who can currently access a space channel: active, non-suspended workspace members that
+ * pass canUserAccessEntity on the space (public space → every member; private / shared → owner,
+ * shared_members and shared_teams). A missing space or one of another workspace → nobody.
  */
+export async function channelAccessUserIds(conversation, workspace) {
+    if (!workspace || !conversation.space_id) return [];
+    const space = await global.Space.findOne({ _id: conversation.space_id });
+    if (!space || (space.workspace_id && String(space.workspace_id) !== String(conversation.workspace_id))) return [];
+    const candidates = [...new Set([workspace.owner_id, ...(workspace.members || [])].filter(Boolean).map(String))]
+        .filter((id) => isActiveWorkspaceMember(workspace, id));
+    const open = space.is_private !== true && !(space.shared_members || []).length && !(space.shared_teams || []).length;
+    if (open) return candidates;
+    const allowed = await Promise.all(candidates.map((id) => canUserAccessEntity(space, id, String(conversation.workspace_id))));
+    return candidates.filter((_, i) => allowed[i]);
+}
+
+/**
+ * Bring a channel's members in line with live space access (users who gained access are
+ * appended, users who lost it dropped; their sockets leave the room). Other types unchanged.
+ * Returns the (possibly updated) conversation.
+ */
+export async function syncChannelMembers(conversation, workspace) {
+    if (conversation.type !== 'channel') return conversation;
+    const access = await channelAccessUserIds(conversation, workspace);
+    const accessSet = new Set(access);
+    const current = conversation.members || [];
+    const kept = current.filter((id) => accessSet.has(id));
+    const added = access.filter((id) => !current.includes(id));
+    const removed = current.filter((id) => !accessSet.has(id));
+    if (!added.length && !removed.length) return conversation;
+    const members = [...kept, ...added];
+    const updated = await global.Conversation.updateOne({ _id: conversation._id }).set({ members });
+    if (removed.length) removeUsersFromConversationRoom(conversation._id, removed);
+    return updated || { ...conversation, members };
+}
+
+/**
+ * Access rule for every chat endpoint and socket check: an active, non-suspended member of the
+ * conversation's workspace who is in its members (channels: after syncing members with live
+ * space access). Returns the synced conversation, or null without access.
+ * `opts.workspace` avoids reloading the workspace.
+ */
+export async function resolveConversationAccess(conversation, userId, opts = {}) {
+    if (!conversation) return null;
+    const workspace = opts.workspace !== undefined
+        ? opts.workspace
+        : await global.Workspace.findOne({ _id: conversation.workspace_id });
+    if (!workspace || String(workspace._id) !== String(conversation.workspace_id)) return null;
+    const synced = await syncChannelMembers(conversation, workspace);
+    if (!isActiveWorkspaceMember(workspace, userId) || !isConversationMember(synced, String(userId))) return null;
+    return synced;
+}
+
+/** Same rule as the HTTP endpoints (resolveConversationAccess). Returns the conversation or null. */
 export async function canUserJoinConversation(conversationId, userId) {
     const conversation = await global.Conversation.findOne({ _id: String(conversationId) });
-    if (!conversation || !isConversationMember(conversation, String(userId))) return null;
-    const workspace = await global.Workspace.findOne({ _id: conversation.workspace_id });
-    if (!workspace || !isWorkspaceMember(workspace, userId) || isMemberSuspended(workspace, userId)) return null;
-    return conversation;
+    return resolveConversationAccess(conversation, userId);
 }
 
 /** Workspace role of a user: 'owner' | 'admin' | 'member' | 'guest', or null when not a member. */

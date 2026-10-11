@@ -4,7 +4,7 @@
  * summary, thread fetch, root broadcasts, reply notifications), edit, soft delete, reactions,
  * pins, search scoping, unread / mention counts and read reset, per-user pinned / muted,
  * bookmarks, topic, member add / remove rules, member roles / titles, typing (sender excluded,
- * throttled) and workspace online presence.
+ * throttled), workspace online presence, and space channels following live space access.
  *
  * Run against a THROWAWAY database only, e.g.:
  *   MONGODB_URI=mongodb://127.0.0.1:27999/chattest PORT=3202 node server.js
@@ -580,7 +580,95 @@ const main = async () => {
     list = await emitAck(sOther.socket, 'chat:presence:list');
     check('presence: lists are per workspace', list.online.length === 1 && list.online[0] === outsider.userId, list);
 
-    for (const s of [sAlice, sAlice2, sBob, sBob2, sCarol, sDave, sOut, sOther]) s.close();
+    // --- 15. Space channels follow live space access ---------------------------------------
+    const mkSpace = async (u, name, isPrivate) => {
+        const res = await call('POST', '/v1/space', { ...as(u), body: { user_id: u.userId, name, is_private: isPrivate } });
+        const sp = Array.isArray(res.data) ? res.data[0] : res.data;
+        if (!sp?._id) throw new Error(`space failed: ${JSON.stringify(res.json)}`);
+        return sp;
+    };
+    const pubSpace = await mkSpace(alice, 'Open Chat Space', false);
+    r = await call('POST', '/v1/chat/conversation', { ...as(alice), body: { type: 'channel', space_id: pubSpace._id } });
+    const PC = r.data;
+    check('channel: public space channel has every active workspace member', r.status === 200
+        && [owner, admin, alice, bob, carol, dave, guest].every((u) => PC.members.includes(u.userId)) && !PC.members.includes(outsider.userId), PC?.members);
+    const late = await register('late');
+    r = await call('POST', '/v1/workspace/member', { ...as(owner), body: { email: late.email, role: 'member' } });
+    check('channel: setup late member joins the workspace', r.status === 200, r.json);
+    r = await call('GET', '/v1/chat/conversation', as(late));
+    check('channel: late member sees the public channel in the list', r.status === 200 && r.data.some((c) => c._id === PC._id), r.data?.map((c) => c.name));
+    r = await call('GET', `/v1/chat/message?conversation_id=${PC._id}`, as(late));
+    check('channel: late member can read', r.status === 200, r.status);
+    const sLate = await connect({ token: late.token, workspaceId: WS });
+    ack = await emitAck(sLate.socket, 'conversation:join', PC._id);
+    check('channel: late member can join the room', ack?.ok === true, ack);
+    r = await post(late, PC._id, 'hi from late');
+    check('channel: late member can post', r.status === 200, r.json);
+    r = await react(late, r.data._id, '👋');
+    check('channel: late member can react', r.status === 200, r.json);
+    sLate.clear();
+    const pcMsg = (await post(alice, PC._id, 'welcome late')).data;
+    ev = await sLate.waitFor('chat:message', (p) => p.data?._id === pcMsg._id);
+    check('channel: late member receives chat:message', !!ev);
+    r = await call('GET', `/v1/chat/conversation?id=${PC._id}`, as(alice));
+    check('channel: memberDetails include the late member', r.data.memberDetails.some((m) => m._id === late.userId) && r.data.members.includes(late.userId), r.data?.members);
+
+    const privSpace = await mkSpace(owner, 'Private Chat Space', true);
+    const setShared = (ids) => call('PUT', `/v1/space/access?id=${privSpace._id}`, { ...as(owner), body: { shared_members: ids.map((id) => ({ user_id: id, role: 'contributor' })) } });
+    r = await setShared([alice.userId]);
+    check('channel: setup private space shared with alice', r.status === 200, r.json);
+    r = await call('POST', '/v1/chat/conversation', { ...as(carol), body: { type: 'channel', space_id: privSpace._id } });
+    check('channel: non-shared member cannot create the private channel', r.status === 404, r.status);
+    r = await call('POST', '/v1/chat/conversation', { ...as(owner), body: { type: 'channel', space_id: privSpace._id } });
+    const PRC = r.data;
+    check('channel: private channel members = owner + shared', r.status === 200 && PRC.members.length === 2
+        && PRC.members.includes(owner.userId) && PRC.members.includes(alice.userId), PRC?.members);
+    r = await call('POST', '/v1/chat/conversation', { ...as(carol), body: { type: 'channel', space_id: privSpace._id } });
+    check('channel: existing private channel not returned to a non-shared member', r.status === 404, r.status);
+    r = await call('GET', `/v1/chat/conversation?id=${PRC._id}`, as(carol));
+    check('channel: non-shared member GET ?id 404', r.status === 404, r.status);
+    r = await call('GET', `/v1/chat/message?conversation_id=${PRC._id}`, as(carol));
+    check('channel: non-shared member GET messages 404', r.status === 404, r.status);
+    r = await post(carol, PRC._id, 'sneak');
+    check('channel: non-shared member POST 404', r.status === 404, r.status);
+    r = await call('GET', '/v1/chat/conversation', as(carol));
+    check('channel: private channel not in the non-shared member list', !r.data.some((c) => c._id === PRC._id));
+    const sCarol2 = await connect({ token: carol.token, workspaceId: WS });
+    ack = await emitAck(sCarol2.socket, 'conversation:join', PRC._id);
+    check('channel: non-shared member cannot join the room', ack?.ok === false, ack);
+    ack = await emitAck(sCarol2.socket, 'chat:typing', { conversation_id: PRC._id, typing: true });
+    check('channel: non-shared member cannot type', ack?.ok === false, ack);
+    sCarol2.clear();
+    await post(alice, PRC._id, 'private 1');
+    await sleep(300);
+    check('channel: non-shared member gets no chat:message', sCarol2.of('chat:message').length === 0, sCarol2.of('chat:message'));
+
+    r = await setShared([alice.userId, carol.userId]);
+    r = await call('GET', `/v1/chat/conversation?id=${PRC._id}`, as(carol));
+    check('channel: sharing the space grants access', r.status === 200 && r.data.members.includes(carol.userId), r.status);
+    ack = await emitAck(sCarol2.socket, 'conversation:join', PRC._id);
+    check('channel: newly shared member joins the room', ack?.ok === true, ack);
+    sCarol2.clear();
+    const priv2 = (await post(alice, PRC._id, 'private 2')).data;
+    ev = await sCarol2.waitFor('chat:message', (p) => p.data?._id === priv2._id);
+    check('channel: newly shared member receives chat:message', !!ev);
+    r = await call('GET', `/v1/chat/conversation?id=${PRC._id}`, as(carol));
+    check('channel: newly shared member has an unread count', r.data.unread_count >= 1, r.data.unread_count);
+
+    r = await setShared([alice.userId]);
+    sCarol2.clear();
+    await post(alice, PRC._id, 'private 3');
+    await sleep(300);
+    check('channel: revoked member gets no more chat:message', sCarol2.of('chat:message').length === 0, sCarol2.of('chat:message'));
+    r = await call('GET', `/v1/chat/message?conversation_id=${PRC._id}`, as(carol));
+    check('channel: revoked member GET messages 404', r.status === 404, r.status);
+    r = await call('GET', `/v1/chat/conversation?id=${PRC._id}`, as(alice));
+    check('channel: revoked member dropped from members / memberDetails', !r.data.members.includes(carol.userId)
+        && !r.data.memberDetails.some((m) => m._id === carol.userId), r.data.members);
+    r = await call('GET', '/v1/chat/message/search?q=private', as(carol));
+    check('channel: revoked member cannot search it', r.status === 200 && r.data.length === 0, r.data?.length);
+
+    for (const s of [sAlice, sAlice2, sBob, sBob2, sCarol, sCarol2, sDave, sOut, sOther, sLate]) s.close();
     await mongo.close();
     console.log(`\n${passed} passed, ${failed} failed`);
     process.exit(failed ? 1 : 0);

@@ -1,6 +1,6 @@
 import { searchMessageSchema } from '../config/validation.js';
 import { formatSuccessMessage } from '../../../utils/success.js';
-import { enrichMessage, isConversationMember, conversationDisplayName } from '../../utils/chatHelper.js';
+import { enrichMessage, resolveConversationAccess, conversationDisplayName } from '../../utils/chatHelper.js';
 import { collection } from '../../../utils/boardTasks.js';
 import { loadMemberConversation, handleChatError } from '../../utils/messageHelper.js';
 
@@ -22,8 +22,9 @@ export default async (request, response) => {
         if (query.conversation_id) {
             conversations = [await loadMemberConversation(query.conversation_id, workspaceId, userId)];
         } else {
-            conversations = (await global.Conversation.find({ workspace_id: workspaceId }))
-                .filter((c) => isConversationMember(c, userId));
+            const workspace = await global.Workspace.findOne({ _id: workspaceId });
+            conversations = (await Promise.all((await global.Conversation.find({ workspace_id: workspaceId }))
+                .map((c) => resolveConversationAccess(c, userId, { workspace })))).filter(Boolean);
         }
         if (conversations.length === 0) {
             return response.json(formatSuccessMessage('Messages fetched successfully', []));

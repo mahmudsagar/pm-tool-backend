@@ -2,7 +2,7 @@
  * Message helpers shared by the chat message endpoints: access, previews, thread roots,
  * mention / thread notifications and realtime broadcasts.
  */
-import { enrichMessage, isConversationMember } from './chatHelper.js';
+import { enrichMessage, resolveConversationAccess, syncChannelMembers } from './chatHelper.js';
 import { z } from 'zod';
 import { collection, toObjectId } from '../../utils/boardTasks.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
@@ -22,10 +22,9 @@ export class ChatError extends Error {
 
 /** Conversation of the workspace that the user is a member of (404 otherwise). */
 export async function loadMemberConversation(conversationId, workspaceId, userId) {
-    const conversation = await global.Conversation.findOne({ _id: conversationId, workspace_id: workspaceId });
-    if (!conversation || !isConversationMember(conversation, userId)) {
-        throw new ChatError(404, 'Conversation not found');
-    }
+    const found = await global.Conversation.findOne({ _id: conversationId, workspace_id: workspaceId });
+    const conversation = await resolveConversationAccess(found, userId);
+    if (!conversation) throw new ChatError(404, 'Conversation not found');
     return conversation;
 }
 
@@ -36,10 +35,13 @@ export async function loadMemberConversation(conversationId, workspaceId, userId
 export async function loadMessageForUser(messageId, workspaceId, userId, { allowNonMember = false } = {}) {
     const message = await global.Message.findOne({ _id: messageId });
     if (!message) throw new ChatError(404, 'Message not found');
-    const conversation = await global.Conversation.findOne({ _id: message.conversation_id, workspace_id: workspaceId });
-    if (!conversation) throw new ChatError(404, 'Message not found');
-    if (!allowNonMember && !isConversationMember(conversation, userId)) throw new ChatError(404, 'Message not found');
-    return { message, conversation };
+    const found = await global.Conversation.findOne({ _id: message.conversation_id, workspace_id: workspaceId });
+    if (!found) throw new ChatError(404, 'Message not found');
+    const conversation = await resolveConversationAccess(found, userId);
+    if (conversation) return { message, conversation };
+    if (!allowNonMember) throw new ChatError(404, 'Message not found');
+    const workspace = await global.Workspace.findOne({ _id: found.workspace_id });
+    return { message, conversation: await syncChannelMembers(found, workspace) };
 }
 
 export function extractMentionIdsFromContent(content) {

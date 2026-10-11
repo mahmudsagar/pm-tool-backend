@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { getConversationSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
-import { enrichConversation, isConversationMember } from '../utils/chatHelper.js';
+import { enrichConversation, resolveConversationAccess } from '../utils/chatHelper.js';
 
 export default async (request, response) => {
     try {
@@ -11,18 +11,23 @@ export default async (request, response) => {
         const query = getConversationSchema.parse(request.query);
 
         if (query.id) {
-            const conversation = await global.Conversation.findOne({ _id: query.id, workspace_id: workspaceId });
-            if (!conversation || !isConversationMember(conversation, userId)) {
+            const workspace = await global.Workspace.findOne({ _id: workspaceId });
+            const found = await global.Conversation.findOne({ _id: query.id, workspace_id: workspaceId });
+            const conversation = await resolveConversationAccess(found, userId, { workspace });
+            if (!conversation) {
                 return response.status(404).json(formatErrorMessage('Conversation not found'));
             }
-            const workspace = await global.Workspace.findOne({ _id: workspaceId });
             const enriched = await enrichConversation(conversation, userId, { workspace });
             return response.json(formatSuccessMessage('Conversation fetched successfully', enriched));
         }
 
+        const workspace = await global.Workspace.findOne({ _id: workspaceId });
         let conversations = await global.Conversation.find({ workspace_id: workspaceId });
 
-        conversations = conversations.filter(c => isConversationMember(c, userId));
+        // Channels follow live space access (members are synced here).
+        conversations = (await Promise.all(
+            conversations.map(c => resolveConversationAccess(c, userId, { workspace }))
+        )).filter(Boolean);
 
         if (query.type) {
             conversations = conversations.filter(c => c.type === query.type);
@@ -41,7 +46,6 @@ export default async (request, response) => {
             return bTime - aTime;
         });
 
-        const workspace = await global.Workspace.findOne({ _id: workspaceId });
         const enriched = await Promise.all(
             conversations.map(c => enrichConversation(c, userId, { workspace }))
         );
