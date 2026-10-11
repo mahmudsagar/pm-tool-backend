@@ -28,6 +28,7 @@ const Space = Waterline.Collection.extend({
         workspace_id: { type: 'string' },
         is_default: { type: 'boolean', required: true },
         entity_type: { type: 'string', defaultsTo: 'space' },
+        archived_at: { type: 'ref' },
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },
     },

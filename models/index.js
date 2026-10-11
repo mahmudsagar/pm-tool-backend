@@ -23,6 +23,7 @@ import Message from './message.js';
 import Favorite from './favorite.js';
 import RecentItem from './recent_item.js';
 import TrashItem from './trash_item.js';
+import Invitation from './invitation.js';
 
 // Register models
 waterline.registerModel(Auth);
@@ -49,6 +50,7 @@ waterline.registerModel(Message);
 waterline.registerModel(Favorite);
 waterline.registerModel(RecentItem);
 waterline.registerModel(TrashItem);
+waterline.registerModel(Invitation);
 
 // Native compound indexes Waterline cannot express (best effort, idempotent).
 const ensureIndexes = async () => {
@@ -59,6 +61,12 @@ const ensureIndexes = async () => {
     await db.collection('recent_item').createIndex({ user_id: 1, entity_type: 1, entity_id: 1 }, { unique: true });
     await db.collection('recent_item').createIndex({ user_id: 1, workspace_id: 1, viewed_at: -1 });
     await db.collection('trash_item').createIndex({ workspace_id: 1, deleted_at: -1 });
+    // Unique only when set: Waterline stores '' for unset string attributes.
+    await db.collection('user').createIndex({ handle: 1 }, { unique: true, partialFilterExpression: { handle: { $gt: '' } } });
+    await db.collection('workspace').createIndex({ slug: 1 }, { unique: true, partialFilterExpression: { slug: { $gt: '' } } });
+    await db.collection('invitation').createIndex({ token: 1 }, { unique: true });
+    await db.collection('invitation').createIndex({ email: 1, status: 1 });
+    await db.collection('invitation').createIndex({ workspace_id: 1, status: 1 });
 };
 
 // Register other models as needed
@@ -95,6 +103,7 @@ const initializeWaterline = async () => {
             global.Favorite = ontology.collections.favorite;
             global.RecentItem = ontology.collections.recent_item;
             global.TrashItem = ontology.collections.trash_item;
+            global.Invitation = ontology.collections.invitation;
             ensureIndexes().catch((indexErr) => console.error('Failed to ensure indexes:', indexErr.message));
             resolve(ontology);
         });

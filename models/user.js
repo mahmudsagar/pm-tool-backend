@@ -16,6 +16,16 @@ const User = Waterline.Collection.extend({
         phone: { type: 'string' },
         avatar: { type: 'string' },
         attachments: { type: 'json', defaultsTo: [] },
+        // Profile (settings). `handle` is unique when non-empty (native partial index in models/index.js).
+        handle: { type: 'string' },
+        title: { type: 'string' },
+        pronouns: { type: 'string' },
+        timezone: { type: 'string' },
+        // { accent?: 'indigo'|'emerald'|'violet'|'cyan'|'amber'|'slate', density?: 'compact'|'comfortable' }
+        preferences: { type: 'json', defaultsTo: {} },
+        // { mentions?, assignments?, updates?: boolean, digest?: 'daily'|'instant'|'off', snooze_until?: ISO|null }
+        notification_prefs: { type: 'json', defaultsTo: {} },
+        last_seen_at: { type: 'ref' },
     },
 
     // Add indexes at the model level instead of on individual attributes
