@@ -3,6 +3,14 @@ import { z } from 'zod';
 // Custom validation function for MongoDB ObjectId
 const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
 
+// Board key: 2-6 letters/digits starting with a letter; stored uppercase.
+const boardKeySchema = z.string()
+    .trim()
+    .transform((v) => v.toUpperCase())
+    .refine((v) => /^[A-Z][A-Z0-9]{1,5}$/.test(v), {
+        message: 'Key must be 2-6 letters or digits and start with a letter',
+    });
+
 const savedViewFilterSchema = z.object({
     field: z.string(),
     operator: z.enum(['is', 'is_not', 'contains', 'is_empty', 'is_not_empty']),
@@ -44,6 +52,8 @@ export const postBoardSchema = z.object({
     automations: z.object({}).passthrough().optional(),
     /** Initial tab layout / scrum settings when creating a board */
     saved_view: savedViewSchema.optional(),
+    /** Task key prefix; derived from the name when omitted */
+    key: boardKeySchema.optional(),
 }).refine(data => {
     const { folder_id, space_id, group_id } = data;
     const keys = [folder_id, space_id, group_id];
@@ -120,6 +130,7 @@ export const putBoardSchema = z.object({
     custom_meta: z.object({}).passthrough().optional(),
     saved_view: savedViewSchema.optional(),
     automations: automationsSchema.optional(),
+    key: boardKeySchema.optional(),
 }).refine(data => {
     const { folder_id, space_id, group_id } = data;
     const keys = [folder_id, space_id, group_id];

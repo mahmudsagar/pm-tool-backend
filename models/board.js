@@ -22,6 +22,9 @@ const Board = Waterline.Collection.extend({
         saved_view: { type: 'json', defaultsTo: null },
         automations: { type: 'json', defaultsTo: null },
         entity_type: { type: 'string', defaultsTo: 'board' },
+        // Task keys: tasks display as `${key}-${task_number}`; task_seq is the last number handed out.
+        key: { type: 'string' },                         // uppercase, 2-6 letters/digits, starts with a letter
+        task_seq: { type: 'number', defaultsTo: 0 },     // incremented atomically ($inc) by the server
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },
     },

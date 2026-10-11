@@ -127,6 +127,9 @@ export default function authorizationMiddleware(request, response, next) {
                     entityChecks.push({ type: 'folder', id });
                 } else if (routePath.includes('/group')) {
                     entityChecks.push({ type: 'group', id });
+                } else if (method === 'GET' && (request.path === '/v1/board' || request.path === '/v1/board/')) {
+                    // GET /v1/board?id= checks access itself and answers 404 for boards the
+                    // user cannot see, so their existence is not revealed by a 403.
                 } else if (routePath.includes('/board')) {
                     entityChecks.push({ type: 'board', id });
                 } else if (routePath.includes('/page')) {

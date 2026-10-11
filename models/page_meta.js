@@ -33,6 +33,9 @@ const PageMeta = Waterline.Collection.extend({
         locked: { type: 'boolean', defaultsTo: false },
         locked_by: { type: 'string', allowNull: true },  // server-set
         locked_at: { type: 'ref' },                     // server-set
+        // Board tasks
+        task_number: { type: 'number', allowNull: true }, // server-set, permanent within the board
+        sort_order: { type: 'number', allowNull: true },  // position among siblings; nulls sort last
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },
     },

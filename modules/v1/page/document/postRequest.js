@@ -2,14 +2,28 @@ import { z } from 'zod';
 import { postPageMetaSchema, postPageContentSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
-import { validateChildSharing } from '../../utils/helper.js';
+import { validateChildSharing, canUserAccessEntity } from '../../utils/helper.js';
 import { createHistoryEntry } from '../../utils/history.js';
 import { createNotification } from '../../utils/notificationService.js';
+import { ensureBoardKey, reserveTaskNumbers, nextSortOrder } from '../../utils/boardTasks.js';
 
 export default async (request, response) => {
     try {
         let boardData = {};
         const body = request.body;
+
+        // Board tasks: the board must exist and be accessible with the same rule as
+        // GET /v1/board (POST bodies skip the entity checks of the authorization middleware).
+        // Checked before anything is written.
+        let taskBoard = null;
+        if (body.board_id) {
+            taskBoard = /^[0-9a-fA-F]{24}$/.test(String(body.board_id))
+                ? await global.Board.findOne({ _id: String(body.board_id) })
+                : null;
+            if (!taskBoard || !(await canUserAccessEntity(taskBoard, request.user.id, request.workspaceId))) {
+                return response.status(404).json(formatErrorMessage('Board not found'));
+            }
+        }
 
         const pageContentData = postPageContentSchema.parse({
             user_id: body.user_id,
@@ -69,7 +83,20 @@ export default async (request, response) => {
             await validateChildSharing(parentType, parentId, pageMetaData.shared_members, pageMetaData.shared_teams);
         }
 
-        const pageMetaResult = await global.PageMeta.create({ ...pageMetaData, workspace_id: request.workspaceId }).fetch();
+        // Board tasks get a permanent number (atomic $inc on board.task_seq) and land at the
+        // end of their sibling list (tasks of the board, or subtasks of the same parent).
+        let taskFields = {};
+        let boardKey = null;
+        if (taskBoard) {
+            boardKey = await ensureBoardKey(taskBoard);
+            taskFields = {
+                task_number: await reserveTaskNumbers(pageMetaData.board_id, 1),
+                sort_order: await nextSortOrder(pageMetaData.board_id, pageMetaData.parent_id),
+            };
+        }
+
+        const pageMetaResult = await global.PageMeta.create({ ...pageMetaData, ...taskFields, workspace_id: request.workspaceId }).fetch();
+        if (boardKey) pageMetaResult.task_key = `${boardKey}-${pageMetaResult.task_number}`;
 
         // Record initial creation history
         try {

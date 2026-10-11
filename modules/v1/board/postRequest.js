@@ -4,6 +4,7 @@ import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 import { formatSuccessMessage } from '../utils/success.js';
 import { validateChildSharing } from '../utils/helper.js';
 import { createNotification } from '../utils/notificationService.js';
+import { deriveBoardKey } from '../utils/boardTasks.js';
 
 export default async (request, response) => {
     try {
@@ -23,7 +24,9 @@ export default async (request, response) => {
             custom_meta: body.custom_meta,
             automations: body.automations,
             saved_view: body.saved_view,
+            key: body.key,
         });
+        if (!validatedData.key) validatedData.key = deriveBoardKey(validatedData.name);
 
         // Enforce parent sharing constraints
         const parentType = validatedData.folder_id ? 'folder' : validatedData.space_id ? 'space' : validatedData.group_id ? 'group' : null;

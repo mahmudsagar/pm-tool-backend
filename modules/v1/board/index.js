@@ -4,12 +4,13 @@ import { getBoardSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 import { formatSuccessMessage } from '../utils/success.js';
 import { canUserAccessEntity } from '../utils/helper.js';
+import { ensureBoardKey, backfillTaskNumbers, commentCounts, decorateTask, compareTasks } from '../utils/boardTasks.js';
 
 /**
  * Check if a document matches a filter condition.
  */
 function matchesFilter(doc, { field, operator, value }) {
-    const CORE_FIELDS = new Set(['title', 'user_id', 'createdAt', 'updatedAt', 'page_type', 'entity_type']);
+    const CORE_FIELDS = new Set(['title', 'user_id', 'createdAt', 'updatedAt', 'page_type', 'entity_type', 'task_number', 'task_key', 'sort_order']);
     const cellVal = CORE_FIELDS.has(field)
         ? doc[field]
         : doc.custom_meta?.values?.[field];
@@ -36,7 +37,7 @@ function matchesFilter(doc, { field, operator, value }) {
  * Only show items that directly match the criteria.
  */
 function applyView(topLevelDocs, { filters = [], sorts = [], search = '' } = {}) {
-    const CORE_FIELDS = new Set(['title', 'user_id', 'createdAt', 'updatedAt', 'page_type', 'entity_type']);
+    const CORE_FIELDS = new Set(['title', 'user_id', 'createdAt', 'updatedAt', 'page_type', 'entity_type', 'task_number', 'task_key', 'sort_order']);
     
     // Helper: check if a document matches search
     function matchesSearch(doc) {
@@ -107,7 +108,13 @@ export default async (request, response) => {
 
         let result;
         if (validateQuery._id) {
-            result = await global.Board.find({ _id: validateQuery._id, workspace_id: workspaceId });
+            // 404 (not 403) when the board is missing, in another workspace, or not accessible,
+            // so the response does not reveal whether the id exists.
+            const board = await global.Board.findOne({ _id: validateQuery._id, workspace_id: workspaceId });
+            if (!board || !(await canUserAccessEntity(board, userId, workspaceId))) {
+                return response.status(404).json(formatErrorMessage('Board not found'));
+            }
+            result = [board];
         } else {
             const allBoards = await global.Board.find({ workspace_id: workspaceId });
             const accessible = await Promise.all(
@@ -135,8 +142,23 @@ export default async (request, response) => {
         const hasView = viewParams.filters.length || viewParams.sorts.length || viewParams.search;
 
         for (const board of result) {
-            let pageMetas = await global.PageMeta.find({ board_id: board._id }).sort('createdAt ASC');
-            
+            const boardKey = await ensureBoardKey(board);
+
+            // Trashed tasks are not in page_meta any more: trash moves the rows into a
+            // trash_item snapshot (see utils/trash.js), so every row found here is live.
+            let pageMetas = await global.PageMeta.find({ board_id: board._id });
+            // Lazily number tasks created before task keys existed (persisted once).
+            if (await backfillTaskNumbers(board._id, pageMetas)) {
+                pageMetas = await global.PageMeta.find({ board_id: board._id });
+                const fresh = await global.Board.findOne({ _id: board._id });
+                if (fresh) board.task_seq = fresh.task_seq;
+            }
+            board.task_seq = typeof board.task_seq === 'number' ? board.task_seq : 0;
+
+            const counts = await commentCounts(pageMetas.map((p) => p._id));
+            pageMetas.forEach((p) => decorateTask(p, boardKey, counts));
+            pageMetas.sort(compareTasks);
+
             // Separate top-level tasks from subtasks FIRST (before filtering)
             const topLevel = pageMetas.filter(p => !p.parent_id);
             const subtaskMap = {};
@@ -145,7 +167,7 @@ export default async (request, response) => {
                 subtaskMap[sub.parent_id].push(sub);
             });
             topLevel.forEach(t => { t.subtasks = subtaskMap[t._id] || []; });
-            
+
             // NOW apply filters/sorts/search to the organized hierarchy
             // This ensures parents whose subtasks match are kept
             let documents = topLevel;
