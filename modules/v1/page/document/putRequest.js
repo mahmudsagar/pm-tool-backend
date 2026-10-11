@@ -5,6 +5,8 @@ import { formatSuccessMessage } from '../../utils/success.js';
 import { buildCommentWithUserInfo } from '../../utils/helper.js';
 import { createHistoryEntry, detectMetaChanges, resolveAction } from '../../utils/history.js';
 import { createNotification } from '../../utils/notificationService.js';
+import { isEntityAccessible } from '../../utils/entities.js';
+import { canManagePageLock, LOCK_PROTECTED_FIELDS, PAGE_LOCKED_MESSAGE, withStudioDefaults } from '../../utils/pageLock.js';
 
 const valuesEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const toDate = (value) => {
@@ -73,18 +75,6 @@ export default async (request, response) => {
         let boardData = {};
         let pageContentResult, pageMetaResult;
 
-        // Capture snapshots BEFORE any updates for history comparison
-        let previousMeta = null;
-        let previousContent = null;
-        try {
-            previousMeta = await global.PageMeta.findOne({ _id });
-            if (previousMeta) {
-                previousContent = await global.PageContent.findOne({ _id: previousMeta.page_content_id });
-            }
-        } catch (_) {
-            // Snapshot capture failure should not block the update
-        }
-
         const pageMetaData = putPageMetaSchema.parse({
             _id,
             page_type: rest.page_type,
@@ -101,7 +91,62 @@ export default async (request, response) => {
             pinned: rest.pinned,
             entity_type: rest.entity_type,
             inner_comments: rest.inner_comments,
+            icon: rest.icon,
+            subtitle: rest.subtitle,
+            doc_status: rest.doc_status,
+            cover_position: rest.cover_position,
+            locked: rest.locked,
         });
+
+        // Capture snapshots BEFORE any updates (history comparison + lock checks)
+        const previousMeta = _id ? await global.PageMeta.findOne({ _id }) : null;
+        if (!previousMeta) {
+            return response.status(404).json(formatErrorMessage('PageMeta not found'));
+        }
+        let previousContent = null;
+        try {
+            previousContent = await global.PageContent.findOne({ _id: previousMeta.page_content_id });
+        } catch (_) {
+            // Snapshot capture failure should not block the update
+        }
+
+        const userId = request.user.id;
+        if (!(await isEntityAccessible('page', previousMeta, userId, request.workspaceId))) {
+            return response.status(403).json(formatErrorMessage('Access denied to this resource'));
+        }
+
+        // --- Lock rules ---------------------------------------------------------------------
+        // The lock change is applied first, so unlocking + editing in one request works.
+        const wasLocked = previousMeta.locked === true;
+        const lockChange = pageMetaData.locked !== undefined && pageMetaData.locked !== wasLocked;
+        let mayManageLock = null;
+        const canManage = async () => {
+            if (mayManageLock === null) mayManageLock = await canManagePageLock(previousMeta, userId, request.workspaceId);
+            return mayManageLock;
+        };
+        if (lockChange && !(await canManage())) {
+            return response.status(403).json(formatErrorMessage('Only the page creator, the lock holder or a workspace admin can lock or unlock this page'));
+        }
+        const willBeLocked = pageMetaData.locked !== undefined ? pageMetaData.locked : wasLocked;
+        if (willBeLocked) {
+            const differs = (a, b) => JSON.stringify(a ?? null) !== JSON.stringify(b ?? null);
+            const before = withStudioDefaults(previousMeta);
+            const metaEdit = LOCK_PROTECTED_FIELDS.some((f) => pageMetaData[f] !== undefined && differs(pageMetaData[f], before[f]));
+            const contentEdit = (rest.content !== undefined && rest.content !== null && rest.content !== ''
+                    && differs(rest.content, previousContent?.content))
+                || (rest.summary !== undefined && differs(rest.summary, previousContent?.summary));
+            if ((metaEdit || contentEdit) && !(await canManage())) {
+                return response.status(423).json(formatErrorMessage(PAGE_LOCKED_MESSAGE));
+            }
+        }
+        if (lockChange) {
+            pageMetaData.locked_by = pageMetaData.locked ? String(userId) : null;
+            pageMetaData.locked_at = pageMetaData.locked ? new Date().toISOString() : null;
+        } else {
+            delete pageMetaData.locked;
+        }
+        // The server knows who is editing; don't trust a client-supplied value.
+        pageMetaData.last_updated_by = String(userId);
 
         pageMetaResult = await global.PageMeta.update(
             { _id },
@@ -192,8 +237,7 @@ export default async (request, response) => {
         // --- Record history ---
         try {
             if (previousMeta) {
-                const userId = request.user?._id || request.user?.id || rest.last_updated_by || previousMeta.user_id;
-                const trackedFields = ['title', 'custom_meta', 'shared_members', 'shared_teams', 'pinned', 'page_type'];
+                const trackedFields = ['title', 'subtitle', 'icon', 'doc_status', 'locked', 'custom_meta', 'shared_members', 'shared_teams', 'pinned', 'page_type'];
                 const metaChanges = detectMetaChanges(previousMeta, pageMetaResult, trackedFields);
                 const hasContentChange = rest.content && previousContent &&
                     JSON.stringify(previousContent.content) !== JSON.stringify(rest.content);
@@ -311,7 +355,7 @@ export default async (request, response) => {
             console.error('Failed to create notification:', notifErr.message);
         }
 
-        response.json(formatSuccessMessage("Page updated successfully", { ...pageMetaResult, mediaAttachments, pageContent: pageContentResult, comments: commentsWithMeta, board: Array.isArray(boardData) && boardData.length > 0 ? boardData[0] : {} }));
+        response.json(formatSuccessMessage("Page updated successfully", { ...withStudioDefaults(pageMetaResult), mediaAttachments, pageContent: pageContentResult, comments: commentsWithMeta, board: Array.isArray(boardData) && boardData.length > 0 ? boardData[0] : {} }));
     } catch (err) {
         if (err instanceof z.ZodError) {
             const formattedErrors = formatZodErrors(err.errors);

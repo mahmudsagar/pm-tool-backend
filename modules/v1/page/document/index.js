@@ -3,6 +3,7 @@ import { getPageMetaSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
 import { buildCommentWithUserInfo } from '../../utils/helper.js';
+import { withStudioDefaults } from '../../utils/pageLock.js';
 
 export default async (request, response) => {
     try {
@@ -49,7 +50,7 @@ export default async (request, response) => {
 
         response.json(formatSuccessMessage("Page data fetched successfully",
             {
-                ...pageMetaResult,
+                ...withStudioDefaults(pageMetaResult),
                 pageContent: pageContentResult,
                 mediaAttachments,
                 comments: commentsWithMeta

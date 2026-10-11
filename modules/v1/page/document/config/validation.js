@@ -13,6 +13,8 @@ const isValidJson = (str) => {
     }
 };
 
+export const DOC_STATUSES = ['draft', 'in_review', 'approved', 'published'];
+
 export const postPageContentSchema = z.object({
     user_id: z.string().nonempty("User ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
@@ -137,6 +139,13 @@ export const putPageMetaSchema = z.object({
     pinned: z.boolean().optional(),
     entity_type: z.string().optional(),
     inner_comments: z.array(z.any()).optional(),
+    icon: z.string().max(64, 'Icon must be at most 64 characters').optional(),
+    subtitle: z.string().max(300, 'Subtitle must be at most 300 characters').optional(),
+    doc_status: z.enum(DOC_STATUSES, {
+        errorMap: () => ({ message: `Invalid doc_status. Allowed values are ${DOC_STATUSES.join(', ')}.` })
+    }).optional(),
+    cover_position: z.number().int('cover_position must be an integer').min(0).max(100).nullable().optional(),
+    locked: z.boolean().optional(),
 }).refine(data => {
     const { folder_id, board_id, space_id, group_id } = data;
     const keys = [folder_id, board_id, space_id, group_id];

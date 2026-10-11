@@ -3,6 +3,7 @@ import { rollbackSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
 import { createHistoryEntry } from '../../utils/history.js';
+import { canManagePageLock, PAGE_LOCKED_MESSAGE } from '../../utils/pageLock.js';
 
 export default async (request, response) => {
     try {
@@ -25,6 +26,11 @@ export default async (request, response) => {
         const pageMeta = await global.PageMeta.findOne({ _id: page_id });
         if (!pageMeta) {
             return response.status(404).json(formatErrorMessage('Page not found'));
+        }
+
+        // A locked page's content can only be restored by the creator, lock holder or a workspace admin.
+        if (pageMeta.locked === true && !(await canManagePageLock(pageMeta, request.user?.id, request.workspaceId))) {
+            return response.status(423).json(formatErrorMessage(PAGE_LOCKED_MESSAGE));
         }
 
         const currentContent = await global.PageContent.findOne({ _id: pageMeta.page_content_id });

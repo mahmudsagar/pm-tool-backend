@@ -25,6 +25,14 @@ const PageMeta = Waterline.Collection.extend({
         pinned: { type: 'boolean', defaultsTo: false },
         entity_type: { type: 'string', defaultsTo: 'page' },
         inner_comments: { type: 'json', defaultsTo: [] },
+        // Studio fields (document / sheet / whiteboard)
+        icon: { type: 'string' },                       // emoji or image URL
+        subtitle: { type: 'string' },
+        doc_status: { type: 'string', defaultsTo: 'draft' }, // draft | in_review | approved | published
+        cover_position: { type: 'number', allowNull: true }, // 0-100, vertical focus % of the cover image
+        locked: { type: 'boolean', defaultsTo: false },
+        locked_by: { type: 'string', allowNull: true },  // server-set
+        locked_at: { type: 'ref' },                     // server-set
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },
     },
