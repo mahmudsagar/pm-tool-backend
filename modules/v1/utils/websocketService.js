@@ -8,6 +8,7 @@ import { socketCorsOrigin } from './corsOrigins.js';
 import jwt from 'jsonwebtoken';
 import { touchLastSeen, isWorkspaceMember, isMemberSuspended } from './workspaceAccess.js';
 import { loadEntity, isEntityAccessible } from './entities.js';
+import { canUserJoinConversation } from '../chat/utils/chatHelper.js';
 
 let io = null;
 const userConnections = new Map(); // Map of userId -> Set of socketIds
@@ -101,11 +102,8 @@ export function initializeWebSocket(httpServer, options = {}) {
         });
 
         // Join conversation room for real-time chat
-        socket.on('conversation:join', (conversationId) => {
-            if (conversationId) {
-                socket.join(`conversation:${conversationId}`);
-            }
-        });
+        // Only members of the conversation (and active members of its workspace) may join its room.
+        socket.on('conversation:join', (conversationId, ack) => handleConversationJoin(socket, conversationId, ack));
 
         socket.on('conversation:leave', (conversationId) => {
             if (conversationId) {
@@ -141,6 +139,24 @@ async function authenticateSocketToken(token) {
     if (!authRow || new Date(authRow.expires_at) <= new Date()) return null;
     if (!OBJECT_ID_RE.test(String(decoded.id))) return null;
     return (await global.User.findOne({ _id: String(decoded.id) })) || null;
+}
+
+// --- Conversation rooms -----------------------------------------------------------------------
+
+/** conversation:join (conversationId | { conversation_id }, ack?) → ack({ ok } | { ok:false, error }). */
+async function handleConversationJoin(socket, payload, ack) {
+    try {
+        const conversationId = String((payload && typeof payload === 'object' ? payload.conversation_id : payload) || '');
+        if (!OBJECT_ID_RE.test(conversationId)) return reply(ack, { ok: false, error: 'Invalid conversation_id' });
+        const conversation = await canUserJoinConversation(conversationId, socket.userId);
+        if (!conversation) return reply(ack, { ok: false, error: 'Access denied' });
+        if (!socket.connected) return reply(ack, { ok: false, error: 'Disconnected' });
+        socket.join(`conversation:${conversationId}`);
+        reply(ack, { ok: true });
+    } catch (err) {
+        console.error('conversation:join failed:', err.message);
+        reply(ack, { ok: false, error: 'Join failed' });
+    }
 }
 
 // --- Presence ---------------------------------------------------------------------------------

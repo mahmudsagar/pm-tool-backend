@@ -1,6 +1,7 @@
 /**
  * Chat helper utilities — access control, member resolution, DM lookup
  */
+import { isWorkspaceMember, isMemberSuspended } from '../../utils/workspaceAccess.js';
 
 export async function getSpaceMemberIds(spaceId) {
     const space = await global.Space.findOne({ _id: spaceId });
@@ -29,6 +30,19 @@ export async function getSpaceMemberIds(spaceId) {
 
 export function isConversationMember(conversation, userId) {
     return (conversation.members || []).includes(userId);
+}
+
+/**
+ * Same rule as GET /v1/chat/conversation?id= (member of the conversation) plus an active,
+ * non-suspended membership of the conversation's workspace (what the HTTP middleware enforces).
+ * Returns the conversation or null.
+ */
+export async function canUserJoinConversation(conversationId, userId) {
+    const conversation = await global.Conversation.findOne({ _id: String(conversationId) });
+    if (!conversation || !isConversationMember(conversation, String(userId))) return null;
+    const workspace = await global.Workspace.findOne({ _id: conversation.workspace_id });
+    if (!workspace || !isWorkspaceMember(workspace, userId) || isMemberSuspended(workspace, userId)) return null;
+    return conversation;
 }
 
 export async function enrichConversation(conversation, currentUserId) {
