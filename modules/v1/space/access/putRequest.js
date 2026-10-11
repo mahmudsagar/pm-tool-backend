@@ -3,6 +3,7 @@ import { putSpaceAccessSchema } from '../config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
 import { getUserRoleInEntity } from '../../utils/helper.js';
+import { getMemberEntry } from '../../utils/workspaceAccess.js';
 
 // Role priority for resolving conflicts (higher = more permissive)
 const ROLE_PRIORITY = { manager: 3, contributor: 2, viewer: 1 };
@@ -54,8 +55,8 @@ export default async (request, response) => {
                 
                 // Check guest ceiling: if team lead is a guest, they can't be manager
                 if (workspace && teamAccess.role === 'manager') {
-                    const leadRole = (workspace.member_roles || {})[team.team_lead];
-                    if (leadRole === 'guest') {
+                    // member_roles is an array of { user_id, role, ... }
+                    if (team.team_lead && getMemberEntry(workspace, team.team_lead)?.role === 'guest') {
                         return response.status(400).json(formatErrorMessage(
                             `Team "${team.name}" lead is a Guest at workspace level and cannot be given Manager role`
                         ));
@@ -79,8 +80,7 @@ export default async (request, response) => {
                 
                 // Check guest ceiling
                 if (workspace && memberAccess.role === 'manager') {
-                    const memberWsRole = (workspace.member_roles || {})[memberAccess.user_id];
-                    if (memberWsRole === 'guest') {
+                    if (getMemberEntry(workspace, memberAccess.user_id)?.role === 'guest') {
                         return response.status(400).json(formatErrorMessage(
                             `User is a Guest at workspace level and cannot be given Manager role on a space`
                         ));
