@@ -72,7 +72,10 @@ export function initializeWebSocket(httpServer, options = {}) {
         // Join user-specific room for targeted notifications
         socket.join(`user:${userId}`);
         // Join workspace room for workspace-wide broadcasts (verified members only)
-        if (workspaceId) socket.join(`workspace:${workspaceId}`);
+        if (workspaceId) {
+            socket.join(`workspace:${workspaceId}`);
+            markOnline(workspaceId, userId);
+        }
 
         // Emit connection success
         socket.emit('connected', {
@@ -94,6 +97,7 @@ export function initializeWebSocket(httpServer, options = {}) {
             }
 
             leaveAllPresence(socket);
+            if (workspaceId) markOffline(workspaceId, userId);
         });
 
         // Handle ping/pong for keep-alive
@@ -104,6 +108,12 @@ export function initializeWebSocket(httpServer, options = {}) {
         // Join conversation room for real-time chat
         // Only members of the conversation (and active members of its workspace) may join its room.
         socket.on('conversation:join', (conversationId, ack) => handleConversationJoin(socket, conversationId, ack));
+
+        socket.on('chat:typing', (payload, ack) => handleChatTyping(socket, payload, ack));
+        socket.on('chat:presence:list', (payload, ack) => {
+            const callback = typeof payload === 'function' ? payload : ack;
+            reply(callback, { online: socket.workspaceId ? getOnlineUserIds(socket.workspaceId) : [] });
+        });
 
         socket.on('conversation:leave', (conversationId) => {
             if (conversationId) {
@@ -157,6 +167,84 @@ async function handleConversationJoin(socket, payload, ack) {
         console.error('conversation:join failed:', err.message);
         reply(ack, { ok: false, error: 'Join failed' });
     }
+}
+
+// --- Chat typing ------------------------------------------------------------------------------
+//
+// Client → server  chat:typing { conversation_id, thread_id?: string|null, typing: boolean }  ack?({ ok } | { ok:false, error })
+// Server → room `conversation:<id>` (all sockets of the sender excluded)
+//   chat:typing { conversation_id, thread_id, user_id, name, typing }
+// typing:true is forwarded at most once per TYPING_THROTTLE_MS per user + conversation; typing:false always.
+
+const TYPING_THROTTLE_MS = 1500;
+const typingLast = new Map(); // `${userId}:${conversationId}` -> ms of the last forwarded typing:true
+
+async function handleChatTyping(socket, payload, ack) {
+    try {
+        const conversationId = String(payload?.conversation_id || '');
+        if (!OBJECT_ID_RE.test(conversationId)) return reply(ack, { ok: false, error: 'Invalid conversation_id' });
+        const threadId = payload?.thread_id ? String(payload.thread_id) : null;
+        if (threadId && !OBJECT_ID_RE.test(threadId)) return reply(ack, { ok: false, error: 'Invalid thread_id' });
+        const typing = payload?.typing === true;
+        const key = `${socket.userId}:${conversationId}`;
+        const now = Date.now();
+        if (typing && now - (typingLast.get(key) || 0) < TYPING_THROTTLE_MS) return reply(ack, { ok: true, throttled: true });
+
+        // A socket that joined the room was checked then (removed members are taken out of it).
+        const room = `conversation:${conversationId}`;
+        if (!socket.rooms.has(room) && !(await canUserJoinConversation(conversationId, socket.userId))) {
+            return reply(ack, { ok: false, error: 'Access denied' });
+        }
+        if (typing) {
+            typingLast.set(key, now);
+            if (typingLast.size > 50000) typingLast.clear();
+        }
+        io.to(room).except(`user:${socket.userId}`).emit('chat:typing', {
+            conversation_id: conversationId,
+            thread_id: threadId,
+            user_id: socket.userId,
+            name: socket.user?.name || '',
+            typing,
+        });
+        reply(ack, { ok: true });
+    } catch (err) {
+        console.error('chat:typing failed:', err.message);
+        reply(ack, { ok: false, error: 'Typing failed' });
+    }
+}
+
+// --- Chat online presence -----------------------------------------------------------------------
+//
+// A user is online in a workspace while at least one of their sockets connected with that workspace.
+// Server → room `workspace:<id>`  chat:presence { user_id, online, workspace_id }
+// Client → server  chat:presence:list (ack) → { online: [userIds] } for the socket's workspace.
+
+const workspaceOnline = new Map(); // workspaceId -> Map<userId, socket count>
+
+function markOnline(workspaceId, userId) {
+    if (!workspaceOnline.has(workspaceId)) workspaceOnline.set(workspaceId, new Map());
+    const users = workspaceOnline.get(workspaceId);
+    const count = (users.get(userId) || 0) + 1;
+    users.set(userId, count);
+    if (count === 1) io?.to(`workspace:${workspaceId}`).emit('chat:presence', { user_id: userId, online: true, workspace_id: workspaceId });
+}
+
+function markOffline(workspaceId, userId) {
+    const users = workspaceOnline.get(workspaceId);
+    if (!users || !users.has(userId)) return;
+    const count = users.get(userId) - 1;
+    if (count > 0) {
+        users.set(userId, count);
+        return;
+    }
+    users.delete(userId);
+    if (users.size === 0) workspaceOnline.delete(workspaceId);
+    io?.to(`workspace:${workspaceId}`).emit('chat:presence', { user_id: userId, online: false, workspace_id: workspaceId });
+}
+
+/** User ids with at least one socket connected to the workspace. */
+export function getOnlineUserIds(workspaceId) {
+    return [...(workspaceOnline.get(String(workspaceId))?.keys() || [])];
 }
 
 // --- Presence ---------------------------------------------------------------------------------
@@ -407,11 +495,7 @@ export function isUserOnline(userId) {
  * @returns {Array<string>} Array of connected user IDs
  */
 export function getConnectedUsersInWorkspace(workspaceId) {
-    const connectedUsers = Array.from(userConnections.keys()).filter(userId => {
-        // In a real app, you'd verify the user belongs to this workspace
-        return isUserOnline(userId);
-    });
-    return connectedUsers;
+    return getOnlineUserIds(workspaceId);
 }
 
 /**
