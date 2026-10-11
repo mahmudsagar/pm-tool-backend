@@ -25,6 +25,7 @@ import RecentItem from './recent_item.js';
 import TrashItem from './trash_item.js';
 import Invitation from './invitation.js';
 import TaskEvent from './task_event.js';
+import Sprint from './sprint.js';
 
 // Register models
 waterline.registerModel(Auth);
@@ -53,6 +54,7 @@ waterline.registerModel(RecentItem);
 waterline.registerModel(TrashItem);
 waterline.registerModel(Invitation);
 waterline.registerModel(TaskEvent);
+waterline.registerModel(Sprint);
 
 // Native compound indexes Waterline cannot express (best effort, idempotent).
 const ensureIndexes = async () => {
@@ -71,6 +73,7 @@ const ensureIndexes = async () => {
     await db.collection('invitation').createIndex({ workspace_id: 1, status: 1 });
     await db.collection('task_event').createIndex({ board_id: 1, at: 1 });
     await db.collection('task_event').createIndex({ task_id: 1, at: 1 });
+    await db.collection('sprint').createIndex({ board_id: 1, start_date: 1, createdAt: 1 });
 };
 
 // Register other models as needed
@@ -109,6 +112,7 @@ const initializeWaterline = async () => {
             global.TrashItem = ontology.collections.trash_item;
             global.Invitation = ontology.collections.invitation;
             global.TaskEvent = ontology.collections.task_event;
+            global.Sprint = ontology.collections.sprint;
             ensureIndexes().catch((indexErr) => console.error('Failed to ensure indexes:', indexErr.message));
             resolve(ontology);
         });

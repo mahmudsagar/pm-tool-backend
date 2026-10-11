@@ -4,6 +4,7 @@ import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 import { formatSuccessMessage } from '../utils/success.js';
 import { canUserAccessEntity } from '../utils/helper.js';
 import { buildBoardTeamHealth } from '../utils/teamHealthService.js';
+import { ensureSprintsMigrated, listSprints } from '../utils/sprints.js';
 
 function normalizeStory(doc) {
     return {
@@ -29,6 +30,10 @@ export default async (request, response) => {
             return response.status(403).json(formatErrorMessage('Access denied'));
         }
 
+        // Tasks hold sprint ids once the board's sprints are documents: order and active sprint
+        // come from the sprint collection then.
+        await ensureSprintsMigrated(board);
+        const sprintDocs = await listSprints(boardId);
         const workspace = await global.Workspace.findOne({ _id: workspaceId });
         const teams = await global.Team.find({ workspace_id: workspaceId });
         const documents = await global.PageMeta.find({ board_id: boardId });
@@ -40,7 +45,13 @@ export default async (request, response) => {
         const health = buildBoardTeamHealth({
             stories,
             standups,
-            sprintCfg: scrum.sprint_management || {},
+            sprintCfg: sprintDocs.length
+                ? {
+                    ...(scrum.sprint_management || {}),
+                    sprints: sprintDocs.map((sp) => String(sp._id)),
+                    active_sprint: String(sprintDocs.find((sp) => sp.status === 'active')?._id || ''),
+                }
+                : (scrum.sprint_management || {}),
             teamHealth,
             assigneeOptions: [],
             viewerId,

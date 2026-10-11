@@ -6,6 +6,7 @@ import { formatSuccessMessage } from '../utils/success.js';
 import { canUserAccessEntity } from '../utils/helper.js';
 import { ensureBoardKey, backfillTaskNumbers, commentCounts, decorateTask, compareTasks } from '../utils/boardTasks.js';
 import { ensureEventsBackfilled, decorateTaskTimestamps } from '../utils/taskEvents.js';
+import { ensureSprintsMigrated } from '../utils/sprints.js';
 
 /**
  * Check if a document matches a filter condition.
@@ -144,7 +145,9 @@ export default async (request, response) => {
 
         for (const board of result) {
             const boardKey = await ensureBoardKey(board);
-            // Lazy one-time task event backfill from page_history (single-board GET; also run by analytics).
+            // Lazy one-time migrations: legacy sprint names -> sprint docs (every GET), and the
+            // task event backfill from page_history (single-board GET; also run by analytics).
+            await ensureSprintsMigrated(board);
             if (validateQuery._id) await ensureEventsBackfilled(board);
 
             // Trashed tasks are not in page_meta any more: trash moves the rows into a

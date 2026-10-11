@@ -25,8 +25,10 @@ const Board = Waterline.Collection.extend({
         // Task keys: tasks display as `${key}-${task_number}`; task_seq is the last number handed out.
         key: { type: 'string' },                         // uppercase, 2-6 letters/digits, starts with a letter
         task_seq: { type: 'number', defaultsTo: 0 },     // incremented atomically ($inc) by the server
-        // Lazy one-time migration (server-set): task_event backfill from page_history.
+        // Lazy one-time migrations (server-set): task_event backfill from page_history and
+        // legacy saved_view sprint names -> sprint documents.
         events_backfilled_at: { type: 'ref' },
+        sprints_migrated_at: { type: 'ref' },
         createdAt: { type: 'ref', autoCreatedAt: true },
         updatedAt: { type: 'ref', autoUpdatedAt: true },
     },
