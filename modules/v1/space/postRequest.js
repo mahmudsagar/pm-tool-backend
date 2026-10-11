@@ -3,12 +3,23 @@ import { postSpaceSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 import { formatSuccessMessage } from '../utils/success.js';
 import { createNotification } from '../utils/notificationService.js';
+import { isWorkspaceAdmin } from '../utils/workspaceAccess.js';
 
 export default async (request, response) => {
     try {
         const body = request.body;
 
         const validatedData = postSpaceSchema.parse(body);
+
+        // Workspace policy: members may be barred from creating public spaces (unset = allowed).
+        // Default spaces (onboarding) are exempt.
+        if (validatedData.is_private === false && !validatedData.is_default) {
+            const workspace = await global.Workspace.findOne({ _id: request.workspaceId });
+            if (workspace?.space_policies?.allow_member_public_create === false
+                && !isWorkspaceAdmin(workspace, request.user.id)) {
+                return response.status(403).json(formatErrorMessage('Only admins can create public spaces'));
+            }
+        }
 
         if (validatedData.is_default) {
             const existingDefaultSpaces = await global.Space.find({
