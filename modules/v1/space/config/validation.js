@@ -62,6 +62,19 @@ export const putSpaceSchema = z.object({
     ])).optional(),
     working_start_date: z.string().nullable().optional(),
     working_end_date: z.string().nullable().optional(),
+    member_roles: z.record(
+        z.string().refine(isValidObjectId, { message: "Invalid MongoDB ObjectId" }),
+        z.enum(['manager', 'contributor', 'viewer']),
+    ).optional(),
+    team_roles: z.record(
+        z.string().refine(isValidObjectId, { message: "Invalid MongoDB ObjectId" }),
+        z.enum(['manager', 'contributor', 'viewer']),
+    ).optional(),
+});
+
+export const archiveSpaceSchema = z.object({
+    id: z.string().nonempty("ID is required").refine(isValidObjectId, { message: "Invalid MongoDB ObjectId" }),
+    archived: z.boolean({ required_error: 'archived is required' }),
 });
 
 export const putSpaceAccessSchema = z.object({

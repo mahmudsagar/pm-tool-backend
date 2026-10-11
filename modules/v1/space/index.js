@@ -17,8 +17,10 @@ export default async (request, response) => {
             // Single lookup by ID
             result = await global.Space.find({ _id: validateQuery._id, workspace_id: workspaceId });
         } else {
-            // Return all workspace spaces the requesting user can access
-            const allSpaces = await global.Space.find({ workspace_id: workspaceId });
+            // Return all workspace spaces the requesting user can access (archived ones only on request)
+            const includeArchived = request.query.include_archived === 'true';
+            const allSpaces = (await global.Space.find({ workspace_id: workspaceId }))
+                .filter((space) => includeArchived || !space.archived_at);
             const accessible = await Promise.all(
                 allSpaces.map(async (space) => (await canUserAccessEntity(space, userId, workspaceId)) ? space : null)
             );
