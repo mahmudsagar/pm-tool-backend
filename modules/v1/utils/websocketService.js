@@ -5,7 +5,9 @@
 
 import { Server as SocketIOServer } from 'socket.io';
 import { socketCorsOrigin } from './corsOrigins.js';
-import { touchLastSeen } from './workspaceAccess.js';
+import jwt from 'jsonwebtoken';
+import { touchLastSeen, isWorkspaceMember, isMemberSuspended } from './workspaceAccess.js';
+import { loadEntity, isEntityAccessible } from './entities.js';
 
 let io = null;
 const userConnections = new Map(); // Map of userId -> Set of socketIds
@@ -25,22 +27,31 @@ export function initializeWebSocket(httpServer, options = {}) {
         ...options
     });
 
-    // Middleware to verify JWT on connection
-    io.use((socket, next) => {
-        const token = socket.handshake.auth.token;
-        const userId = socket.handshake.auth.userId;
-        const workspaceId = socket.handshake.auth.workspaceId;
+    // Authenticate every connection: valid JWT + a live Auth row (same as GET /v1/auth).
+    // The user id comes from the token, never from handshake.auth.userId.
+    io.use(async (socket, next) => {
+        try {
+            const user = await authenticateSocketToken(socket.handshake.auth?.token);
+            if (!user) return next(new Error('unauthorized'));
 
-        if (!token || !userId || !workspaceId) {
-            return next(new Error('Missing authentication'));
+            socket.userId = String(user._id);
+            socket.user = { _id: String(user._id), name: user.name || '', avatar: user.avatar || '' };
+            socket.token = socket.handshake.auth.token;
+
+            // Only join the workspace room when the user is an active member of it.
+            const requestedWorkspaceId = socket.handshake.auth?.workspaceId;
+            socket.workspaceId = null;
+            if (requestedWorkspaceId && OBJECT_ID_RE.test(String(requestedWorkspaceId))) {
+                const workspace = await global.Workspace.findOne({ _id: String(requestedWorkspaceId) });
+                if (workspace && isWorkspaceMember(workspace, socket.userId) && !isMemberSuspended(workspace, socket.userId)) {
+                    socket.workspaceId = String(requestedWorkspaceId);
+                }
+            }
+            next();
+        } catch (err) {
+            console.error('Socket authentication failed:', err.message);
+            next(new Error('unauthorized'));
         }
-
-        // Store user info in socket
-        socket.userId = userId;
-        socket.workspaceId = workspaceId;
-        socket.token = token;
-
-        next();
     });
 
     // Handle connections
@@ -59,8 +70,8 @@ export function initializeWebSocket(httpServer, options = {}) {
 
         // Join user-specific room for targeted notifications
         socket.join(`user:${userId}`);
-        // Join workspace room for workspace-wide broadcasts
-        socket.join(`workspace:${workspaceId}`);
+        // Join workspace room for workspace-wide broadcasts (verified members only)
+        if (workspaceId) socket.join(`workspace:${workspaceId}`);
 
         // Emit connection success
         socket.emit('connected', {
@@ -72,7 +83,7 @@ export function initializeWebSocket(httpServer, options = {}) {
         // Handle disconnection
         socket.on('disconnect', () => {
             console.log(`User ${userId} disconnected with socket ${socket.id}`);
-            
+
             const userSockets = userConnections.get(userId);
             if (userSockets) {
                 userSockets.delete(socket.id);
@@ -80,6 +91,8 @@ export function initializeWebSocket(httpServer, options = {}) {
                     userConnections.delete(userId);
                 }
             }
+
+            leaveAllPresence(socket);
         });
 
         // Handle ping/pong for keep-alive
@@ -99,9 +112,192 @@ export function initializeWebSocket(httpServer, options = {}) {
                 socket.leave(`conversation:${conversationId}`);
             }
         });
+
+        // --- Presence -----------------------------------------------------------------------
+        socket.on('presence:join', (payload, ack) => handlePresenceJoin(socket, payload, ack));
+        socket.on('presence:leave', (payload, ack) => handlePresenceLeave(socket, payload, ack));
+        socket.on('presence:editing', (payload, ack) => handlePresenceEditing(socket, payload, ack));
     });
 
     return io;
+}
+
+// --- Authentication ---------------------------------------------------------------------------
+
+const OBJECT_ID_RE = /^[0-9a-fA-F]{24}$/;
+
+/** Returns the user for a valid, unexpired token that has an Auth row; otherwise null. */
+async function authenticateSocketToken(token) {
+    if (!token || typeof token !== 'string') return null;
+    let decoded;
+    try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch {
+        return null;
+    }
+    if (!decoded?.id) return null;
+    const authRows = await global.Auth.find({ token, user_id: decoded.id }).limit(1);
+    const authRow = authRows?.[0];
+    if (!authRow || new Date(authRow.expires_at) <= new Date()) return null;
+    if (!OBJECT_ID_RE.test(String(decoded.id))) return null;
+    return (await global.User.findOne({ _id: String(decoded.id) })) || null;
+}
+
+// --- Presence ---------------------------------------------------------------------------------
+//
+// Client → server
+//   presence:join    { entity_type: 'page'|'board'|'folder'|'space', entity_id }  ack({ ok, users } | { ok:false, error })
+//   presence:leave   { entity_type, entity_id }                                    ack({ ok })
+//   presence:editing { entity_type, entity_id, editing: boolean }                  ack({ ok } | { ok:false, error })
+// Server → room `presence:<type>:<id>`
+//   presence:update  { entity_type, entity_id, users: [{ user_id, name, avatar, editing, since }] }
+//   (one entry per user, editing = any of their sockets editing, sorted by since)
+
+const PRESENCE_TYPES = ['page', 'board', 'folder', 'space'];
+const EDITING_THROTTLE_MS = 500;
+const presenceRooms = new Map();   // room -> Map<socketId, { user_id, name, avatar, editing, since }>
+const socketPresence = new Map();  // socketId -> Set<room>
+const roomThrottle = new Map();    // room -> { last: ms, timer }
+
+const presenceRoom = (type, id) => `presence:${type}:${id}`;
+
+const parsePresenceTarget = (payload) => {
+    const entityType = payload?.entity_type;
+    const entityId = payload?.entity_id ? String(payload.entity_id) : '';
+    if (!PRESENCE_TYPES.includes(entityType)) return { error: 'Invalid entity_type' };
+    if (!OBJECT_ID_RE.test(entityId)) return { error: 'Invalid entity_id' };
+    return { entityType, entityId, room: presenceRoom(entityType, entityId) };
+};
+
+const reply = (ack, body) => {
+    if (typeof ack === 'function') {
+        try { ack(body); } catch { /* client gone */ }
+    }
+};
+
+/** De-duplicated presence list for a room. */
+export function getPresenceUsers(room) {
+    const entries = presenceRooms.get(room);
+    if (!entries) return [];
+    const byUser = new Map();
+    for (const entry of entries.values()) {
+        const existing = byUser.get(entry.user_id);
+        if (!existing) {
+            byUser.set(entry.user_id, { ...entry });
+        } else {
+            existing.editing = existing.editing || entry.editing;
+            if (entry.since < existing.since) existing.since = entry.since;
+        }
+    }
+    return [...byUser.values()].sort((a, b) => (a.since < b.since ? -1 : a.since > b.since ? 1 : 0));
+}
+
+const emitPresence = (room) => {
+    if (!io) return;
+    const [, entityType, entityId] = room.split(':');
+    io.to(room).emit('presence:update', { entity_type: entityType, entity_id: entityId, users: getPresenceUsers(room) });
+};
+
+/** Broadcast now (join/leave) or throttled to one per EDITING_THROTTLE_MS per room (editing). */
+const broadcastPresence = (room, { throttle = false } = {}) => {
+    const state = roomThrottle.get(room) || { last: 0, timer: null };
+    roomThrottle.set(room, state);
+    const now = Date.now();
+    if (throttle && now - state.last < EDITING_THROTTLE_MS) {
+        if (!state.timer) {
+            state.timer = setTimeout(() => {
+                state.timer = null;
+                state.last = Date.now();
+                emitPresence(room);
+                if (!presenceRooms.has(room)) roomThrottle.delete(room);
+            }, EDITING_THROTTLE_MS - (now - state.last));
+        }
+        return;
+    }
+    if (state.timer) {
+        clearTimeout(state.timer);
+        state.timer = null;
+    }
+    state.last = now;
+    emitPresence(room);
+    if (!presenceRooms.has(room)) roomThrottle.delete(room);
+};
+
+const removeFromRoom = (socket, room) => {
+    const entries = presenceRooms.get(room);
+    if (!entries || !entries.delete(socket.id)) return false;
+    if (entries.size === 0) presenceRooms.delete(room);
+    socketPresence.get(socket.id)?.delete(room);
+    socket.leave(room);
+    return true;
+};
+
+async function handlePresenceJoin(socket, payload, ack) {
+    try {
+        const target = parsePresenceTarget(payload);
+        if (target.error) return reply(ack, { ok: false, error: target.error });
+        const { entityType, entityId, room } = target;
+
+        const entity = await loadEntity(entityType, entityId);
+        const allowed = !!socket.workspaceId && !!entity
+            && await isEntityAccessible(entityType, entity, socket.userId, socket.workspaceId);
+        if (!allowed) return reply(ack, { ok: false, error: 'Access denied' });
+        if (!socket.connected) return reply(ack, { ok: false, error: 'Disconnected' });
+
+        if (!presenceRooms.has(room)) presenceRooms.set(room, new Map());
+        const entries = presenceRooms.get(room);
+        if (!entries.has(socket.id)) {
+            entries.set(socket.id, {
+                user_id: socket.userId,
+                name: socket.user?.name || '',
+                avatar: socket.user?.avatar || '',
+                editing: false,
+                since: new Date().toISOString(),
+            });
+        }
+        if (!socketPresence.has(socket.id)) socketPresence.set(socket.id, new Set());
+        socketPresence.get(socket.id).add(room);
+        socket.join(room);
+
+        broadcastPresence(room);
+        reply(ack, { ok: true, users: getPresenceUsers(room) });
+    } catch (err) {
+        console.error('presence:join failed:', err.message);
+        reply(ack, { ok: false, error: 'Presence join failed' });
+    }
+}
+
+function handlePresenceLeave(socket, payload, ack) {
+    const target = parsePresenceTarget(payload);
+    if (target.error) return reply(ack, { ok: false, error: target.error });
+    if (removeFromRoom(socket, target.room)) broadcastPresence(target.room);
+    reply(ack, { ok: true });
+}
+
+function handlePresenceEditing(socket, payload, ack) {
+    const target = parsePresenceTarget(payload);
+    if (target.error) return reply(ack, { ok: false, error: target.error });
+    const entry = presenceRooms.get(target.room)?.get(socket.id);
+    if (!entry) return reply(ack, { ok: false, error: 'Not joined' });
+    const editing = payload?.editing === true;
+    if (entry.editing !== editing) {
+        entry.editing = editing;
+        broadcastPresence(target.room, { throttle: true });
+    }
+    reply(ack, { ok: true });
+}
+
+function leaveAllPresence(socket) {
+    const rooms = socketPresence.get(socket.id);
+    socketPresence.delete(socket.id);
+    if (!rooms) return;
+    for (const room of rooms) {
+        const entries = presenceRooms.get(room);
+        if (entries?.delete(socket.id)) {
+            if (entries.size === 0) presenceRooms.delete(room);
+            broadcastPresence(room);
+        }
+    }
 }
 
 /**
