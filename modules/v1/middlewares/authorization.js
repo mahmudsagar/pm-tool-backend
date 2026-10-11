@@ -45,6 +45,16 @@ export const checkEntityAccess = async (entityType, entityId, userId, workspaceI
 
     if (!entity) return false;
 
+    // A private board is only opened up by its own rule (owner / shared members / teams), never
+    // through its parent space, and the same holds for its tasks (pages with board_id).
+    if (entityType === 'page' && entity.board_id) {
+        const board = await global.Board.findOne({ _id: entity.board_id });
+        if (board && board.is_private === true) return canUserAccessEntity(board, userId, workspaceId);
+    }
+    if (entityType === 'board' && entity.is_private === true) {
+        return canUserAccessEntity(entity, userId, workspaceId);
+    }
+
     // Use shared access helper (owner, explicit sharing, or public workspace-wide)
     const hasAccess = await canUserAccessEntity(entity, userId, workspaceId);
     if (hasAccess) return true;
@@ -127,9 +137,11 @@ export default function authorizationMiddleware(request, response, next) {
                     entityChecks.push({ type: 'folder', id });
                 } else if (routePath.includes('/group')) {
                     entityChecks.push({ type: 'group', id });
-                } else if (method === 'GET' && (request.path === '/v1/board' || request.path === '/v1/board/')) {
-                    // GET /v1/board?id= checks access itself and answers 404 for boards the
-                    // user cannot see, so their existence is not revealed by a 403.
+                } else if (request.path === '/v1/board' || request.path === '/v1/board/') {
+                    // GET / PUT / DELETE /v1/board?id= check access themselves (canUserAccessEntity
+                    // on the board) and answer 404, so a board's existence is not revealed by a 403.
+                } else if (request.path.startsWith('/v1/board/sprint')) {
+                    // `id` is a sprint id; the handlers check access to the sprint's board.
                 } else if (routePath.includes('/board')) {
                     entityChecks.push({ type: 'board', id });
                 } else if (routePath.includes('/page')) {
@@ -141,6 +153,14 @@ export default function authorizationMiddleware(request, response, next) {
                 if (check.id) {
                     const hasAccess = await checkEntityAccess(check.type, check.id, userId, workspace_id);
                     if (!hasAccess) {
+                        // Boards and board tasks answer 404 like GET /v1/board?id= does.
+                        if (check.type === 'board') {
+                            return response.status(404).json(formatErrorMessage('Board not found'));
+                        }
+                        if (check.type === 'page') {
+                            const page = await global.PageMeta.findOne({ _id: check.id });
+                            if (page?.board_id) return response.status(404).json(formatErrorMessage('PageMeta not found'));
+                        }
                         return response.status(403).json(formatErrorMessage("Access denied to this resource"));
                     }
                 }

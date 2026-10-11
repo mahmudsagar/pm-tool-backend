@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { deleteBoardSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 import { formatSuccessMessage } from '../utils/success.js';
-import { deleteBoardAndChildren } from '../utils/helper.js';
+import { deleteBoardAndChildren, canUserAccessEntity } from '../utils/helper.js';
 import { createNotification } from '../utils/notificationService.js';
 import { snapshotBoard, createTrashItem } from '../utils/trash.js';
 
@@ -15,6 +15,11 @@ export default async (request, response) => {
         if (validatedParams._id) {
             // Fetch board before deletion for notification
             const boardToDelete = await global.Board.findOne({ _id: validatedParams._id });
+            // Access is decided by the board itself (see PUT); 404 when denied or missing.
+            if (!boardToDelete || (boardToDelete.workspace_id && String(boardToDelete.workspace_id) !== String(request.workspaceId))
+                || !(await canUserAccessEntity(boardToDelete, request.user.id, request.workspaceId))) {
+                return response.status(404).json(formatErrorMessage('Board not found'));
+            }
             
             // Snapshot everything the cascade removes so it can be restored from trash
             if (boardToDelete) {

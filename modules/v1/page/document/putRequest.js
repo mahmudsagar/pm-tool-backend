@@ -4,7 +4,7 @@ import { mergeValues } from '../../utils/boardTasks.js';
 import { valuesEqual, evaluateRuleTrigger, applyRuleAction } from '../../utils/boardAutomation.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
-import { buildCommentWithUserInfo } from '../../utils/helper.js';
+import { buildCommentWithUserInfo, canUserAccessEntity } from '../../utils/helper.js';
 import { createHistoryEntry, detectMetaChanges, resolveAction } from '../../utils/history.js';
 import { createNotification } from '../../utils/notificationService.js';
 import { isEntityAccessible } from '../../utils/entities.js';
@@ -63,6 +63,15 @@ export default async (request, response) => {
         }
 
         const userId = request.user.id;
+        // Board tasks: access is decided by the board itself (a private board is not opened up
+        // by access to its parent space). 404 so the task's existence is not revealed.
+        let taskBoard = null;
+        if (previousMeta.board_id) {
+            taskBoard = await global.Board.findOne({ _id: previousMeta.board_id });
+            if (taskBoard && !(await canUserAccessEntity(taskBoard, userId, request.workspaceId))) {
+                return response.status(404).json(formatErrorMessage('PageMeta not found'));
+            }
+        }
         if (!(await isEntityAccessible('page', previousMeta, userId, request.workspaceId))) {
             return response.status(403).json(formatErrorMessage('Access denied to this resource'));
         }

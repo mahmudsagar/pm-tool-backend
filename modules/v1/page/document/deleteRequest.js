@@ -2,7 +2,8 @@ import { z } from 'zod';
 import { deletePageMetaSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
-import { deleteAttachments } from '../../utils/helper.js';
+import { deleteAttachments, canUserAccessEntity } from '../../utils/helper.js';
+import { isEntityAccessible } from '../../utils/entities.js';
 import { createNotification } from '../../utils/notificationService.js';
 import { snapshotPage, createTrashItem } from '../../utils/trash.js';
 
@@ -21,6 +22,17 @@ export default async (request, response) => {
             pageMeta = await global.PageMeta.findOne({ _id: validatedParams._id });
             if (!pageMeta) {
                 return response.status(404).json(formatErrorMessage('PageMeta not found'));
+            }
+            // Board tasks need access to the board itself (see PUT); other pages the usual rule.
+            let taskBoard = null;
+            if (pageMeta.board_id) {
+                taskBoard = await global.Board.findOne({ _id: pageMeta.board_id });
+                if (taskBoard && !(await canUserAccessEntity(taskBoard, request.user.id, request.workspaceId))) {
+                    return response.status(404).json(formatErrorMessage('PageMeta not found'));
+                }
+            }
+            if (!(await isEntityAccessible('page', pageMeta, request.user.id, request.workspaceId))) {
+                return response.status(403).json(formatErrorMessage('Access denied to this resource'));
             }
 
             // Snapshot everything removed below so it can be restored from trash
