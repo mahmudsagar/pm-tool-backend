@@ -1,5 +1,7 @@
 import { z } from 'zod';
-import { putPageMetaSchema, putPageContentSchema } from './config/validation.js';
+import { putPageMetaSchema, putPageContentSchema, customMetaValuesSchema } from './config/validation.js';
+import { mergeValues } from '../../utils/boardTasks.js';
+import { valuesEqual, evaluateRuleTrigger, applyRuleAction } from '../../utils/boardAutomation.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
 import { buildCommentWithUserInfo } from '../../utils/helper.js';
@@ -7,60 +9,6 @@ import { createHistoryEntry, detectMetaChanges, resolveAction } from '../../util
 import { createNotification } from '../../utils/notificationService.js';
 import { isEntityAccessible } from '../../utils/entities.js';
 import { canManagePageLock, LOCK_PROTECTED_FIELDS, PAGE_LOCKED_MESSAGE, withStudioDefaults } from '../../utils/pageLock.js';
-
-const valuesEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
-const toDate = (value) => {
-    if (!value) return null;
-    const d = new Date(value);
-    return Number.isNaN(d.getTime()) ? null : d;
-};
-
-const evaluateRuleTrigger = (rule, nextValues, changedFields) => {
-    const trigger = rule?.trigger || {};
-    const field = trigger.field;
-    if (!field || !changedFields.has(field)) return false;
-    const operator = trigger.operator || 'equals';
-    const expected = String(trigger.value ?? '');
-    const actual = String(nextValues[field] ?? '');
-    if (operator === 'not_equals') return actual !== expected;
-    return actual === expected;
-};
-
-const applyRuleAction = (rule, nextValues) => {
-    const action = rule?.action || {};
-    const actionType = action.type;
-    const actionValue = action.value;
-    if (!actionType) return false;
-
-    if (actionType === 'assign') {
-        if (!actionValue) return false;
-        nextValues.assignee = actionValue;
-        return true;
-    }
-    if (actionType === 'set_status') {
-        nextValues.status = actionValue;
-        return true;
-    }
-    if (actionType === 'set_priority') {
-        nextValues.priority = actionValue;
-        return true;
-    }
-    if (actionType === 'add_tag') {
-        const existingTags = Array.isArray(nextValues.tags) ? nextValues.tags : [];
-        if (!actionValue || existingTags.includes(actionValue)) return false;
-        nextValues.tags = [...existingTags, actionValue];
-        return true;
-    }
-    if (actionType === 'set_start_date_offset') {
-        const due = toDate(nextValues.due_date);
-        const offset = Number(actionValue);
-        if (!due || Number.isNaN(offset)) return false;
-        due.setDate(due.getDate() - offset);
-        nextValues.start_date = due.toISOString().split('T')[0];
-        return true;
-    }
-    return false;
-};
 
 export default async (request, response) => {
     try {
@@ -96,7 +44,11 @@ export default async (request, response) => {
             doc_status: rest.doc_status,
             cover_position: rest.cover_position,
             locked: rest.locked,
+            sort_order: rest.sort_order,
         });
+        const customMetaValues = rest.custom_meta_values !== undefined
+            ? customMetaValuesSchema.parse(rest.custom_meta_values)
+            : undefined;
 
         // Capture snapshots BEFORE any updates (history comparison + lock checks)
         const previousMeta = _id ? await global.PageMeta.findOne({ _id }) : null;
@@ -113,6 +65,19 @@ export default async (request, response) => {
         const userId = request.user.id;
         if (!(await isEntityAccessible('page', previousMeta, userId, request.workspaceId))) {
             return response.status(403).json(formatErrorMessage('Access denied to this resource'));
+        }
+
+        // custom_meta_values: shallow-merge into custom_meta.values (on top of a custom_meta sent
+        // in the same request, else the stored one); null deletes a key; fields stay intact.
+        if (customMetaValues) {
+            const parseMeta = (m) => {
+                if (typeof m === 'string') {
+                    try { return JSON.parse(m); } catch { return {}; }
+                }
+                return m && typeof m === 'object' && !Array.isArray(m) ? m : {};
+            };
+            const base = parseMeta(pageMetaData.custom_meta !== undefined ? pageMetaData.custom_meta : previousMeta.custom_meta);
+            pageMetaData.custom_meta = { ...base, values: mergeValues(base.values, customMetaValues) };
         }
 
         // --- Lock rules ---------------------------------------------------------------------

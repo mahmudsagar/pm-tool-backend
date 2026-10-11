@@ -146,6 +146,8 @@ export const putPageMetaSchema = z.object({
     }).optional(),
     cover_position: z.number().int('cover_position must be an integer').min(0).max(100).nullable().optional(),
     locked: z.boolean().optional(),
+    /** Position among sibling board tasks (nulls sort last) */
+    sort_order: z.number().finite('sort_order must be a finite number').nullable().optional(),
 }).refine(data => {
     const { folder_id, board_id, space_id, group_id } = data;
     const keys = [folder_id, board_id, space_id, group_id];
@@ -175,6 +177,15 @@ export const putPageMetaSchema = z.object({
     message: "Invalid MongoDB ObjectId",
     path: ["folder_id", "space_id", "group_id"]
 });
+
+/**
+ * Partial update of custom_meta.values, merged server-side (a null value deletes the key).
+ * Keys are stored as Mongo sub-document fields, so they must not contain '.' or start with '$'.
+ */
+export const customMetaValuesSchema = z.record(z.any()).refine(
+    (obj) => Object.keys(obj).every((k) => k.length > 0 && !k.includes('.') && !k.startsWith('$')),
+    { message: "Value keys must be non-empty and must not contain '.' or start with '$'" },
+);
 
 export const getPageMetaSchema = z.object({
     _id: z.string().nonempty("ID is required").refine(isValidObjectId, {
