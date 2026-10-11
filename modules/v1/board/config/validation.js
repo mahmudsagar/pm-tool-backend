@@ -110,6 +110,43 @@ const automationsSchema = z.object({
     workflowRules: z.array(automationRuleSchema).optional(),
 }).passthrough().nullable();
 
+// Team capacity (sprint planning). Member ids are not checked against the workspace.
+export const CAPACITY_DEFAULTS = Object.freeze({
+    policy: { safety_ceiling: 0.85, commitment_cap: 0.9 },
+    working_days: [1, 2, 3, 4, 5],
+});
+const dayString = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Dates must be YYYY-MM-DD');
+const capacityMemberSchema = z.object({
+    capacity_pts: z.number().finite().min(0, 'capacity_pts must be >= 0').optional(),
+    hours_per_day: z.number().finite().min(0).max(24, 'hours_per_day must be between 0 and 24').optional(),
+    pto: z.array(dayString).max(366).optional(),
+    role: z.string().max(100).optional(),
+    skills: z.array(z.string().max(100)).max(50).optional(),
+});
+export const capacitySchema = z.object({
+    members: z.record(z.string().min(1), capacityMemberSchema).optional(),
+    policy: z.object({
+        safety_ceiling: z.number().finite().min(0).max(1.5, 'safety_ceiling must be between 0 and 1.5').optional(),
+        commitment_cap: z.number().finite().min(0).max(1.5, 'commitment_cap must be between 0 and 1.5').optional(),
+    }).optional(),
+    working_days: z.array(z.number().int().min(0).max(6, 'working_days are 0 (Sun) .. 6 (Sat)')).max(7).optional(),
+}).transform((c) => normalizeCapacity(c));
+
+/** Fill capacity defaults (also used for boards that have none stored). */
+export function normalizeCapacity(capacity) {
+    const c = capacity && typeof capacity === 'object' ? capacity : {};
+    const members = c.members && typeof c.members === 'object' && !Array.isArray(c.members) ? c.members : {};
+    const days = Array.isArray(c.working_days) ? [...new Set(c.working_days)].sort((a, b) => a - b) : CAPACITY_DEFAULTS.working_days;
+    return {
+        members,
+        policy: {
+            safety_ceiling: typeof c.policy?.safety_ceiling === 'number' ? c.policy.safety_ceiling : CAPACITY_DEFAULTS.policy.safety_ceiling,
+            commitment_cap: typeof c.policy?.commitment_cap === 'number' ? c.policy.commitment_cap : CAPACITY_DEFAULTS.policy.commitment_cap,
+        },
+        working_days: days,
+    };
+}
+
 export const putBoardSchema = z.object({
     _id: z.string().nonempty("ID is required").refine(isValidObjectId, {
         message: "Invalid MongoDB ObjectId",
@@ -131,6 +168,7 @@ export const putBoardSchema = z.object({
     saved_view: savedViewSchema.optional(),
     automations: automationsSchema.optional(),
     key: boardKeySchema.optional(),
+    capacity: capacitySchema.nullable().optional(),
 }).refine(data => {
     const { folder_id, space_id, group_id } = data;
     const keys = [folder_id, space_id, group_id];

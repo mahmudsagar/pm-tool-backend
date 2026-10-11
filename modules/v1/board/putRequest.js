@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { putBoardSchema } from './config/validation.js';
+import { putBoardSchema, normalizeCapacity } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 import { formatSuccessMessage } from '../utils/success.js';
 import { validateChildSharing, canUserAccessEntity } from '../utils/helper.js';
@@ -29,6 +29,7 @@ export default async (request, response) => {
 
         let result = await global.Board.update({ _id: validatedData._id }, validatedData).fetch();
         if (result.length > 0) result = result[0];
+        if (result && !Array.isArray(result)) result.capacity = normalizeCapacity(result.capacity);
         
         // Send notification
         await createNotification({
