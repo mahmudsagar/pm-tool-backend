@@ -21,6 +21,10 @@ export const putBoardTasksSchema = z.object({
     updates: z.array(taskUpdateSchema)
         .min(1, 'updates must not be empty')
         .max(MAX_BULK_UPDATES, `At most ${MAX_BULK_UPDATES} updates per request`),
+    /** Stored on the task events of this request (e.g. "Re-planned after standup") */
+    reason: z.string().trim().max(500, 'reason must be at most 500 characters').optional(),
+    /** Notify the new assignee(s) of tasks whose assignee changed */
+    notify: z.boolean().optional(),
 }).refine((d) => new Set(d.updates.map((u) => u.id)).size === d.updates.length, {
     message: 'Each task id may appear only once in updates',
     path: ['updates'],

@@ -5,6 +5,7 @@ import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
 import { formatSuccessMessage } from '../utils/success.js';
 import { canUserAccessEntity } from '../utils/helper.js';
 import { ensureBoardKey, backfillTaskNumbers, commentCounts, decorateTask, compareTasks } from '../utils/boardTasks.js';
+import { ensureEventsBackfilled, decorateTaskTimestamps } from '../utils/taskEvents.js';
 
 /**
  * Check if a document matches a filter condition.
@@ -143,6 +144,8 @@ export default async (request, response) => {
 
         for (const board of result) {
             const boardKey = await ensureBoardKey(board);
+            // Lazy one-time task event backfill from page_history (single-board GET; also run by analytics).
+            if (validateQuery._id) await ensureEventsBackfilled(board);
 
             // Trashed tasks are not in page_meta any more: trash moves the rows into a
             // trash_item snapshot (see utils/trash.js), so every row found here is live.
@@ -157,6 +160,8 @@ export default async (request, response) => {
 
             const counts = await commentCounts(pageMetas.map((p) => p._id));
             pageMetas.forEach((p) => decorateTask(p, boardKey, counts));
+            // completed_at / started_at / status_changed_at / blocked_at from the event log.
+            await decorateTaskTimestamps(board, pageMetas);
             pageMetas.sort(compareTasks);
 
             // Separate top-level tasks from subtasks FIRST (before filtering)

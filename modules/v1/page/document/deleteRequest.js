@@ -4,6 +4,7 @@ import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
 import { deleteAttachments, canUserAccessEntity } from '../../utils/helper.js';
 import { isEntityAccessible } from '../../utils/entities.js';
+import { lifecycleEvents, recordTaskEvents } from '../../utils/taskEvents.js';
 import { createNotification } from '../../utils/notificationService.js';
 import { snapshotPage, createTrashItem } from '../../utils/trash.js';
 
@@ -49,6 +50,9 @@ export default async (request, response) => {
             }
 
             await global.PageMeta.destroy({ _id: validatedParams._id });
+            if (taskBoard) {
+                await recordTaskEvents(lifecycleEvents({ board: taskBoard, tasks: [pageMeta], actor: request.user.id, field: '_removed' }));
+            }
 
             const pageContentResult = await global.PageContent.destroyOne({ _id: pageMeta.page_content_id });
             if (!pageContentResult) {

@@ -5,6 +5,7 @@ import { valuesEqual, evaluateRuleTrigger, applyRuleAction } from '../../utils/b
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
 import { buildCommentWithUserInfo, canUserAccessEntity } from '../../utils/helper.js';
+import { changeEvents, recordTaskEvents } from '../../utils/taskEvents.js';
 import { createHistoryEntry, detectMetaChanges, resolveAction } from '../../utils/history.js';
 import { createNotification } from '../../utils/notificationService.js';
 import { isEntityAccessible } from '../../utils/entities.js';
@@ -175,6 +176,29 @@ export default async (request, response) => {
             }
         } catch (automationErr) {
             console.error('Failed to apply automation rules:', automationErr.message);
+        }
+
+        // Task events for tracked value changes (status, points, sprint, ...).
+        if (pageMetaResult.board_id) {
+            try {
+                const eventBoard = String(pageMetaResult.board_id) === String(taskBoard?._id)
+                    ? taskBoard
+                    : await global.Board.findOne({ _id: pageMetaResult.board_id });
+                if (eventBoard) {
+                    const valuesOf = (m) => {
+                        let meta = m?.custom_meta;
+                        if (typeof meta === 'string') {
+                            try { meta = JSON.parse(meta); } catch { meta = {}; }
+                        }
+                        return meta?.values && typeof meta.values === 'object' ? meta.values : {};
+                    };
+                    await recordTaskEvents(changeEvents({
+                        board: eventBoard, task: pageMetaResult, before: valuesOf(previousMeta), after: valuesOf(pageMetaResult), actor: userId,
+                    }));
+                }
+            } catch (eventErr) {
+                console.error('Failed to record task events:', eventErr.message);
+            }
         }
 
         if (rest.content || rest.summary) {

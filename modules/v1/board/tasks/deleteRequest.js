@@ -5,6 +5,7 @@ import { formatSuccessMessage } from '../../utils/success.js';
 import { canUserAccessEntity, deleteAttachments } from '../../utils/helper.js';
 import { createNotification } from '../../utils/notificationService.js';
 import { snapshotTaskTree, createTrashItem } from '../../utils/trash.js';
+import { lifecycleEvents, recordTaskEvents } from '../../utils/taskEvents.js';
 
 // Same rows as page/document/deleteRequest.js removes (media files stay until trash purge).
 const destroyPage = async (pageMeta) => {
@@ -73,6 +74,7 @@ export default async (request, response) => {
 
         const deletedIds = [];
         const trashItemIds = [];
+        const removedPages = [];
         for (const rootId of roots) {
             const { snapshot, pages } = await snapshotTaskTree(rootId);
             if (pages.length === 0) continue; // removed concurrently
@@ -81,6 +83,7 @@ export default async (request, response) => {
             for (const page of pages) {
                 await destroyPage(page);
                 deletedIds.push(String(page._id));
+                removedPages.push(page);
             }
             try {
                 await createNotification({
@@ -95,6 +98,8 @@ export default async (request, response) => {
                 console.error('Failed to create notification:', notifErr.message);
             }
         }
+
+        await recordTaskEvents(lifecycleEvents({ board, tasks: removedPages, actor: userId, field: '_removed' }));
 
         response.json(formatSuccessMessage('Tasks moved to trash', { deleted_ids: deletedIds, trash_item_ids: trashItemIds }));
     } catch (err) {

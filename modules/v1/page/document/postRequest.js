@@ -6,6 +6,7 @@ import { validateChildSharing, canUserAccessEntity } from '../../utils/helper.js
 import { createHistoryEntry } from '../../utils/history.js';
 import { createNotification } from '../../utils/notificationService.js';
 import { ensureBoardKey, reserveTaskNumbers, nextSortOrder } from '../../utils/boardTasks.js';
+import { createdEvents, recordTaskEvents } from '../../utils/taskEvents.js';
 
 export default async (request, response) => {
     try {
@@ -97,6 +98,7 @@ export default async (request, response) => {
 
         const pageMetaResult = await global.PageMeta.create({ ...pageMetaData, ...taskFields, workspace_id: request.workspaceId }).fetch();
         if (boardKey) pageMetaResult.task_key = `${boardKey}-${pageMetaResult.task_number}`;
+        if (taskBoard) await recordTaskEvents(createdEvents({ board: taskBoard, task: pageMetaResult, actor: request.user.id }));
 
         // Record initial creation history
         try {
