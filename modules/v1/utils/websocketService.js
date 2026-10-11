@@ -5,6 +5,7 @@
 
 import { Server as SocketIOServer } from 'socket.io';
 import { socketCorsOrigin } from './corsOrigins.js';
+import { touchLastSeen } from './workspaceAccess.js';
 
 let io = null;
 const userConnections = new Map(); // Map of userId -> Set of socketIds
@@ -48,6 +49,7 @@ export function initializeWebSocket(httpServer, options = {}) {
         const workspaceId = socket.workspaceId;
 
         console.log(`User ${userId} connected with socket ${socket.id}`);
+        touchLastSeen(userId);
 
         // Track user connection
         if (!userConnections.has(userId)) {

@@ -117,12 +117,17 @@ const lastSeenWrites = new Map(); // userId -> ms of last write (per process)
 export const touchLastSeen = (userId) => {
     if (!userId || !global.User) return;
     const key = String(userId);
+    if (!/^[0-9a-fA-F]{24}$/.test(key)) return;
     const now = Date.now();
     if (now - (lastSeenWrites.get(key) || 0) < LAST_SEEN_INTERVAL_MS) return;
     lastSeenWrites.set(key, now);
     if (lastSeenWrites.size > 50000) lastSeenWrites.clear();
-    global.User.updateOne({ _id: key }).set({ last_seen_at: new Date(now).toISOString() })
-        .catch((err) => console.error('touchLastSeen failed:', err.message));
+    try {
+        global.User.updateOne({ _id: key }).set({ last_seen_at: new Date(now).toISOString() })
+            .catch((err) => console.error('touchLastSeen failed:', err.message));
+    } catch (err) {
+        console.error('touchLastSeen failed:', err.message);
+    }
 };
 
 /** True for Waterline/Mongo duplicate-key errors. */

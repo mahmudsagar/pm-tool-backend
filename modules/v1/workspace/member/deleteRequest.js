@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { deleteMemberSchema } from '../config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
+import { isWorkspaceAdmin } from '../../utils/workspaceAccess.js';
 
 export default async (request, response) => {
     try {
@@ -16,9 +17,7 @@ export default async (request, response) => {
         }
 
         // Allow admins to remove members too
-        const requesterRole = (workspace.member_roles || []).find(r => r.user_id === request.user.id);
-        const isAdmin = workspace.owner_id === request.user.id || (requesterRole && requesterRole.role === 'admin');
-        if (!isAdmin) {
+        if (!isWorkspaceAdmin(workspace, request.user.id)) {
             return response.status(403).json(formatErrorMessage('Only workspace owner or admins can remove members'));
         }
 

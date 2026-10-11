@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import jwt from 'jsonwebtoken';
 import { formatZodErrors, formatErrorMessage } from '../utils/error.js';
+import { touchLastSeen } from '../utils/workspaceAccess.js';
 
 
 /**
@@ -32,6 +33,7 @@ export default function jwtValidation(request, response, next) {
             email: decoded.email
         };
         request.workspaceId = request.headers['x-workspace-id'] || null;
+        touchLastSeen(decoded.id); // throttled to one write per user per minute
         next();
     });
 }

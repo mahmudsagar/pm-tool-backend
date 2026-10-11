@@ -1,5 +1,6 @@
 import { formatErrorMessage } from '../utils/error.js';
 import { canUserAccessEntity } from '../utils/helper.js';
+import { isWorkspaceMember, isMemberSuspended } from '../utils/workspaceAccess.js';
 
 export const checkEntityAccess = async (entityType, entityId, userId, workspaceId = null) => {
     const normalizeId = (value) => {
@@ -75,17 +76,22 @@ export default function authorizationMiddleware(request, response, next) {
         try {
             const routePath = request.path || request.url;
             const isWorkspaceRoute = routePath.includes('/workspace');
+            // Invite links are opened before the user belongs to the invited workspace
+            const isInvitationRoute = routePath.startsWith('/v1/invitation');
 
             // Require workspace header for all entity routes
-            if (!isWorkspaceRoute && !workspace_id) {
+            if (!isWorkspaceRoute && !isInvitationRoute && !workspace_id) {
                 return response.status(400).json(formatErrorMessage('X-Workspace-ID header is required'));
             }
 
-            // Always check workspace access from X-Workspace-ID header
+            // Always check workspace access (and suspension) from X-Workspace-ID header
             if (workspace_id) {
-                const hasWorkspaceAccess = await checkEntityAccess('workspace', workspace_id, userId);
-                if (!hasWorkspaceAccess) {
+                const workspace = await global.Workspace.findOne({ _id: workspace_id });
+                if (!workspace || !isWorkspaceMember(workspace, userId)) {
                     return response.status(403).json(formatErrorMessage("Access denied"));
+                }
+                if (isMemberSuspended(workspace, userId)) {
+                    return response.status(403).json(formatErrorMessage("Your access to this workspace is suspended"));
                 }
             }
 
@@ -111,7 +117,9 @@ export default function authorizationMiddleware(request, response, next) {
             if (id && !space_id && !group_id && !folder_id && !board_id && !page_id && !parent_id) {
                 const routePath = request.path || request.url;
                 
-                if (routePath.includes('/workspace')) {
+                if (routePath.includes('/workspace/invitation')) {
+                    // `id` is an invitation id; the handler checks workspace admin rights
+                } else if (routePath.includes('/workspace')) {
                     entityChecks.push({ type: 'workspace', id });
                 } else if (routePath.includes('/space')) {
                     entityChecks.push({ type: 'space', id });

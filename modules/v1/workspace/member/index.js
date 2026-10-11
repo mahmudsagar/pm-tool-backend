@@ -1,5 +1,8 @@
 import { formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
+import { isWorkspaceMember, getMemberEntry, spaceIdsForUser } from '../../utils/workspaceAccess.js';
+
+const toIso = (value) => (value ? new Date(value).toISOString() : null);
 
 export default async (request, response) => {
     try {
@@ -16,31 +19,47 @@ export default async (request, response) => {
             return response.status(404).json(formatErrorMessage('Workspace not found'));
         }
 
-        if (workspace.owner_id !== userId && !(workspace.members && workspace.members.includes(userId))) {
+        if (!isWorkspaceMember(workspace, userId)) {
             return response.status(403).json(formatErrorMessage('Access denied'));
         }
 
-        // Get owner info
-        const owner = await global.User.findOne({ _id: workspace.owner_id });
-        const { password: _op, ...ownerWithoutPassword } = owner;
-        ownerWithoutPassword.workspace_role = 'owner';
+        const spaces = await global.Space.find({ workspace_id: workspace._id });
 
-        // Get member info with roles
-        const memberRoles = workspace.member_roles || [];
-        const getRoleForUser = (userId) => {
-            const entry = memberRoles.find(r => r.user_id === userId);
-            return entry ? entry.role : 'member';
+        // Common shape: user row (no password) + workspace-scoped fields
+        const decorate = (user, extra) => {
+            const { password: _p, ...rest } = user;
+            return {
+                ...rest,
+                title: user.title || '',
+                handle: user.handle || '',
+                last_seen_at: user.last_seen_at || null,
+                space_ids: spaceIdsForUser(spaces, user._id),
+                ...extra,
+            };
         };
 
+        // Get owner info
+        const owner = await global.User.findOne({ _id: workspace.owner_id });
+        const ownerWithoutPassword = owner ? decorate(owner, {
+            workspace_role: 'owner',
+            status: 'active',
+            joined_at: toIso(workspace.createdAt),
+        }) : null;
+
         const memberUsers = [];
-        if (workspace.members && workspace.members.length > 0) {
-            for (const memberId of workspace.members) {
-                const user = await global.User.findOne({ _id: memberId });
-                if (user) {
-                    const { password: _p, ...userWithoutPassword } = user;
-                    userWithoutPassword.workspace_role = getRoleForUser(memberId);
-                    memberUsers.push(userWithoutPassword);
-                }
+        const memberIds = workspace.members || [];
+        if (memberIds.length > 0) {
+            const users = await global.User.find({ _id: { in: memberIds } });
+            const byId = new Map(users.map((u) => [String(u._id), u]));
+            for (const memberId of memberIds) {
+                const user = byId.get(String(memberId));
+                if (!user) continue;
+                const entry = getMemberEntry(workspace, memberId);
+                memberUsers.push(decorate(user, {
+                    workspace_role: entry?.role || 'member',
+                    status: entry?.status === 'suspended' ? 'suspended' : 'active',
+                    joined_at: entry?.joined_at || null,
+                }));
             }
         }
 
@@ -51,7 +70,7 @@ export default async (request, response) => {
                 (u.email && u.email.toLowerCase().includes(term));
 
             return response.json(formatSuccessMessage("Members fetched successfully", {
-                owner: matchesSearch(ownerWithoutPassword) ? ownerWithoutPassword : null,
+                owner: ownerWithoutPassword && matchesSearch(ownerWithoutPassword) ? ownerWithoutPassword : null,
                 members: memberUsers.filter(matchesSearch),
             }));
         }

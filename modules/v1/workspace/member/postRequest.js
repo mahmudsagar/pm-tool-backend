@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { postMemberSchema } from '../config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
+import { isWorkspaceAdmin } from '../../utils/workspaceAccess.js';
 
 export default async (request, response) => {
     try {
@@ -15,9 +16,7 @@ export default async (request, response) => {
         }
 
         // Allow admins to add members too
-        const memberRole = (workspace.member_roles || []).find(r => r.user_id === request.user.id);
-        const isAdmin = workspace.owner_id === request.user.id || (memberRole && memberRole.role === 'admin');
-        if (!isAdmin) {
+        if (!isWorkspaceAdmin(workspace, request.user.id)) {
             return response.status(403).json(formatErrorMessage('Only workspace owner or admins can add members'));
         }
 
@@ -51,7 +50,7 @@ export default async (request, response) => {
         // Add role to member_roles
         const currentRoles = workspace.member_roles || [];
         const role = validatedData.role || 'member';
-        const updatedRoles = [...currentRoles.filter(r => r.user_id !== userToAdd._id), { user_id: userToAdd._id, role }];
+        const updatedRoles = [...currentRoles.filter(r => r.user_id !== userToAdd._id), { user_id: userToAdd._id, role, status: 'active', joined_at: new Date().toISOString() }];
         
         const result = await global.Workspace.updateOne({ _id: workspace._id }).set({ 
             members: updatedMembers,

@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { formatSuccessMessage } from '../utils/success.js';
 import { formatErrorMessage } from '../utils/error.js';
+import { touchLastSeen } from '../utils/workspaceAccess.js';
 
 export default async (request, response) => {
     try {
@@ -39,6 +40,8 @@ export default async (request, response) => {
             await global.Auth.destroyOne({ _id: authRecord[0]._id });
             return response.status(401).json(formatErrorMessage("User not found"));
         }
+
+        touchLastSeen(decoded.id);
 
         const workspaces = await global.Workspace.find({
             or: [
