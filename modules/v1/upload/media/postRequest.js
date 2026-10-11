@@ -4,6 +4,7 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { postMediaSchema } from './config/validation.js';
 import { formatZodErrors, formatErrorMessage } from '../../utils/error.js';
 import { formatSuccessMessage } from '../../utils/success.js';
+import { isWorkspaceAdmin } from '../../utils/workspaceAccess.js';
 
 // Configure multer for file uploads
 const storage = multer.memoryStorage();
@@ -56,8 +57,22 @@ export default async (request, response) => {
 
         const validatedData = postMediaSchema.parse(body);
 
+        // Workspace logo: only workspace admins, checked before anything is uploaded
+        if (validatedData.reference_for === 'workspace') {
+            const workspace = await global.Workspace.findOne({ _id: validatedData.reference_id });
+            if (!workspace) {
+                return response.status(404).json(formatErrorMessage('Workspace not found'));
+            }
+            if (!isWorkspaceAdmin(workspace, request.user.id)) {
+                return response.status(403).json(formatErrorMessage('Only workspace owner or admins can change the workspace logo'));
+            }
+        }
+
         // Handle file upload
         const file = request.file;
+        if (!file) {
+            return response.status(400).json(formatErrorMessage('File is required'));
+        }
 
         // Upload file to R2
         const fileName = `${Date.now()}_${file.originalname}`;
@@ -76,7 +91,11 @@ export default async (request, response) => {
             // Storage accounting (user avatars are not counted against a workspace)
             size: file.size || (file.buffer ? file.buffer.length : 0),
             mime_type: file.mimetype || '',
-            workspace_id: validatedData.reference_for === 'user' ? '' : (request.workspaceId || ''),
+            workspace_id: validatedData.reference_for === 'user'
+                ? ''
+                : validatedData.reference_for === 'workspace'
+                    ? validatedData.reference_id
+                    : (request.workspaceId || ''),
         };
 
         let result = await global.Media.create(mediaData).fetch();
@@ -128,8 +147,10 @@ export default async (request, response) => {
             message.attachments = message.attachments || [];
             message.attachments.push(result._id);
             await global.Message.updateOne({ _id: reference_id }).set({ attachments: message.attachments });
+        } else if (reference_for === 'workspace') {
+            await global.Workspace.updateOne({ _id: reference_id }).set({ logo: result.url });
         } else {
-            throw new Error('Invalid reference_for value. Allowed values are page, comment, user, space, and message.');
+            throw new Error('Invalid reference_for value. Allowed values are page, comment, user, space, message, and workspace.');
         }
 
         response.json(formatSuccessMessage('Media created successfully', result));
