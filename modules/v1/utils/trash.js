@@ -176,6 +176,29 @@ export const snapshotPage = async (pageId) => {
     return snap;
 };
 
+/**
+ * Snapshot for board/tasks/deleteRequest.js: a board task and all its subtasks (recursively),
+ * each collected like snapshotPage.
+ */
+export const snapshotTaskTree = async (taskId) => {
+    const snap = new Snapshot();
+    const pages = [];
+    const visit = async (id, depth = 0) => {
+        if (depth > 50) return;
+        const page = await global.PageMeta.findOne({ _id: id });
+        if (!page) return;
+        pages.push(page);
+        const part = await snapshotPage(id);
+        for (const [identity, rows] of Object.entries(part.toJSON())) {
+            for (const row of rows) snap.add(identity, row);
+        }
+        const children = await global.PageMeta.find({ parent_id: String(id), board_id: page.board_id || '' });
+        for (const child of children) await visit(child._id, depth + 1);
+    };
+    await visit(taskId);
+    return { snapshot: snap, pages };
+};
+
 /** Snapshot for space/deleteRequest.js — that handler only destroys the space row itself. */
 export const snapshotSpace = async (spaceOrId) => {
     const snap = new Snapshot();
