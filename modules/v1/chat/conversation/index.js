@@ -15,7 +15,8 @@ export default async (request, response) => {
             if (!conversation || !isConversationMember(conversation, userId)) {
                 return response.status(404).json(formatErrorMessage('Conversation not found'));
             }
-            const enriched = await enrichConversation(conversation, userId);
+            const workspace = await global.Workspace.findOne({ _id: workspaceId });
+            const enriched = await enrichConversation(conversation, userId, { workspace });
             return response.json(formatSuccessMessage('Conversation fetched successfully', enriched));
         }
 
@@ -30,14 +31,19 @@ export default async (request, response) => {
             conversations = conversations.filter(c => c.space_id === query.space_id);
         }
 
+        // Pinned (for the current user) first, then most recent activity.
         conversations.sort((a, b) => {
+            const aPinned = (a.pinned_by || []).includes(userId) ? 1 : 0;
+            const bPinned = (b.pinned_by || []).includes(userId) ? 1 : 0;
+            if (aPinned !== bPinned) return bPinned - aPinned;
             const aTime = a.last_message_at ? new Date(a.last_message_at) : new Date(a.createdAt);
             const bTime = b.last_message_at ? new Date(b.last_message_at) : new Date(b.createdAt);
             return bTime - aTime;
         });
 
+        const workspace = await global.Workspace.findOne({ _id: workspaceId });
         const enriched = await Promise.all(
-            conversations.map(c => enrichConversation(c, userId))
+            conversations.map(c => enrichConversation(c, userId, { workspace }))
         );
 
         response.json(formatSuccessMessage('Conversations fetched successfully', enriched));

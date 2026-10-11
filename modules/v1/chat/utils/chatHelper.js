@@ -1,7 +1,10 @@
 /**
  * Chat helper utilities — access control, member resolution, DM lookup
  */
-import { isWorkspaceMember, isMemberSuspended } from '../../utils/workspaceAccess.js';
+import {
+    isWorkspaceMember, isWorkspaceOwner, isMemberSuspended, getMemberEntry,
+} from '../../utils/workspaceAccess.js';
+import { collection } from '../../utils/boardTasks.js';
 
 export async function getSpaceMemberIds(spaceId) {
     const space = await global.Space.findOne({ _id: spaceId });
@@ -45,7 +48,52 @@ export async function canUserJoinConversation(conversationId, userId) {
     return conversation;
 }
 
-export async function enrichConversation(conversation, currentUserId) {
+/** Workspace role of a user: 'owner' | 'admin' | 'member' | 'guest', or null when not a member. */
+export function getWorkspaceRole(workspace, userId) {
+    if (!workspace) return null;
+    if (isWorkspaceOwner(workspace, userId)) return 'owner';
+    if (!isWorkspaceMember(workspace, userId)) return null;
+    const role = getMemberEntry(workspace, userId)?.role;
+    return ['admin', 'member', 'guest'].includes(role) ? role : 'member';
+}
+
+/** Native filter for top-level messages (legacy rows have no parent_message_id). */
+export const TOP_LEVEL = { $in: [null, ''] };
+
+/** Per-user chat state of a conversation: unread / mention / pinned message counts and flags. */
+export async function conversationUserState(conversation, userId) {
+    const readState = conversation.read_state && typeof conversation.read_state === 'object' ? conversation.read_state : {};
+    const lastRead = readState[userId] ? new Date(readState[userId]) : null;
+    const unreadFilter = {
+        conversation_id: String(conversation._id),
+        sender_id: { $ne: String(userId) },
+        deleted_at: null,
+        ...(lastRead && !Number.isNaN(lastRead.getTime()) ? { createdAt: { $gt: lastRead } } : {}),
+    };
+    const messages = collection('message');
+    const [unreadCount, mentionCount, pinnedCount] = await Promise.all([
+        messages.countDocuments({ ...unreadFilter, parent_message_id: TOP_LEVEL }),
+        messages.countDocuments({ ...unreadFilter, mentions: String(userId) }),
+        messages.countDocuments({ conversation_id: String(conversation._id), pinned: true, deleted_at: null }),
+    ]);
+    return {
+        unread_count: unreadCount,
+        mention_count: mentionCount,
+        pinned_count: pinnedCount,
+        pinned: (conversation.pinned_by || []).includes(userId),
+        muted: (conversation.muted_by || []).includes(userId),
+    };
+}
+
+/**
+ * Adds displayName, memberDetails (with workspace role and profile title), spaceInfo and the
+ * current user's state. `ctx.workspace` avoids reloading the workspace for every conversation.
+ */
+export async function enrichConversation(conversation, currentUserId, ctx = {}) {
+    const workspace = ctx.workspace !== undefined
+        ? ctx.workspace
+        : await global.Workspace.findOne({ _id: conversation.workspace_id });
+
     const members = await Promise.all(
         (conversation.members || []).map(async (memberId) => {
             const user = await global.User.findOne({ _id: memberId });
@@ -56,7 +104,7 @@ export async function enrichConversation(conversation, currentUserId) {
                 const media = await global.Media.findOne({ _id: user.attachments[0] });
                 avatarUrl = media?.url || '';
             }
-            return { ...userInfo, avatarUrl };
+            return { ...userInfo, avatarUrl, role: getWorkspaceRole(workspace, memberId), title: user.title || null };
         })
     );
 
@@ -74,11 +122,18 @@ export async function enrichConversation(conversation, currentUserId) {
         displayName = other?.name || 'Direct Message';
     }
 
+    const { pinned_by: _p, muted_by: _m, ...rest } = conversation;
+    const state = await conversationUserState(conversation, currentUserId);
+
     return {
-        ...conversation,
+        ...rest,
+        read_state: conversation.read_state || {},
+        bookmarks: Array.isArray(conversation.bookmarks) ? conversation.bookmarks : [],
+        topic: conversation.topic || '',
         displayName,
         memberDetails: members.filter(Boolean),
         spaceInfo,
+        ...state,
     };
 }
 
